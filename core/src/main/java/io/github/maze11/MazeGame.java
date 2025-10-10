@@ -8,9 +8,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MazeGame extends Game {
-    public SpriteBatch batch;
-    public BitmapFont defaultFont;
-    public FitViewport viewport;
+    private SpriteBatch batch;
+    private BitmapFont defaultFont;
+    private FitViewport viewport;
+
+    public SpriteBatch getBatch() {return batch;}
+    public BitmapFont getDefaultFont() {return defaultFont;}
+    public FitViewport getViewport() {return viewport;}
 
     @Override
     public void create() {

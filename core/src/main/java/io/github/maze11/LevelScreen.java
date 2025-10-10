@@ -21,14 +21,17 @@ public class LevelScreen implements Screen {
         //placeholder code to show that this screen is displayed
         ScreenUtils.clear(Color.BLACK);
 
-        game.viewport.apply();
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+        var viewport = game.getViewport();
+        var batch = game.getBatch();
 
-        game.batch.begin();
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        game.defaultFont.draw(game.batch, "Displaying a placeholder for a level scene", 1, 1.5f);
+        batch.begin();
 
-        game.batch.end();
+        game.getDefaultFont().draw(batch, "Displaying a placeholder for a level scene", 1, 1.5f);
+
+        batch.end();
     }
 
     @Override
@@ -36,7 +39,7 @@ public class LevelScreen implements Screen {
         //if size is 0, it is minimised, no need to resize
         if(width <= 0 || height <= 0) return;
 
-        game.viewport.update(width, height, true);
+        game.getViewport().update(width, height, true);
     }
 
     @Override
