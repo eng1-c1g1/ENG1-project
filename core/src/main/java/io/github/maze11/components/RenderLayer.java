@@ -1,4 +1,4 @@
-package io.github.maze11.lwjgl3.components;
+package io.github.maze11.components;
 
 public enum RenderLayer {
     tile, object

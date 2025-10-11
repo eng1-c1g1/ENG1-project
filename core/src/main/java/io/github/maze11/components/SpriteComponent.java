@@ -1,4 +1,4 @@
-package io.github.maze11.lwjgl3.components;
+package io.github.maze11.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Sprite;
