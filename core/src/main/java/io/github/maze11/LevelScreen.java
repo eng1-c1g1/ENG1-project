@@ -17,14 +17,14 @@ public class LevelScreen implements Screen {
         this.game = game;
 
         map = new TmxMapLoader().load("floor.tmx");
-        
+
     }
 
     @Override
-    public void show() {    
-        float unitScale = 1f / 32f;  
+    public void show() {
+        float unitScale = 1f / 32f;
         mapRenderer = new OrthogonalTiledMapRenderer(map, unitScale);
-        
+
     }
 
     @Override
@@ -37,13 +37,20 @@ public class LevelScreen implements Screen {
 
         // Render the Tiled map
         mapRenderer.setView((OrthographicCamera) viewport.getCamera());
-        mapRenderer.render();
+
 
         // Optional overlay text with SpriteBatch
         var batch = game.getBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
+
         batch.begin();
+        // ######### START RENDER #############
+        ScreenUtils.clear(Color.BLACK);
+
+        mapRenderer.render();
         game.getDefaultFont().draw(batch, "Tiled floor level loaded!", 1, 1.5f);
+
+        // ######## END RENDER ###############
         batch.end();
     }
 
