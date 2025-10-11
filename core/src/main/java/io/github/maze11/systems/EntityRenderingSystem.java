@@ -33,7 +33,8 @@ public class EntityRenderingSystem  extends SortedIteratingSystem {
         TransformComponent transform = transformM.get(entity);
         if (!sprite.isShown) return;
 
-
+        //TODO: check that this scaling method works in an sensible manner for sizes other than (1f,1f)
+        //This was written quickly and may yield curious results
         game.getBatch().draw(sprite.texture,
             transform.position.x + sprite.textureOffset.x,
             transform.position.y + sprite.textureOffset.y,
