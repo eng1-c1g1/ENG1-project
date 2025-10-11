@@ -1,5 +1,6 @@
 package io.github.maze11;
 
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -7,9 +8,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import io.github.maze11.systems.EntityRenderingSystem;
 
 public class LevelScreen implements Screen {
     final MazeGame game;
+    final PooledEngine engine = new PooledEngine();
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
@@ -18,6 +21,11 @@ public class LevelScreen implements Screen {
 
         map = new TmxMapLoader().load("floor.tmx");
 
+        engine.addSystem(new EntityRenderingSystem(game));
+
+        // Temporary debugging code to create objects here
+        var debugManager = new DebuggingIndicatorManager(engine);
+        debugManager.CreateDebugSquare(1,1);
     }
 
     @Override
