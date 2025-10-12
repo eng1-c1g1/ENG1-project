@@ -19,14 +19,13 @@ public class LevelScreen implements Screen {
     public LevelScreen(MazeGame game) {
         this.game = game;
 
-        map = new TmxMapLoader().load("floor.tmx");
+        map = game.getAssetManager().get("floor.tmx", TiledMap.class); // Load the map using AssetManager
 
         engine = new PooledEngine();
         engine.addSystem(new RenderingSystem(game).startDebugView());
 
         // Temporary debugging code to create objects here
-        var debugManager = new DebuggingIndicatorManager(engine);
-        debugManager.CreateDebugSquare(0.8f,2f);
+        var debugManager = new DebuggingIndicatorManager(engine, game);
         debugManager.CreateDebugSquare(1,1);
         debugManager.CreateDebugSquare(1.5f,1.5f);
         debugManager.CreateDebugSquare(3f, 3f, 2f, 2f);

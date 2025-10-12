@@ -14,11 +14,14 @@ public class DebuggingIndicatorManager {
     final PooledEngine engine;
 
     private final Texture testSquare;
+    private final MazeGame game;
 
-    public DebuggingIndicatorManager(PooledEngine engine){
+    public DebuggingIndicatorManager(PooledEngine engine, MazeGame game) {
         this.engine = engine;
+        this.game = game;
 
-        testSquare = new Texture("Test_Square.png");
+        // Load the texture using the game's AssetManager
+        testSquare = game.getAssetManager().get("Test_Square.png", Texture.class);
     }
 
     //use overloading instead of default values to prevent people specifying one dimension but not the other
