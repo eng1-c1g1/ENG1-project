@@ -7,9 +7,14 @@ import io.github.maze11.components.TransformComponent;
 
 import java.util.Comparator;
 
+/**
+ * Comparator used for sorting entities by rendering order. Sorts by RenderLayer initially,
+ * then renders based off y coordinate in case of a tie.
+ * Lower y are rendered last to achieve top-down illusion of depth.
+ */
 public class RenderOrderComparator implements Comparator<Entity> {
-    private ComponentMapper<TransformComponent> transM;
-    private ComponentMapper<SpriteComponent> spriteM;
+    private final ComponentMapper<TransformComponent> transM;
+    private final ComponentMapper<SpriteComponent> spriteM;
 
     public RenderOrderComparator() {
         transM = ComponentMapper.getFor(TransformComponent.class);
