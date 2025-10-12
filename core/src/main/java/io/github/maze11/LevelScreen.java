@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import io.github.maze11.systems.EntityRenderingSystem;
 
 public class LevelScreen implements Screen {
-    final MazeGame game;
-    final PooledEngine engine = new PooledEngine();
-    private TiledMap map;
+    private final MazeGame game;
+    private final PooledEngine engine;
+    private final TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
     public LevelScreen(MazeGame game) {
@@ -21,11 +21,14 @@ public class LevelScreen implements Screen {
 
         map = new TmxMapLoader().load("floor.tmx");
 
+        engine = new PooledEngine();
         engine.addSystem(new EntityRenderingSystem(game));
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine);
         debugManager.CreateDebugSquare(1,1);
+        debugManager.CreateDebugSquare(1.5f,1.5f);
+        debugManager.CreateDebugSquare(0.8f,2f);
     }
 
     @Override
@@ -37,8 +40,6 @@ public class LevelScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        //placeholder code to show that this screen is displayed
-        ScreenUtils.clear(Color.BLACK);
 
         var viewport = game.getViewport();
         viewport.apply();
@@ -46,8 +47,6 @@ public class LevelScreen implements Screen {
         // Render the Tiled map
         mapRenderer.setView((OrthographicCamera) viewport.getCamera());
 
-
-        // Optional overlay text with SpriteBatch
         var batch = game.getBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
