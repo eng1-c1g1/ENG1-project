@@ -26,6 +26,7 @@ public class MazeGame extends Game {
 
     @Override
     public void create() {
+        System.out.println("Maze game launched");
         batch = new SpriteBatch();
 
         viewport = new FitViewport(16, 12);

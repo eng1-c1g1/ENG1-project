@@ -20,11 +20,19 @@ public class DebuggingIndicatorManager {
     public void CreateDebugSquare(float x, float y){
         Entity entity = engine.createEntity();
 
+        //create components
         SpriteComponent spriteComponent = engine.createComponent(SpriteComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
-        transformComponent.position.set(x, y);
 
+        //set components
+        transformComponent.position.set(x, y);
+        spriteComponent.texture = testSquare;
+
+        //add components to the entity
         entity.add(spriteComponent);
+        entity.add(transformComponent);
+
+        engine.addEntity(entity);
     }
 
 }

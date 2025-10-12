@@ -32,7 +32,7 @@ public class LevelScreen implements Screen {
     public void show() {
         float unitScale = 1f / 32f;
         mapRenderer = new OrthogonalTiledMapRenderer(map, unitScale);
-
+        System.out.println("Level screen began displaying");
     }
 
     @Override
@@ -56,6 +56,7 @@ public class LevelScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         mapRenderer.render();
+        engine.update(delta);
         game.getDefaultFont().draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############

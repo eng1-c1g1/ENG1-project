@@ -15,6 +15,6 @@ public class SpriteComponent implements Component {
     // It should be used to create an offset between the two features
     //For characters, the feet of the character should be placed at the object origin
     public Vector2 textureOffset = new Vector2();
-    public Vector2 size =  new Vector2();
+    public Vector2 size =  new Vector2(1f, 1f);
 
 }
