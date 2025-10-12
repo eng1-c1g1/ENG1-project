@@ -64,8 +64,8 @@ public class RenderingSystem extends SortedIteratingSystem {
         float xOffset = (-0.5f) * effectiveTextureSizeX;
 
         batch.draw(sprite.texture,
-            transform.position.x + sprite.textureOffset.x + xOffset,
-            transform.position.y + sprite.textureOffset.y,
+            transform.position.x + (sprite.textureOffset.x * transform.scale.x) + xOffset,
+            transform.position.y + (sprite.textureOffset.y * transform.scale.y),
             effectiveTextureSizeX, effectiveTextureSizeY
         );
 
