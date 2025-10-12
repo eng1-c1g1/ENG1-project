@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.MazeGame;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
@@ -14,7 +13,7 @@ import io.github.maze11.components.TransformComponent;
 /**
  * Renders any entity with both a TransformComponent and a SpriteComponent
  */
-public class EntityRenderingSystem  extends SortedIteratingSystem {
+public class RenderingSystem extends SortedIteratingSystem {
     private final MazeGame game;
     private final ComponentMapper<SpriteComponent> spriteM;
     private final ComponentMapper<TransformComponent> transformM;
@@ -24,7 +23,11 @@ public class EntityRenderingSystem  extends SortedIteratingSystem {
     private Texture originTexture;
     private Sprite originSprite;
 
-    public EntityRenderingSystem startDebugging() {
+    /**
+     * Draws extra info onto the screen to help with debugging. Can impact performance. Call stopDebugView() to exit
+     * @return Returns reference to itself, for convenient usage
+     */
+    public RenderingSystem startDebugView() {
         isDebugging = true;
         if (originTexture == null) {
             originTexture = new Texture("origin_indicator.png");
@@ -33,11 +36,11 @@ public class EntityRenderingSystem  extends SortedIteratingSystem {
         }
         return this;
     }
-    public void stopDebugging() {
+    public void stopDebugView() {
         isDebugging = false;
     }
 
-    public EntityRenderingSystem(MazeGame game) {
+    public RenderingSystem(MazeGame game) {
         super(Family.all(SpriteComponent.class).get(), new RenderOrderComparator());
         this.game = game;
         spriteM = ComponentMapper.getFor(SpriteComponent.class);

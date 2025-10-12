@@ -8,7 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import io.github.maze11.systems.EntityRenderingSystem;
+import io.github.maze11.systems.RenderingSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -22,7 +22,7 @@ public class LevelScreen implements Screen {
         map = new TmxMapLoader().load("floor.tmx");
 
         engine = new PooledEngine();
-        engine.addSystem(new EntityRenderingSystem(game).startDebugging());
+        engine.addSystem(new RenderingSystem(game).startDebugView());
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine);
