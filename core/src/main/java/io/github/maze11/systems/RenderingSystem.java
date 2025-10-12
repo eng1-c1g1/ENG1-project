@@ -30,7 +30,8 @@ public class RenderingSystem extends SortedIteratingSystem {
     public RenderingSystem startDebugView() {
         isDebugging = true;
         if (originTexture == null) {
-            originTexture = new Texture("origin_indicator.png");
+            // load the origin indicator texture from the asset manager
+            originTexture = game.getAssetManager().get("origin_indicator.png", Texture.class); // Load the texture using AssetManager
             originSprite = new Sprite(originTexture);
             originSprite.setSize(1f, 1f);
         }
