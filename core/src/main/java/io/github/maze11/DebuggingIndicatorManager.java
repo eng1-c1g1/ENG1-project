@@ -21,7 +21,12 @@ public class DebuggingIndicatorManager {
         testSquare = new Texture("Test_Square.png");
     }
 
+    //use overloading instead of default values to prevent people specifying one dimension but not the other
     public void CreateDebugSquare(float x, float y){
+        CreateDebugSquare(x, y, 1f, 1f);
+    }
+
+    public void CreateDebugSquare(float x, float y, float xSize, float ySize){
         Entity entity = engine.createEntity();
 
         //create components
@@ -30,6 +35,7 @@ public class DebuggingIndicatorManager {
 
         //set components
         transformComponent.position.set(x, y);
+        transformComponent.scale.set(xSize, ySize);
         spriteComponent.texture = testSquare;
 
         //add components to the entity

@@ -26,9 +26,10 @@ public class LevelScreen implements Screen {
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine);
+        debugManager.CreateDebugSquare(0.8f,2f);
         debugManager.CreateDebugSquare(1,1);
         debugManager.CreateDebugSquare(1.5f,1.5f);
-        debugManager.CreateDebugSquare(0.8f,2f);
+        debugManager.CreateDebugSquare(3f, 3f, 2f, 2f);
     }
 
     @Override

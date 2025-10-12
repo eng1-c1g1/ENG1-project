@@ -13,9 +13,11 @@ public class SpriteComponent implements Component {
     public boolean isShown = true;
     public RenderLayer renderLayer = RenderLayer.OBJECT;
 
-    // The position specified here is the local position of the texture relative to the object origin
-    // It should be used to create an offset between the two features
-    //For characters, the feet of the character should be placed at the object origin
+    /**
+     * The offset applied to the texture relative to the transform it is attached to. A value of (0f,0f) places
+     * the object origin in the middle of the bottom-left edge. The offset should be chosen such that the object
+     * origin is wherever the object touches the ground.
+     */
     public Vector2 textureOffset = new Vector2();
     public Vector2 size =  new Vector2(1f, 1f);
 

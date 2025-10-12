@@ -21,7 +21,6 @@ public class RenderingSystem extends SortedIteratingSystem {
     // Debug tools
     private boolean isDebugging = false;
     private Texture originTexture;
-    private Sprite originSprite;
 
     /**
      * Draws extra info onto the screen to help with debugging. Can impact performance. Call stopDebugView() to exit
@@ -31,8 +30,6 @@ public class RenderingSystem extends SortedIteratingSystem {
         isDebugging = true;
         if (originTexture == null) {
             originTexture = new Texture("origin_indicator.png");
-            originSprite = new Sprite(originTexture);
-            originSprite.setSize(1f, 1f);
         }
         return this;
     }
@@ -61,18 +58,21 @@ public class RenderingSystem extends SortedIteratingSystem {
 
         var batch = game.getBatch();
 
-        //TODO: check that this scaling method works in an sensible manner for sizes other than (1f,1f)
-        //This was written quickly and may yield curious results
+        float effectiveTextureSizeX = transform.scale.x * sprite.size.x;
+        float effectiveTextureSizeY = transform.scale.y * sprite.size.y;
+        //This offset ensures the texture renders centred in the middle of the bottom edge
+        float xOffset = (-0.5f) * effectiveTextureSizeX;
+
         batch.draw(sprite.texture,
-            transform.position.x + sprite.textureOffset.x,
+            transform.position.x + sprite.textureOffset.x + xOffset,
             transform.position.y + sprite.textureOffset.y,
-            sprite.size.x, sprite.size.y
+            effectiveTextureSizeX, effectiveTextureSizeY
         );
 
         if (isDebugging) {
             //draws an indicator at the origin of the item
-            originSprite.setPosition(transform.position.x,  transform.position.y);
-            originSprite.draw(batch);
+            //offset -0.5f so that the centre displays the origin
+            batch.draw(originTexture, transform.position.x - 0.5f,  transform.position.y - 0.5f, 1f, 1f);
         }
     }
 }
