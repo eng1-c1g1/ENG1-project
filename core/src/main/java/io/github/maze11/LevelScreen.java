@@ -22,7 +22,7 @@ public class LevelScreen implements Screen {
         map = new TmxMapLoader().load("floor.tmx");
 
         engine = new PooledEngine();
-        engine.addSystem(new EntityRenderingSystem(game));
+        engine.addSystem(new EntityRenderingSystem(game).startDebugging());
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine);

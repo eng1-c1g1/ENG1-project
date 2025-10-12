@@ -7,5 +7,7 @@ package io.github.maze11.components;
 public enum RenderLayer {
     //The layers are sorted in order of priority:
     // Layers are rendered in the order they are declared here
-    TILE, OBJECT
+    TILE,
+    OBJECT,
+    DEBUG
 }

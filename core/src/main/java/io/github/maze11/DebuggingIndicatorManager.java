@@ -13,7 +13,7 @@ import io.github.maze11.components.TransformComponent;
 public class DebuggingIndicatorManager {
     final PooledEngine engine;
 
-    private Texture testSquare;
+    private final Texture testSquare;
 
     public DebuggingIndicatorManager(PooledEngine engine){
         this.engine = engine;
