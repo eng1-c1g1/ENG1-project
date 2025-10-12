@@ -9,6 +9,9 @@ import io.github.maze11.MazeGame;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
+/**
+ * Renders any entity with both a TransformComponent and a SpriteComponent
+ */
 public class EntityRenderingSystem  extends SortedIteratingSystem {
     private final MazeGame game;
     private ComponentMapper<SpriteComponent> spriteM;

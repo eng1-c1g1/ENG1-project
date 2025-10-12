@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
+/**
+ * Used to create visual indicator sprites for debugging purposes. For example, indicators may
+ * help test the rendering system.
+ */
 public class DebuggingIndicatorManager {
     final PooledEngine engine;
 
