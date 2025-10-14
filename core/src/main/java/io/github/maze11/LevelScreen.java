@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import io.github.maze11.systems.CameraSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.RenderingSystem;
 
@@ -22,8 +23,10 @@ public class LevelScreen implements Screen {
         map = game.getAssetManager().get("floor.tmx", TiledMap.class); // Load the map using AssetManager
 
         engine = new PooledEngine();
-        engine.addSystem(new RenderingSystem(game).startDebugView());
         engine.addSystem(new PlayerSystem(game));
+        engine.addSystem(new CameraSystem());
+        engine.addSystem(new RenderingSystem(game).startDebugView());
+
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine, game);

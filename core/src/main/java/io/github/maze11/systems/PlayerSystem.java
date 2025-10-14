@@ -13,8 +13,8 @@ import io.github.maze11.components.TransformComponent;
 
 public class PlayerSystem extends IteratingSystem {
     private final MazeGame game;
-    ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
-    ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
+    ComponentMapper<PlayerComponent> playerMapper;
+    ComponentMapper<TransformComponent> transformMapper;
 
     public PlayerSystem(MazeGame game) {
         super(Family.all(PlayerComponent.class, TransformComponent.class).get());
