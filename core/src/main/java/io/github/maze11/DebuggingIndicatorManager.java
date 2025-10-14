@@ -25,17 +25,7 @@ public class DebuggingIndicatorManager {
         testSquare = game.getAssetManager().get("Test_Square.png", Texture.class);
     }
 
-    //use overloading instead of default values to prevent people specifying one dimension but not the other
-    public void createDebugSquare(float x, float y){
-         createDebugSquare(x, y, 1f, 1f);
-    }
-
-    public void createDebugSquare(float x, float y, float xSize, float ySize){
-        Entity entity = createDebugSquareWithoutAddingToEngine(x, y, xSize, ySize);
-        engine.addEntity(entity);
-    }
-
-    private Entity createDebugSquareWithoutAddingToEngine(float x, float y, float xSize, float ySize){
+    public Entity createDebugSquare(float x, float y, float xSize, float ySize){
         Entity entity = engine.createEntity();
 
         //create components
@@ -51,15 +41,20 @@ public class DebuggingIndicatorManager {
         entity.add(spriteComponent);
         entity.add(transformComponent);
 
+        engine.addEntity(entity);
         return entity;
     }
 
+    //use overloading instead of default values to prevent people specifying one dimension but not the other
+    public Entity createDebugSquare(float x, float y){
+         return createDebugSquare(x, y, 1f, 1f);
+    }
+
     public Entity createDebugPlayer(float x, float y){
-        Entity entity = createDebugSquareWithoutAddingToEngine(x, y, 1f, 1f);
+        Entity entity = createDebugSquare(x, y, 1f, 1f);
         PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         playerComponent.moveSpeed = 5f;
         entity.add(playerComponent);
-        engine.addEntity(entity);
         return entity;
     }
 
