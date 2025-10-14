@@ -38,7 +38,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     }
 
     public RenderingSystem(MazeGame game) {
-        super(Family.all(SpriteComponent.class).get(), new RenderOrderComparator());
+        super(Family.all(SpriteComponent.class, TransformComponent.class).get(), new RenderOrderComparator());
         this.game = game;
         spriteM = ComponentMapper.getFor(SpriteComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);

@@ -5,9 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.RenderingSystem;
 
 public class LevelScreen implements Screen {
@@ -23,12 +23,14 @@ public class LevelScreen implements Screen {
 
         engine = new PooledEngine();
         engine.addSystem(new RenderingSystem(game).startDebugView());
+        engine.addSystem(new PlayerSystem(game));
 
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine, game);
-        debugManager.CreateDebugSquare(1,1);
-        debugManager.CreateDebugSquare(1.5f,1.5f);
-        debugManager.CreateDebugSquare(3f, 3f, 2f, 2f);
+        debugManager.createDebugSquare(1,1);
+        debugManager.createDebugSquare(1.5f,1.5f);
+        debugManager.createDebugSquare(3f, 3f, 2f, 2f);
+        debugManager.createDebugPlayer(4f, 4f);
     }
 
     @Override

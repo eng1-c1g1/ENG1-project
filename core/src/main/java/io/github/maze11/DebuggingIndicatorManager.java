@@ -3,6 +3,7 @@ package io.github.maze11;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
+import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
@@ -25,11 +26,16 @@ public class DebuggingIndicatorManager {
     }
 
     //use overloading instead of default values to prevent people specifying one dimension but not the other
-    public void CreateDebugSquare(float x, float y){
-        CreateDebugSquare(x, y, 1f, 1f);
+    public void createDebugSquare(float x, float y){
+         createDebugSquare(x, y, 1f, 1f);
     }
 
-    public void CreateDebugSquare(float x, float y, float xSize, float ySize){
+    public void createDebugSquare(float x, float y, float xSize, float ySize){
+        Entity entity = createDebugSquareWithoutAddingToEngine(x, y, xSize, ySize);
+        engine.addEntity(entity);
+    }
+
+    private Entity createDebugSquareWithoutAddingToEngine(float x, float y, float xSize, float ySize){
         Entity entity = engine.createEntity();
 
         //create components
@@ -45,7 +51,16 @@ public class DebuggingIndicatorManager {
         entity.add(spriteComponent);
         entity.add(transformComponent);
 
+        return entity;
+    }
+
+    public Entity createDebugPlayer(float x, float y){
+        Entity entity = createDebugSquareWithoutAddingToEngine(x, y, 1f, 1f);
+        PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
+        playerComponent.moveSpeed = 5f;
+        entity.add(playerComponent);
         engine.addEntity(entity);
+        return entity;
     }
 
 }
