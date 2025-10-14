@@ -9,7 +9,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.MazeGame;
 import io.github.maze11.components.PlayerComponent;
-import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
 public class PlayerSystem extends IteratingSystem {
