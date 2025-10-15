@@ -15,11 +15,9 @@ public class DebuggingIndicatorManager {
     final PooledEngine engine;
 
     private final Texture testSquare;
-    private final MazeGame game;
 
     public DebuggingIndicatorManager(PooledEngine engine, MazeGame game) {
         this.engine = engine;
-        this.game = game;
 
         // Load the texture using the game's AssetManager
         testSquare = game.getAssetManager().get("Test_Square.png", Texture.class);
@@ -53,7 +51,6 @@ public class DebuggingIndicatorManager {
     public Entity createDebugPlayer(float x, float y){
         Entity entity = createDebugSquare(x, y, 1f, 1f);
         PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
-        playerComponent.moveSpeed = 5f;
         entity.add(playerComponent);
         return entity;
     }
