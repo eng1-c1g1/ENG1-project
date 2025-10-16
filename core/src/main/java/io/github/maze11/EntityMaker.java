@@ -10,14 +10,15 @@ import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
+/**
+ * Used to create entities within a scene, within an engine
+ */
 public class EntityMaker {
     private final PooledEngine engine;
-    private final Game game;
     private final Assets assets;
 
     public EntityMaker(PooledEngine engine, MazeGame game) {
         this.engine = engine;
-        this.game = game;
         this.assets = game.getAssets();
     }
 

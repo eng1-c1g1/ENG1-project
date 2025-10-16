@@ -24,7 +24,7 @@ public class LevelScreen implements Screen {
 
         engine = new PooledEngine();
         engine.addSystem(new RenderingSystem(game).startDebugView());
-        engine.addSystem(new PlayerSystem(game));
+        engine.addSystem(new PlayerSystem());
 
         EntityMaker entityMaker = new EntityMaker(engine, game);
         // Temporary debugging code to create objects here

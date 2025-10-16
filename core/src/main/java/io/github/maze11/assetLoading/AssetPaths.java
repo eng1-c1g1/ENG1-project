@@ -7,6 +7,9 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+/**
+ * Static storage for all the file paths of the assets loaded in the project
+ */
 public class AssetPaths {
 
     // Texture paths is a special case of the more general paths, created for convenience of assignment
@@ -17,6 +20,7 @@ public class AssetPaths {
         entry(AssetId.OriginIndicator, "origin_indicator.png")
     );
 
+    // This map can be used to declare paths to loaded files of any type
     public static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
         entry(new AssetKey<TiledMap>(AssetId.Tilemap, TiledMap.class), "floor.tmx")
 
