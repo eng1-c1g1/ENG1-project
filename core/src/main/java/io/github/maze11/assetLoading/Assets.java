@@ -13,19 +13,16 @@ import java.util.HashMap;
  */
 public class Assets {
     private AssetManager assetManager;
-    private HashMap<AssetKey, String> assetMap;
+    private final HashMap<AssetKey, String> assetMap;
 
     public Assets() {
         assetManager = new AssetManager();
 
+        assetMap = new HashMap<>();
         assetMap.putAll(AssetPaths.anyType);
     }
 
     public void load(){
-        if (assetManager != null){
-            throw new RuntimeException("Load was called twice");
-        }
-        assetManager = new AssetManager();
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 
         for (var asset : assetMap.entrySet()){
@@ -39,4 +36,7 @@ public class Assets {
         return assetManager.get(assetMap.get(new AssetKey(id, type)), type);
     }
 
+    public void dispose(){
+        assetManager.dispose();
+    }
 }
