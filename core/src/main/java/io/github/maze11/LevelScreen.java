@@ -26,12 +26,13 @@ public class LevelScreen implements Screen {
         engine.addSystem(new RenderingSystem(game).startDebugView());
         engine.addSystem(new PlayerSystem(game));
 
+        EntityMaker entityMaker = new EntityMaker(engine, game);
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine, game);
         debugManager.createDebugSquare(1,1);
         debugManager.createDebugSquare(1.5f,1.5f);
         debugManager.createDebugSquare(3f, 3f, 2f, 2f);
-        debugManager.createDebugPlayer(4f, 4f);
+        entityMaker.makePlayer(4f, 4f);
     }
 
     @Override
