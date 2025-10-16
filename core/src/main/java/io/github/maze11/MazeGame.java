@@ -48,11 +48,11 @@ public class MazeGame extends Game {
         //scale the font to the viewport
         defaultFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
-        // Initialise AssetManager and load assets here 
+        // Initialise AssetManager and load assets here
         assetManager = new AssetManager();
         assetManager.load("Test_Square.png", Texture.class);
         assetManager.load("origin_indicator.png", Texture.class);
-        // Register tiledmap loader before loading .tmx
+        // Register TiledMap loader before loading .tmx
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         assetManager.load("floor.tmx", TiledMap.class);
         assetManager.finishLoading(); // Wait until all assets are loaded
