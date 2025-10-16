@@ -2,10 +2,10 @@ package io.github.maze11.assetLoading;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -20,7 +20,12 @@ public class Assets {
         assetManager = new AssetManager();
 
         assetMap = new HashMap<>();
-        assetMap.putAll(AssetPaths.anyType);
+        assetMap.putAll(AssetPaths.pathsWithTypes);
+
+        // Puts all the texture paths into the map
+        for (var entry : AssetPaths.texturePaths.entrySet()) {
+            assetMap.put(new AssetKey<>(entry.getKey(), Texture.class), entry.getValue());
+        }
     }
 
     public void load(){

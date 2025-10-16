@@ -1,19 +1,23 @@
 package io.github.maze11.assetLoading;
 
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Map.entry;
 
 public class AssetPaths {
-    public static Map<AssetKey<?>, String> anyType = Map.ofEntries(
-        entry(new AssetKey<Texture>(AssetId.DebugTexture, Texture.class), "Test_Square.png"),
-        entry(new AssetKey<Texture>(AssetId.PlayerTexture, Texture.class), "Test_Square.png"),
-        entry(new AssetKey<Texture>(AssetId.OriginIndicator, Texture.class), "origin_indicator.png"),
+
+    // Texture paths is a special case of the more general paths, created for convenience of assignment
+    // This prevents needing to constantly repeat that all the entries are textures
+    public static Map<AssetId, String> texturePaths = Map.ofEntries(
+        entry(AssetId.DebugTexture, "Test_Square.png"),
+        entry(AssetId.PlayerTexture, "Path_Tile.png"),
+        entry(AssetId.OriginIndicator, "origin_indicator.png")
+    );
+
+    public static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
         entry(new AssetKey<TiledMap>(AssetId.Tilemap, TiledMap.class), "floor.tmx")
 
     );
