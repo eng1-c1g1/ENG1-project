@@ -10,11 +10,11 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 public class AssetPaths {
-    public static Map<AssetKey, String> anyType = Map.ofEntries(
-        entry(new AssetKey(AssetId.DebugTexture, Texture.class), "Test_Square.png"),
-        entry(new AssetKey(AssetId.PlayerTexture, Texture.class), "Test_Square.png"),
-        entry(new AssetKey(AssetId.OriginIndicator, Texture.class), "origin_indicator.png"),
-        entry(new AssetKey(AssetId.Tilemap, TiledMap.class), "floor.tmx")
+    public static Map<AssetKey<?>, String> anyType = Map.ofEntries(
+        entry(new AssetKey<Texture>(AssetId.DebugTexture, Texture.class), "Test_Square.png"),
+        entry(new AssetKey<Texture>(AssetId.PlayerTexture, Texture.class), "Test_Square.png"),
+        entry(new AssetKey<Texture>(AssetId.OriginIndicator, Texture.class), "origin_indicator.png"),
+        entry(new AssetKey<TiledMap>(AssetId.Tilemap, TiledMap.class), "floor.tmx")
 
     );
 }
