@@ -3,7 +3,6 @@ package io.github.maze11.assetLoading;
 import com.badlogic.gdx.assets.AssetManager;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * A class to manage all assets using symbolic identifiers instead of hard-coding addresses.
@@ -13,6 +12,12 @@ public class Assets {
     private AssetManager assetManager;
     private HashMap<AssetKey, String> assetMap;
 
+    public Assets() {
+        assetManager = new AssetManager();
+
+        assetMap.putAll(AssetPaths.anyType);
+    }
+
     public void load(){
         if (assetManager != null){
             throw new RuntimeException("Load was called twice");
@@ -21,34 +26,13 @@ public class Assets {
 
         for (var asset : assetMap.entrySet()){
             // TODO: resolve unchecked conversion
-            assetManager.load(asset.getValue(), asset.getKey().assetType);
+            assetManager.load(asset.getValue(), asset.getKey().assetType());
         }
-
-        // TODO: add methods to access the assets managed by this class
+        assetManager.finishLoading();
     }
 
-    private class AssetKey{
-        public final AssetId id;
-        public final Class assetType;
-
-        public AssetKey(AssetId id, Class assetType){
-            this.id = id;
-            this.assetType = assetType;
-        }
-
-        @Override
-        public int hashCode(){
-            return Objects.hash(id, assetType);
-        }
-
-        @Override
-        public boolean equals(Object o){
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
-            return this.id == ((AssetKey)o).id && this.assetType == ((AssetKey)o).assetType;
-        }
+    public <T> T get (AssetId id, Class<T> type) {
+        return assetManager.get(assetMap.get(new AssetKey(id, type)), type);
     }
-    private enum AssetType{
-        TEXTURE
-    }
+
 }
