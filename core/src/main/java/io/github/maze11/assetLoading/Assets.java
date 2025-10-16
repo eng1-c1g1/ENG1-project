@@ -1,6 +1,9 @@
 package io.github.maze11.assetLoading;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 import java.util.HashMap;
 
@@ -23,6 +26,7 @@ public class Assets {
             throw new RuntimeException("Load was called twice");
         }
         assetManager = new AssetManager();
+        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 
         for (var asset : assetMap.entrySet()){
             // TODO: resolve unchecked conversion

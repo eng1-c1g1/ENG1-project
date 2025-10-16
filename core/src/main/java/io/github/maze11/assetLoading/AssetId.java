@@ -1,5 +1,5 @@
 package io.github.maze11.assetLoading;
 
 public enum AssetId {
-    DebugTexture, PlayerTexture
+    DebugTexture, PlayerTexture, OriginIndicator, Tilemap
 }
