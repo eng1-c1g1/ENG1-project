@@ -10,5 +10,17 @@ import com.badlogic.gdx.math.Vector2;
 public class TransformComponent implements Component {
     public Vector2 position = new Vector2();
     public Vector2 scale = new Vector2(1f,1f);
+    /**
+     * Rotation is currently not supported by the rendering system
+     */
     public float rotation = 0f;
+
+    public void Initialize(float x, float y, float xScale, float yScale, float rotation)
+    {
+        position.x = x;
+        position.y = y;
+        scale.x = xScale;
+        scale.y = yScale;
+        this.rotation = rotation;
+    }
 }

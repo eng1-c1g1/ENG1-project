@@ -7,19 +7,16 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import io.github.maze11.MazeGame;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
 
 public class PlayerSystem extends IteratingSystem {
-    private final MazeGame game;
     ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
-    public PlayerSystem(MazeGame game) {
+    public PlayerSystem() {
         super(Family.all(PlayerComponent.class, TransformComponent.class).get());
 
-        this.game = game;
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
