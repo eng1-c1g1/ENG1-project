@@ -5,5 +5,5 @@ import com.badlogic.gdx.math.Vector2;
 
 public class CameraFollowComponent implements Component {
     public boolean active = true;
-    public Vector2 offset;
+    public Vector2 offset = new Vector2();
 }

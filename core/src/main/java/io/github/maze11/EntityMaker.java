@@ -6,6 +6,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.Assets;
+import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
@@ -56,8 +57,10 @@ public class EntityMaker {
     public Entity makePlayer(float x, float y){
         Entity entity = makeVisibleEntity(x, y, AssetId.PlayerTexture);
 
-        PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
+        var playerComponent = engine.createComponent(PlayerComponent.class);
         entity.add(playerComponent);
+        var cameraFollowComponent = engine.createComponent(CameraFollowComponent.class);
+        entity.add(cameraFollowComponent);
         return entity;
     }
 

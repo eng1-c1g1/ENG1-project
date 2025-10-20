@@ -10,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.maze11.systems.CameraSystem;
+import io.github.maze11.systems.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.RenderingSystem;
@@ -40,7 +40,7 @@ public class LevelScreen implements Screen {
         //create the engine
         engine = new PooledEngine();
         engine.addSystem(new PlayerSystem());
-        engine.addSystem(new CameraSystem(camera));
+        engine.addSystem(new WorldCameraSystem(camera));
         engine.addSystem(new RenderingSystem(game).startDebugView());
 
         // Populate the world with objects
