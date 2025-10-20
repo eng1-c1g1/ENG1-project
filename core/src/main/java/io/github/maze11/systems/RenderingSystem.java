@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.maze11.MazeGame;
+import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 
@@ -28,7 +29,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     public RenderingSystem startDebugView() {
         isDebugging = true;
         if (originTexture == null) {
-            originTexture = game.getAssetManager().get("origin_indicator.png", Texture.class); // Load the texture using AssetManager
+            originTexture = game.getAssets().get(AssetId.OriginIndicator, Texture.class); // Load the texture using AssetManager
         }
         return this;
     }

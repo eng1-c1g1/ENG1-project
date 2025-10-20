@@ -3,6 +3,7 @@ package io.github.maze11;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
+import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
@@ -15,14 +16,12 @@ public class DebuggingIndicatorManager {
     final PooledEngine engine;
 
     private final Texture testSquare;
-    private final MazeGame game;
 
     public DebuggingIndicatorManager(PooledEngine engine, MazeGame game) {
         this.engine = engine;
-        this.game = game;
 
         // Load the texture using the game's AssetManager
-        testSquare = game.getAssetManager().get("Test_Square.png", Texture.class);
+        testSquare = game.getAssets().get(AssetId.DebugTexture, Texture.class);
     }
 
     public Entity createDebugSquare(float x, float y, float xSize, float ySize){
@@ -53,7 +52,6 @@ public class DebuggingIndicatorManager {
     public Entity createDebugPlayer(float x, float y){
         Entity entity = createDebugSquare(x, y, 1f, 1f);
         PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
-        playerComponent.moveSpeed = 5f;
         entity.add(playerComponent);
         return entity;
     }

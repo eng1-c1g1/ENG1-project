@@ -5,18 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-// assetmanager
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import io.github.maze11.assetLoading.Assets;
 
 
 public class MazeGame extends Game {
     private SpriteBatch batch;
     private BitmapFont defaultFont;
     private FitViewport viewport;
+    private Assets assets;
 
     public SpriteBatch getBatch() {
         return batch;
@@ -30,11 +26,7 @@ public class MazeGame extends Game {
         return viewport;
     }
 
-    private AssetManager assetManager;
-
-    public AssetManager getAssetManager() {
-        return assetManager;
-    }
+    public Assets getAssets() { return assets; }
 
     @Override
     public void create() {
@@ -48,14 +40,8 @@ public class MazeGame extends Game {
         //scale the font to the viewport
         defaultFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
-        // Initialise AssetManager and load assets here 
-        assetManager = new AssetManager();
-        assetManager.load("Test_Square.png", Texture.class);
-        assetManager.load("origin_indicator.png", Texture.class);
-        // Register tiledmap loader before loading .tmx
-        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        assetManager.load("floor.tmx", TiledMap.class);
-        assetManager.finishLoading(); // Wait until all assets are loaded
+        assets = new Assets();
+        assets.load();
 
         this.setScreen(new LevelScreen(this)); // moved here to ensure assets are loaded first
 
@@ -70,6 +56,6 @@ public class MazeGame extends Game {
     public void dispose() {
         batch.dispose();
         defaultFont.dispose();
-        assetManager.dispose(); // Dispose of AssetManager and its assets
+        assets.dispose(); // Dispose of AssetManager and its assets
     }
 }
