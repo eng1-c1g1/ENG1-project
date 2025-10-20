@@ -1,4 +1,5 @@
 package io.github.maze11.systems;
+import io.github.maze11.components.PhysicsComponent;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -12,11 +13,12 @@ import io.github.maze11.components.TransformComponent;
 
 public class PlayerSystem extends IteratingSystem {
     ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
+    private ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
     public PlayerSystem() {
-        super(Family.all(PlayerComponent.class, TransformComponent.class).get());
-
+        // now requires physics component for physics based movement
+        super(Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
@@ -28,9 +30,16 @@ public class PlayerSystem extends IteratingSystem {
         //used by the physics simulation. This will ensure the player input runs the same on all machines
         PlayerComponent player = playerMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
+        PhysicsComponent physics = physicsMapper.get(entity);
 
-        Vector2 offset = getDirectionalInput().scl(deltaTime * player.moveSpeed);
-        transform.position.add(offset);
+        // use physics body for movement instead of transform position directly 
+        Vector2 direction = getDirectionalInput();
+        // set velocity directly on physics body, box2d will handle movement
+        physics.body.setLinearVelocity(
+            direction.x * player.moveSpeed,
+            direction.y * player.moveSpeed
+        );
+
     }
 
     private Vector2 getDirectionalInput(){
