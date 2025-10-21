@@ -31,7 +31,7 @@ public class LevelScreen implements Screen {
     private final BitmapFont defaultFont;
     // box2d debug renderer
     private Box2DDebugRenderer debugRenderer;
-    private boolean showDebugRenderer = true; 
+    private boolean showDebugRenderer = true;
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -104,11 +104,11 @@ public class LevelScreen implements Screen {
         // ######## END RENDER ###############
         batch.end();
 
-        //  render Box2D debug outliness 
+        //  render Box2D debug outliness
         if (showDebugRenderer) {
             var physicsSystem = engine.getSystem(PhysicsSystem.class);
             if (physicsSystem != null) {
-                debugRenderer.render(physicsSystem.getWorld(), game.getViewport().getCamera().combined);
+                debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
             }
         }
     }
@@ -144,9 +144,9 @@ public class LevelScreen implements Screen {
         var wallsLayer = map.getLayers().get("Collisions");
         if (wallsLayer != null) {
             System.out.println("Found Collisions object layer, creating wall entities");
-            
+
             EntityMaker entityMaker = new EntityMaker(engine, game);
-            
+
             for (MapObject object : wallsLayer.getObjects()) {
                 if (object instanceof RectangleMapObject) {
                     Rectangle rect = ((RectangleMapObject)object).getRectangle();
@@ -155,7 +155,7 @@ public class LevelScreen implements Screen {
                     float y = rect.y / 32f;
                     float width = rect.width / 32f;
                     float height = rect.height / 32f;
-                    
+
                     // Create a wall entity instead of directly creating Box2D body
                     entityMaker.makeWall(x, y, width, height);
                 }
@@ -165,7 +165,7 @@ public class LevelScreen implements Screen {
         }
     }
 
- 
+
 
     @Override
     public void dispose() {
@@ -178,7 +178,7 @@ public class LevelScreen implements Screen {
         if (physicsSystem != null) {
             physicsSystem.getWorld().dispose();
         }
-        
+
         if (debugRenderer != null) {
             debugRenderer.dispose();
         }
