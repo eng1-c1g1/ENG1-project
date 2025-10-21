@@ -2,9 +2,9 @@ package io.github.maze11;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.Assets;
@@ -13,7 +13,6 @@ import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.systems.PhysicsSystem;
-import com.badlogic.gdx.physics.box2d.*;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -88,7 +87,6 @@ public class EntityMaker {
         entity.add(playerComponent);
 
         // get the player's sprite component to determine size
-        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
 
         // add physics component and create box2d body 
         PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);

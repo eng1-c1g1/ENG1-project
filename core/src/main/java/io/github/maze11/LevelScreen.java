@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.PhysicsSyncSystem;
 import io.github.maze11.systems.PhysicsSystem;
+import io.github.maze11.systems.PhysicsToTransformSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.RenderingSystem;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
@@ -34,13 +34,12 @@ public class LevelScreen implements Screen {
 
         engine = new PooledEngine();
 
-        // Add physics system before other systems
-        engine.addSystem(new PhysicsSystem());
-        engine.addSystem(new PhysicsSyncSystem());
-
-        
-        engine.addSystem(new RenderingSystem(game).startDebugView());
-        engine.addSystem(new PlayerSystem());
+        // input -> sync -> physics -> render (for no input delay)
+        engine.addSystem(new PlayerSystem()); // player input system
+        engine.addSystem(new PhysicsSyncSystem()); // sync transform to physics bodies
+        engine.addSystem(new PhysicsSystem()); // run physics simulation
+        engine.addSystem(new PhysicsToTransformSystem()); // sync physics to transform
+        engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
         // create walls from tiled layer
         createWallCollisions();
@@ -119,9 +118,9 @@ public class LevelScreen implements Screen {
     }
 
     /**
- * Creates wall entities from the Tiled "Collisions" object layer.
- * Each wall is now a proper entity in the ECS instead of just a Box2D body.
- */
+     * Creates wall entities from the Tiled "Collisions" object layer.
+     * Each wall is now a proper entity in the ECS instead of just a Box2D body.
+     */
     private void createWallCollisions() {
         var wallsLayer = map.getLayers().get("Collisions");
         if (wallsLayer != null) {

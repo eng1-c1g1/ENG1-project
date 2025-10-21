@@ -13,7 +13,6 @@ import io.github.maze11.components.TransformComponent;
 
 public class PlayerSystem extends IteratingSystem {
     ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
-    private ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
     public PlayerSystem() {
@@ -30,16 +29,16 @@ public class PlayerSystem extends IteratingSystem {
         //used by the physics simulation. This will ensure the player input runs the same on all machines
         PlayerComponent player = playerMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
-        PhysicsComponent physics = physicsMapper.get(entity);
 
-        // use physics body for movement instead of transform position directly 
         Vector2 direction = getDirectionalInput();
-        // set velocity directly on physics body, box2d will handle movement
-        physics.body.setLinearVelocity(
-            direction.x * player.moveSpeed,
-            direction.y * player.moveSpeed
-        );
 
+        // update transform directly (primary reference)
+        // physics sync system will sync this to physics body
+        
+        transform.position.add(
+            direction.x * player.moveSpeed * deltaTime,
+            direction.y * player.moveSpeed * deltaTime
+        );
     }
 
     private Vector2 getDirectionalInput(){

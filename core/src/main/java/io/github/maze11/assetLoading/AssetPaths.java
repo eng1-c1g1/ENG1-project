@@ -1,6 +1,5 @@
 package io.github.maze11.assetLoading;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 import java.util.Map;
