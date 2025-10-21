@@ -1,12 +1,16 @@
 package io.github.maze11;
 
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.maze11.systems.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.PhysicsSyncSystem;
 import io.github.maze11.systems.PhysicsSystem;
@@ -23,6 +27,8 @@ public class LevelScreen implements Screen {
     private final PooledEngine engine;
     private final TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
+    private final FitViewport viewport;
+    private final BitmapFont defaultFont;
     // box2d debug renderer
     private Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true; 
@@ -30,8 +36,18 @@ public class LevelScreen implements Screen {
     public LevelScreen(MazeGame game) {
         this.game = game;
 
+        // Create rendering singletons
+        OrthographicCamera camera = new OrthographicCamera();
+        viewport = new FitViewport(16, 12, camera);
         map = game.getAssets().get(AssetId.Tilemap, TiledMap.class); // Load the map using AssetManager
 
+        //create the font
+        defaultFont = new BitmapFont();
+        defaultFont.setUseIntegerPositions(false);
+        //scale the font to the viewport
+        defaultFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+
+        //create the engine
         engine = new PooledEngine();
 
         // input -> sync -> physics -> render (for no input delay)
@@ -39,11 +55,13 @@ public class LevelScreen implements Screen {
         engine.addSystem(new PhysicsSyncSystem()); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem()); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem()); // sync physics to transform
+        engine.addSystem(new WorldCameraSystem(camera));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
         // create walls from tiled layer
         createWallCollisions();
 
+        // Populate the world with objects
         EntityMaker entityMaker = new EntityMaker(engine, game);
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine, game);
@@ -55,6 +73,8 @@ public class LevelScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
     }
 
+
+
     @Override
     public void show() {
         float unitScale = 1f / 32f;
@@ -65,7 +85,6 @@ public class LevelScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        var viewport = game.getViewport();
         viewport.apply();
 
         // Render the Tiled map
@@ -80,7 +99,7 @@ public class LevelScreen implements Screen {
 
         mapRenderer.render();
         engine.update(delta);
-        game.getDefaultFont().draw(batch, "Tiled floor level loaded!", 1, 1.5f);
+        defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############
         batch.end();
@@ -99,7 +118,7 @@ public class LevelScreen implements Screen {
         //if size is 0, it is minimised, no need to resize
         if(width <= 0 || height <= 0) return;
 
-        game.getViewport().update(width, height, true);
+        viewport.update(width, height, true);
     }
 
     @Override
@@ -152,6 +171,7 @@ public class LevelScreen implements Screen {
     public void dispose() {
         if (map != null) map.dispose();
         if (mapRenderer != null) mapRenderer.dispose();
+        defaultFont.dispose();
 
         // dispose debug renderer and physics world
         var physicsSystem = engine.getSystem(PhysicsSystem.class);
