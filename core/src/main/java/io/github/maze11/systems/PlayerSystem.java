@@ -1,4 +1,5 @@
 package io.github.maze11.systems;
+import io.github.maze11.components.PhysicsComponent;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -15,8 +16,8 @@ public class PlayerSystem extends IteratingSystem {
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
     public PlayerSystem() {
-        super(Family.all(PlayerComponent.class, TransformComponent.class).get());
-
+        // now requires physics component for physics based movement
+        super(Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
 
@@ -29,8 +30,15 @@ public class PlayerSystem extends IteratingSystem {
         PlayerComponent player = playerMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
 
-        Vector2 offset = getDirectionalInput().scl(deltaTime * player.moveSpeed);
-        transform.position.add(offset);
+        Vector2 direction = getDirectionalInput();
+
+        // update transform directly (primary reference)
+        // physics sync system will sync this to physics body
+        
+        transform.position.add(
+            direction.x * player.moveSpeed * deltaTime,
+            direction.y * player.moveSpeed * deltaTime
+        );
     }
 
     private Vector2 getDirectionalInput(){
