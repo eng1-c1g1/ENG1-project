@@ -2,9 +2,12 @@ package io.github.maze11.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.maze11.MazeGame;
 import io.github.maze11.components.TimerComponent;
@@ -25,9 +28,34 @@ public class TimerRendererSystem extends IteratingSystem {
         this.uiBatch = new SpriteBatch(); // Create a new batch just for UI
         this.uiViewport = new ScreenViewport();
         
-        this.font = new BitmapFont(); // Initialize font
-        this.font.getData().setScale(2.5f); // Set font size
-        this.font.setColor(Color.WHITE); // Set font color
+        // Create HD font using FreeType
+        this.font = createHDFont();
+    }
+    
+    /**
+     * Creates a high-definition font using FreeType font generator
+     */
+    private BitmapFont createHDFont() {
+        // Use built-in Arial font
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+            Gdx.files.internal("assets/fonts/arial.ttf")
+        );
+        
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48; // Large size for HD quality
+        parameter.color = Color.WHITE;
+        parameter.borderWidth = 2; // Add slight border for better visibility
+        parameter.borderColor = new Color(0, 0, 0, 0.5f);
+        parameter.shadowOffsetX = 2;
+        parameter.shadowOffsetY = 2;
+        parameter.shadowColor = new Color(0, 0, 0, 0.5f);
+        parameter.minFilter = Texture.TextureFilter.Linear; // Smooth filtering
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        
+        BitmapFont font = generator.generateFont(parameter);
+        generator.dispose(); // Don't forget to dispose the generator
+        
+        return font;
     }
 
     @Override
