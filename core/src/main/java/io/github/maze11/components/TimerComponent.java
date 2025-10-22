@@ -14,7 +14,7 @@ public class TimerComponent implements Component{
 
     public TimerComponent(float durationInSeconds) {
         this.timeRemaining = durationInSeconds;
-        this.totalTime = durationInSeconds
+        this.totalTime = durationInSeconds;
     }
     
 }
