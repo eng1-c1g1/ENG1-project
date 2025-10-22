@@ -1,5 +1,6 @@
 package io.github.maze11;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -21,6 +22,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.TimerRendererSystem;
+import io.github.maze11.components.TimerComponent;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -29,9 +33,15 @@ public class LevelScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private final FitViewport viewport;
     private final BitmapFont defaultFont;
+
     // box2d debug renderer
     private Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
+
+    private Entity timerEntity; // entity that holds the timer
+    private TimerRendererSystem timerRendererSystem; // system to render the time
+
+
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -56,7 +66,12 @@ public class LevelScreen implements Screen {
         engine.addSystem(new PhysicsSystem()); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem()); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera));
+        engine.addSystem(new TimerSystem()); // add timersystem to update timers
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
+
+
+        timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
+        engine.addSystem(timerRendererSystem); // add to system
 
         // create walls from tiled layer
         createWallCollisions();
@@ -69,6 +84,17 @@ public class LevelScreen implements Screen {
         debugManager.createDebugSquare(1.5f,1.5f);
         debugManager.createDebugSquare(3f, 3f, 2f, 2f);
         entityMaker.makePlayer(4f, 4f);
+
+
+        // Create 5-minute timer
+        timerEntity = engine.createEntity(); // Create a new entity for the timer
+        TimerComponent timer = engine.createComponent(TimerComponent.class); // Create TimerComponent
+        timer.timeRemaining = 300f; // Set remaining time to 5 minutes (300 seconds)
+        timer.totalTime = 300f; // Set total time to 5 minutes
+        timer.isRunning = true; // Ensure timer is running
+        timer.hasExpired = false; // Not expired initially
+        timerEntity.add(timer); // Add TimerComponent to the timer entity
+        engine.addEntity(timerEntity); // Add the timer entity to the engine
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -104,6 +130,11 @@ public class LevelScreen implements Screen {
         // ######## END RENDER ###############
         batch.end();
 
+        // render timer UI after main batch
+        timerRendererSystem.renderTimer();
+
+        viewport.apply();
+
         //  render Box2D debug outliness
         if (showDebugRenderer) {
             var physicsSystem = engine.getSystem(PhysicsSystem.class);
@@ -119,6 +150,8 @@ public class LevelScreen implements Screen {
         if(width <= 0 || height <= 0) return;
 
         viewport.update(width, height, true);
+        timerRendererSystem.resize(width, height);
+        
     }
 
     @Override

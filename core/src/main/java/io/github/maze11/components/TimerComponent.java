@@ -12,9 +12,10 @@ public class TimerComponent implements Component{
     public boolean isRunning = true; 
     public boolean hasExpired = false;
 
-    public TimerComponent(float durationInSeconds) {
-        this.timeRemaining = durationInSeconds;
-        this.totalTime = durationInSeconds;
+    // No-argument constructor required by Ashley's PooledEngine
+    public TimerComponent() {
+        this.timeRemaining = 0f;
+        this.totalTime = 0f;
     }
     
 }
