@@ -1,4 +1,4 @@
-package io.github.maze11.systems;
+package io.github.maze11.systems.rendering;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;

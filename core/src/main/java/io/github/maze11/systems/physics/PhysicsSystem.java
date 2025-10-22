@@ -1,4 +1,4 @@
-package io.github.maze11.systems;
+package io.github.maze11.systems.physics;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +24,7 @@ public class PhysicsSystem extends EntitySystem {
         // step the physics world in fixed increments
         while (accumulator >= TIME_STEP) {
             // 6 velocity, 2 positions iterations (standard values)
-            world.step(TIME_STEP, 6, 2); 
+            world.step(TIME_STEP, 6, 2);
             accumulator -= TIME_STEP;
         }
     }

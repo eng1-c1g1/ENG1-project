@@ -1,4 +1,4 @@
-package io.github.maze11.systems;
+package io.github.maze11.systems.physics;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
