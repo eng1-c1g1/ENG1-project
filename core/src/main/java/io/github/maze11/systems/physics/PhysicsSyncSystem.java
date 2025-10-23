@@ -4,21 +4,29 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.TransformComponent;
+import io.github.maze11.systemTypes.FixedStepSystem;
+import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
 /**
- * syncs position of entities' transform components with their box2d ohysics bodies
+ * syncs position of entities' transform components with their box2d physics bodies
  * ensures visual representation matches physics simulation
  */
-public class PhysicsSyncSystem extends IteratingSystem {
+public class PhysicsSyncSystem extends IteratingFixedStepSystem {
     private final ComponentMapper<PhysicsComponent> physicsM = ComponentMapper.getFor(PhysicsComponent.class);
     private final ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
 
-    public PhysicsSyncSystem() {
-        super(Family.all(PhysicsComponent.class, TransformComponent.class).get());
+    public PhysicsSyncSystem(FixedStepper stepper) {
+        super(stepper, Family.all(PhysicsComponent.class, TransformComponent.class).get());
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        // Do nothing: all logic handled in fixed process step
+    }
+
+    @Override
+    protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PhysicsComponent physics = physicsM.get(entity);
         TransformComponent transform = transformM.get(entity);
         // transform is authoritative for position
@@ -26,6 +34,5 @@ public class PhysicsSyncSystem extends IteratingSystem {
         float vy = (transform.position.y - physics.body.getPosition().y) / deltaTime;
 
         physics.body.setLinearVelocity(vx, vy);
-
     }
 }

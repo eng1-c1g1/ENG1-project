@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
@@ -32,6 +33,9 @@ public class LevelScreen implements Screen {
     // box2d debug renderer
     private Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
+    private final float TIME_STEP = 1 / 60f;
+    private float accumulator = 0f;
+    private final FixedStepper stepper;
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -49,12 +53,13 @@ public class LevelScreen implements Screen {
 
         //create the engine
         engine = new PooledEngine();
+        stepper = new FixedStepper();
 
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new PlayerSystem()); // player input system
-        engine.addSystem(new PhysicsSyncSystem()); // sync transform to physics bodies
-        engine.addSystem(new PhysicsSystem()); // run physics simulation
-        engine.addSystem(new PhysicsToTransformSystem()); // sync physics to transform
+        engine.addSystem(new PhysicsSyncSystem(stepper)); // sync transform to physics bodies
+        engine.addSystem(new PhysicsSystem(stepper)); // run physics simulation
+        engine.addSystem(new PhysicsToTransformSystem(stepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
@@ -93,6 +98,8 @@ public class LevelScreen implements Screen {
         var batch = game.getBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
+        calculatePhysics(TIME_STEP);
+
         batch.begin();
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
@@ -110,6 +117,16 @@ public class LevelScreen implements Screen {
             if (physicsSystem != null) {
                 debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
             }
+        }
+    }
+
+    private void calculatePhysics(float deltaTime) {
+        accumulator += deltaTime;
+        // step the physics world in fixed increments
+        while (accumulator >= deltaTime) {
+            // 6 velocity, 2 positions iterations (standard values)
+            stepper.fireFixedUpdate(deltaTime);
+            accumulator -= deltaTime;
         }
     }
 
