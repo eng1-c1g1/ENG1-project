@@ -35,7 +35,7 @@ public class LevelScreen implements Screen {
     private boolean showDebugRenderer = true;
     private final float TIME_STEP = 1 / 60f;
     private float accumulator = 0f;
-    private final FixedStepper stepper;
+    private final FixedStepper fixedStepper;
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -53,13 +53,13 @@ public class LevelScreen implements Screen {
 
         //create the engine
         engine = new PooledEngine();
-        stepper = new FixedStepper();
+        fixedStepper = new FixedStepper();
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new PlayerSystem()); // player input system
-        engine.addSystem(new PhysicsSyncSystem(stepper)); // sync transform to physics bodies
-        engine.addSystem(new PhysicsSystem(stepper)); // run physics simulation
-        engine.addSystem(new PhysicsToTransformSystem(stepper)); // sync physics to transform
+        engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
+        engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
+        engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
+        engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
@@ -98,7 +98,7 @@ public class LevelScreen implements Screen {
         var batch = game.getBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        calculatePhysics(TIME_STEP);
+        calculatePhysics(delta);
 
         batch.begin();
         // ######### START RENDER #############
@@ -125,8 +125,8 @@ public class LevelScreen implements Screen {
         // step the physics world in fixed increments
         while (accumulator >= deltaTime) {
             // 6 velocity, 2 positions iterations (standard values)
-            stepper.fireFixedUpdate(deltaTime);
-            accumulator -= deltaTime;
+            fixedStepper.fireFixedUpdate(TIME_STEP);
+            accumulator -= TIME_STEP;
         }
     }
 
