@@ -1,5 +1,8 @@
 package io.github.maze11.systemTypes;
 
-public interface FixedUpdateListener {
+/**
+ * Interface used by FixedStepper to send fixedUpdate callbacks
+ */
+interface FixedUpdateListener {
     public void fixedUpdate(float deltaTime);
 }

@@ -2,6 +2,9 @@ package io.github.maze11.systemTypes;
 
 import java.util.ArrayList;
 
+/**
+ * Steps the simulation forward when fireFixedUpdate is called
+ */
 public class FixedStepper {
 
     private ArrayList<FixedUpdateListener> listeners = new ArrayList<>();

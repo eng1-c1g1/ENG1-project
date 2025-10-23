@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
+/**
+ * An iterating system that subscribes to fixedUpdate callbacks
+ */
 public abstract class IteratingFixedStepSystem extends IteratingSystem implements FixedUpdateListener {
 
     public IteratingFixedStepSystem(FixedStepper stepper, Family family) {
