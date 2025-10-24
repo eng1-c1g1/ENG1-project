@@ -33,6 +33,7 @@ public class PhysicsSyncSystem extends IteratingFixedStepSystem {
         float vx = (transform.position.x - physics.body.getPosition().x) / deltaTime;
         float vy = (transform.position.y - physics.body.getPosition().y) / deltaTime;
 
-        physics.body.setLinearVelocity(vx, vy);
+        // TODO: Make the physics systems update position to transform, not velocity
+        //physics.body.setLinearVelocity(vx, vy);
     }
 }

@@ -60,7 +60,7 @@ public class LevelScreen implements Screen {
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
-        engine.addSystem(new WorldCameraSystem(camera));
+        engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
         // create walls from tiled layer
@@ -88,7 +88,7 @@ public class LevelScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float deltaTime) {
 
         viewport.apply();
 
@@ -96,22 +96,20 @@ public class LevelScreen implements Screen {
         mapRenderer.setView((OrthographicCamera) viewport.getCamera());
 
         var batch = game.getBatch();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-
-        calculatePhysics(delta);
 
         batch.begin();
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
         mapRenderer.render();
-        engine.update(delta);
+        calculateFixedUpdate(deltaTime);
+        engine.update(deltaTime);
         defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############
         batch.end();
 
-        //  render Box2D debug outliness
+        //  render Box2D debug outlines
         if (showDebugRenderer) {
             var physicsSystem = engine.getSystem(PhysicsSystem.class);
             if (physicsSystem != null) {
@@ -120,7 +118,7 @@ public class LevelScreen implements Screen {
         }
     }
 
-    private void calculatePhysics(float deltaTime) {
+    private void calculateFixedUpdate(float deltaTime) {
         accumulator += deltaTime;
         // step the physics world in fixed increments
         while (accumulator >= deltaTime) {

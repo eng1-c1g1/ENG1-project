@@ -14,14 +14,16 @@ import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
 public class PlayerSystem extends IteratingFixedStepSystem {
-    ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
-    ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
+    ComponentMapper<PlayerComponent> playerMapper;
+    ComponentMapper<TransformComponent> transformMapper;
+    ComponentMapper<PhysicsComponent> physicsMapper;
 
     public PlayerSystem(FixedStepper fixedStepper) {
         // now requires physics component for physics based movement
         super(fixedStepper, Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
+        physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
 
     }
 
@@ -42,6 +44,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         }
 
         // If negative direction is pressed, reduce by 1
+        //Reduce instead of setting to handle scenario where both left and right are pressed
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             direction.x -= 1f;
         }
@@ -56,15 +59,11 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PlayerComponent player = playerMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
+        PhysicsComponent physics = physicsMapper.get(entity);
 
         Vector2 direction = getDirectionalInput();
 
-        // update transform directly (primary reference)
-        // physics sync system will sync this to physics body
-
-        transform.position.add(
-            direction.x * player.moveSpeed * deltaTime,
-            direction.y * player.moveSpeed * deltaTime
-        );
+        //modify velocity, to be handled by physics system for clean collisions
+        physics.body.setLinearVelocity(direction.scl(player.moveSpeed));
     }
 }

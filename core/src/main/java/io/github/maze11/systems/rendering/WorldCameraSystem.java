@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.TransformComponent;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class WorldCameraSystem extends IteratingSystem {
     private OrthographicCamera camera;
+    private SpriteBatch batch;
 
     /**
      * Temporary list containing all the active target positions registered this frame
@@ -23,10 +25,11 @@ public class WorldCameraSystem extends IteratingSystem {
     private final ComponentMapper<CameraFollowComponent> cameraMapper;
     private final ComponentMapper<TransformComponent> transformMapper;
 
-    public WorldCameraSystem(OrthographicCamera camera) {
+    public WorldCameraSystem(OrthographicCamera camera, SpriteBatch batch) {
         super(Family.all(CameraFollowComponent.class, TransformComponent.class).get());
         cameraMapper = ComponentMapper.getFor(CameraFollowComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
+        this.batch = batch;
         setCamera(camera);
     }
 
@@ -39,6 +42,7 @@ public class WorldCameraSystem extends IteratingSystem {
         targetPositions.clear();
         super.update(deltaTime);
         calculateCameraPosition();
+        batch.setProjectionMatrix(camera.combined);
     }
 
     @Override
