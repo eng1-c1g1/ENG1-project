@@ -28,5 +28,6 @@ public class PhysicsToTransformSystem extends IteratingFixedStepSystem {
         var physics = physicsM.get(entity);
         var transform = transformM.get(entity);
         transform.position.set(physics.body.getPosition());
+        transform.rotation =  physics.body.getAngle();
     }
 }

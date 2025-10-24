@@ -29,11 +29,8 @@ public class PhysicsSyncSystem extends IteratingFixedStepSystem {
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PhysicsComponent physics = physicsM.get(entity);
         TransformComponent transform = transformM.get(entity);
-        // transform is authoritative for position
-        float vx = (transform.position.x - physics.body.getPosition().x) / deltaTime;
-        float vy = (transform.position.y - physics.body.getPosition().y) / deltaTime;
 
-        // TODO: Make the physics systems update position to transform, not velocity
-        //physics.body.setLinearVelocity(vx, vy);
+        // Sync the physics with the transform in case the transform is edited outside the physics engine
+        physics.body.setTransform(transform.position.x, transform.position.y, transform.rotation);
     }
 }
