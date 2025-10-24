@@ -3,7 +3,7 @@ package io.github.maze11.systemTypes;
 import java.util.ArrayList;
 
 /**
- * Steps the simulation forward when fireFixedUpdate is called
+ * Steps the simulation forward when advanceSimulation is called
  */
 public class FixedStepper {
 
