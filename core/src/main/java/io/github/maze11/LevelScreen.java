@@ -31,10 +31,8 @@ public class LevelScreen implements Screen {
     private final FitViewport viewport;
     private final BitmapFont defaultFont;
     // box2d debug renderer
-    private Box2DDebugRenderer debugRenderer;
+    private final Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
-    private final float TIME_STEP = 1 / 60f;
-    private float accumulator = 0f;
     private final FixedStepper fixedStepper;
 
     public LevelScreen(MazeGame game) {
@@ -102,7 +100,7 @@ public class LevelScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         mapRenderer.render();
-        calculateFixedUpdate(deltaTime);
+        fixedStepper.advanceSimulation(deltaTime);
         engine.update(deltaTime);
         defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
@@ -115,16 +113,6 @@ public class LevelScreen implements Screen {
             if (physicsSystem != null) {
                 debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
             }
-        }
-    }
-
-    private void calculateFixedUpdate(float deltaTime) {
-        accumulator += deltaTime;
-        // step the physics world in fixed increments
-        while (accumulator >= deltaTime) {
-            // 6 velocity, 2 positions iterations (standard values)
-            fixedStepper.fireFixedUpdate(TIME_STEP);
-            accumulator -= TIME_STEP;
         }
     }
 
