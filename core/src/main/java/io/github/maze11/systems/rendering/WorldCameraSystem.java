@@ -42,6 +42,7 @@ public class WorldCameraSystem extends IteratingSystem {
         targetPositions.clear();
         super.update(deltaTime);
         calculateCameraPosition();
+        camera.update();
         batch.setProjectionMatrix(camera.combined);
     }
 
