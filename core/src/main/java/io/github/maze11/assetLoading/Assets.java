@@ -9,7 +9,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import java.util.HashMap;
 
 /**
- * A class to manage all assets using symbolic identifiers instead of hard-coding addresses.
+ * Manages all assets using symbolic identifiers instead of hard-coding addresses.
  * This is to prevent the need to duplicate address data across the code and lead to unmaintainable code
  */
 public class Assets {
