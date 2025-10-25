@@ -11,13 +11,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.maze11.systems.WorldCameraSystem;
+import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.systems.rendering.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.systems.PhysicsSyncSystem;
-import io.github.maze11.systems.PhysicsSystem;
-import io.github.maze11.systems.PhysicsToTransformSystem;
+import io.github.maze11.systems.physics.PhysicsSyncSystem;
+import io.github.maze11.systems.physics.PhysicsSystem;
+import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.RenderingSystem;
+import io.github.maze11.systems.rendering.RenderingSystem;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -35,8 +36,9 @@ public class LevelScreen implements Screen {
     private final BitmapFont defaultFont;
 
     // box2d debug renderer
-    private Box2DDebugRenderer debugRenderer;
+    private final Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
+    private final FixedStepper fixedStepper;
 
     private Entity timerEntity; // entity that holds the timer
     private TimerRendererSystem timerRendererSystem; // system to render the time
@@ -59,15 +61,17 @@ public class LevelScreen implements Screen {
 
         //create the engine
         engine = new PooledEngine();
+        fixedStepper = new FixedStepper();
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new PlayerSystem()); // player input system
-        engine.addSystem(new PhysicsSyncSystem()); // sync transform to physics bodies
-        engine.addSystem(new PhysicsSystem()); // run physics simulation
-        engine.addSystem(new PhysicsToTransformSystem()); // sync physics to transform
-        engine.addSystem(new WorldCameraSystem(camera));
-        engine.addSystem(new TimerSystem()); // add timersystem to update timers
+        engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
+        engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
+        engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
+        engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
+        engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
+        engine.addSystem(new TimerSystem()); // add timersystem to update timers
+
 
 
         timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
@@ -109,7 +113,7 @@ public class LevelScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float deltaTime) {
 
         viewport.apply();
 
@@ -117,14 +121,14 @@ public class LevelScreen implements Screen {
         mapRenderer.setView((OrthographicCamera) viewport.getCamera());
 
         var batch = game.getBatch();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
         mapRenderer.render();
-        engine.update(delta);
+        fixedStepper.advanceSimulation(deltaTime);
+        engine.update(deltaTime);
         defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############
@@ -135,7 +139,7 @@ public class LevelScreen implements Screen {
 
         viewport.apply();
 
-        //  render Box2D debug outliness
+        //  render Box2D debug outlines
         if (showDebugRenderer) {
             var physicsSystem = engine.getSystem(PhysicsSystem.class);
             if (physicsSystem != null) {
