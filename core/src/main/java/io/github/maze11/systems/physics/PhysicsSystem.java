@@ -1,8 +1,8 @@
 package io.github.maze11.systems.physics;
 
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+
 import io.github.maze11.systemTypes.FixedStepSystem;
 import io.github.maze11.systemTypes.FixedStepper;
 

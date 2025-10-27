@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class FixedStepper {
 
     public static final float TIME_STEP = 1/60f;
-    private ArrayList<FixedUpdateListener> listeners = new ArrayList<>();
+    private final ArrayList<FixedUpdateListener> listeners = new ArrayList<>();
     private float accumulator = 0f;
 
     // Default visibility so that it is visible from the other members of this package, but not outside

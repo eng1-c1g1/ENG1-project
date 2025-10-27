@@ -1,13 +1,12 @@
 package io.github.maze11.systems;
-import io.github.maze11.components.PhysicsComponent;
-
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+
+import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.systemTypes.FixedStepper;
