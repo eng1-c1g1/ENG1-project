@@ -3,6 +3,8 @@ package io.github.maze11.systems.physics;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import io.github.maze11.messages.CollisionManager;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepSystem;
 import io.github.maze11.systemTypes.FixedStepper;
 
@@ -14,9 +16,10 @@ import io.github.maze11.systemTypes.FixedStepper;
 public class PhysicsSystem extends FixedStepSystem {
     private final World world;
 
-    public PhysicsSystem(FixedStepper stepper) {
+    public PhysicsSystem(FixedStepper stepper, MessagePublisher messagePublisher) {
         super(stepper);
         world = new World(new Vector2(0, 0), true); // No gravity for top-down
+        world.setContactListener(new CollisionManager(messagePublisher));
     }
 
     public World getWorld() {

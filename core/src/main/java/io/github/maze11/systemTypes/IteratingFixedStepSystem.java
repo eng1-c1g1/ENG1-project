@@ -22,7 +22,7 @@ public abstract class IteratingFixedStepSystem extends IteratingSystem implement
 
     // Create empty override so that defining this method in derived classes is not essential
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {}
+    protected void processEntity(Entity entity, float deltaTime) { }
 
     protected abstract void fixedStepProcessEntity(Entity entity, float deltaTime);
 }

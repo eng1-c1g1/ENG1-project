@@ -5,5 +5,5 @@ package io.github.maze11.messages;
  * This avoids unnecessary type casts and allows easy event sorting using switch statements
  */
 public enum MessageType {
-    COFFEE_COLLECTED
+    COLLISION, COFFEE_COLLECTED
 }

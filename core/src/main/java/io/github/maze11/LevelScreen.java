@@ -10,7 +10,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.maze11.messages.CollisionManager;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.systems.CoffeeSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
@@ -34,6 +37,7 @@ public class LevelScreen implements Screen {
     private final Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
     private final FixedStepper fixedStepper;
+    private final MessagePublisher messagePublisher;
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -53,10 +57,14 @@ public class LevelScreen implements Screen {
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
 
+        //Create message objects
+        messagePublisher = new MessagePublisher();
+
         // input -> sync -> physics -> render (for no input delay)
+        engine.addSystem(new CoffeeSystem());
         engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
-        engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
+        engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
@@ -153,11 +161,12 @@ public class LevelScreen implements Screen {
             for (MapObject object : wallsLayer.getObjects()) {
                 if (object instanceof RectangleMapObject) {
                     Rectangle rect = ((RectangleMapObject)object).getRectangle();
-                    // Convert to world units (divide by 32)
-                    float x = rect.x / 32f;
-                    float y = rect.y / 32f;
-                    float width = rect.width / 32f;
-                    float height = rect.height / 32f;
+                    int pixelsToUnit = MazeGame.PIXELS_TO_UNIT;
+
+                    float x = rect.x / pixelsToUnit;
+                    float y = rect.y / pixelsToUnit;
+                    float width = rect.width / pixelsToUnit;
+                    float height = rect.height / pixelsToUnit;
 
                     // Create a wall entity instead of directly creating Box2D body
                     entityMaker.makeWall(x, y, width, height);
