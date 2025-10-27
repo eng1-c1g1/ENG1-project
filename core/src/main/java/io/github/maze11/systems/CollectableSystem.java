@@ -6,7 +6,7 @@ import io.github.maze11.components.CoffeeComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.MessageListener;
 
-public class CoffeeSystem extends EntitySystem {
+public class CollectableSystem extends EntitySystem {
     ComponentMapper<CoffeeComponent> coffeeMapper;
     ComponentMapper<PlayerComponent> playerMapper;
     MessageListener messageListener;

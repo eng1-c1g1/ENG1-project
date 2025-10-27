@@ -1,5 +1,6 @@
 package io.github.maze11.messages;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -16,8 +17,11 @@ public class CollisionManager implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        // TODO: send collision event
-        System.out.println("beginContact");
+        var entityA = (Entity) contact.getFixtureA().getUserData();
+        var entityB = (Entity) contact.getFixtureB().getUserData();
+
+        messagePublisher.publish(new CollisionMessage(entityA, entityB));
+        System.out.println("beginContact " + entityA + " " + entityB);
     }
 
     @Override

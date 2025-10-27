@@ -1,16 +1,16 @@
 package io.github.maze11.messages;
 
-import javax.swing.text.html.parser.Entity;
+import com.badlogic.ashley.core.Entity;
 
 public class CollisionMessage extends Message {
 
-    public final Entity entity1;
-    public final Entity entity2;
+    public final Entity entityA;
+    public final Entity entityB;
 
-    public CollisionMessage(MessageType type, Entity entity1, Entity entity2) {
+    public CollisionMessage(Entity entityA, Entity entityB) {
         super(MessageType.COLLISION);
-        this.entity1 = entity1;
-        this.entity2 = entity2;
+        this.entityA = entityA;
+        this.entityB = entityB;
     }
 
 }

@@ -11,10 +11,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.maze11.messages.CollisionManager;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systems.CoffeeSystem;
+import io.github.maze11.systems.CollectableSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
@@ -71,7 +70,7 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new CoffeeSystem());
+        engine.addSystem(new CollectableSystem());
         engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -163,7 +162,7 @@ public class LevelScreen implements Screen {
 
         viewport.update(width, height, true);
         timerRendererSystem.resize(width, height);
-        
+
     }
 
     @Override

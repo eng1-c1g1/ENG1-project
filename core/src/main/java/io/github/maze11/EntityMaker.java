@@ -66,12 +66,12 @@ public class EntityMaker {
         physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
         physicsComponent.colliderWidth = width;
         physicsComponent.colliderHeight = height;
-        
+
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
-            x + width/2, y + height/2, 
+        physicsComponent.body = createPhysicsBody(entity, world, physicsComponent,
+            x + width/2, y + height/2,
             BodyDef.BodyType.StaticBody, false, 0f);
-        
+
         entity.add(physicsComponent);
         return entity;
     }
@@ -91,21 +91,21 @@ public class EntityMaker {
         physicsComponent.colliderWidth = 0.9f;  // 2 * halfWidth
         physicsComponent.colliderHeight = 0.9f; // 2 * halfHeight
         physicsComponent.colliderOffset.set(0f, 0.5f); // offset upwards
-        
+
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
-            x, y, 
+        physicsComponent.body = createPhysicsBody(entity, world, physicsComponent,
+            x, y,
             BodyDef.BodyType.DynamicBody, true, 0f);
-        
+
         entity.add(physicsComponent);
         return entity;
     }
 
     // Helper method to create physics body based on PhysicsComponent settings
-    private Body createPhysicsBody(World world, PhysicsComponent physics, 
-                                   float x, float y, 
-                                   BodyDef.BodyType type, 
-                                   boolean fixedRotation, 
+    private Body createPhysicsBody(Entity entity, World world, PhysicsComponent physics,
+                                   float x, float y,
+                                   BodyDef.BodyType type,
+                                   boolean fixedRotation,
                                    float linearDamping) {
         // Create body
         BodyDef bodyDef = new BodyDef();
@@ -114,7 +114,7 @@ public class EntityMaker {
         bodyDef.fixedRotation = fixedRotation;
         bodyDef.linearDamping = linearDamping;
         Body body = world.createBody(bodyDef);
-        
+
         // Create collider based on type
         Shape shape;
         if (physics.colliderType == PhysicsComponent.ColliderType.CIRCLE) {
@@ -127,24 +127,28 @@ public class EntityMaker {
             // Box collider (default)
             PolygonShape box = new PolygonShape();
             box.setAsBox(
-                physics.colliderWidth / 2f, 
-                physics.colliderHeight / 2f, 
-                physics.colliderOffset, 
+                physics.colliderWidth / 2f,
+                physics.colliderHeight / 2f,
+                physics.colliderOffset,
                 0f
             );
             shape = box;
         }
-        
+
         // Create fixture
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.0f;
-        
-        body.createFixture(fixtureDef);
+
+        var fixture = body.createFixture(fixtureDef);
+
+        // Make the entity the user data so that the game can track which objects collide with which
+        fixture.setUserData(entity);
+
         shape.dispose();
-        
+
         return body;
     }
 }
