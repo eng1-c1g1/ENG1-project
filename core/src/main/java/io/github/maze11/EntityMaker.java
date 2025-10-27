@@ -57,29 +57,25 @@ public class EntityMaker {
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
         return makeVisibleEntity(x, y, 1f, 1f, 0f, assets.get(textureId, Texture.class));
     }
-        public Entity makeWall(float x, float y, float width, float height) {
+
+    public Entity makeWall(float x, float y, float width, float height) {
         Entity entity = makeEmptyEntity();
 
         // Add physics component for collision
         PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
+        physicsComponent.colliderWidth = width;
+        physicsComponent.colliderHeight = height;
+        
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-
-        // Create static body (walls don't move)
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(x + width/2, y + height/2);
-        Body body = world.createBody(bodyDef);
-
-        // Create box shape for the wall
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width/2, height/2);
-        body.createFixture(shape, 0f);
-        shape.dispose();
-
-        physicsComponent.body = body;
+        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
+            x + width/2, y + height/2, 
+            BodyDef.BodyType.StaticBody, false, 0f);
+        
         entity.add(physicsComponent);
         return entity;
     }
+
     // makes the player entity with physics component and sprite
     public Entity makePlayer(float x, float y){
         Entity entity = makeVisibleEntity(x, y, AssetId.PlayerTexture);
@@ -89,34 +85,66 @@ public class EntityMaker {
         var cameraFollowComponent = engine.createComponent(CameraFollowComponent.class);
         entity.add(cameraFollowComponent);
 
-        // get the player's sprite component to determine size
-
         // add physics component and create box2d body
         PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
+        physicsComponent.colliderWidth = 0.9f;  // 2 * halfWidth
+        physicsComponent.colliderHeight = 0.9f; // 2 * halfHeight
+        physicsComponent.colliderOffset.set(0f, 0.5f); // offset upwards
+        
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-
-        // create  physics body for the player
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x, y);
-        bodyDef.fixedRotation = true; // prevent rotation when hitting walls
-        Body body = world.createBody(bodyDef);
-
-        // create box shape that matches sprite size
-        PolygonShape box = new PolygonShape();
-
-        float halfWidth = 0.45f;
-        float halfHeight = 0.45f;
-
-        // offset fro box upwards so it matches sprite visually
-        box.setAsBox(halfWidth, halfHeight, new Vector2(0f, 0.5f), 0f);
-        // attach box shape to body via fixture
-        body.createFixture(box, 1.0f);
-        box.dispose();
-         // store body in physics component
-        physicsComponent.body = body;
+        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
+            x, y, 
+            BodyDef.BodyType.DynamicBody, true, 0f);
+        
         entity.add(physicsComponent);
         return entity;
     }
 
+    // Helper method to create physics body based on PhysicsComponent settings
+    private Body createPhysicsBody(World world, PhysicsComponent physics, 
+                                   float x, float y, 
+                                   BodyDef.BodyType type, 
+                                   boolean fixedRotation, 
+                                   float linearDamping) {
+        // Create body
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = type;
+        bodyDef.position.set(x, y);
+        bodyDef.fixedRotation = fixedRotation;
+        bodyDef.linearDamping = linearDamping;
+        Body body = world.createBody(bodyDef);
+        
+        // Create collider based on type
+        Shape shape;
+        if (physics.colliderType == PhysicsComponent.ColliderType.CIRCLE) {
+            // Circle collider
+            CircleShape circle = new CircleShape();
+            circle.setRadius(physics.colliderRadius);
+            circle.setPosition(physics.colliderOffset);
+            shape = circle;
+        }  else {
+            // Box collider (default)
+            PolygonShape box = new PolygonShape();
+            box.setAsBox(
+                physics.colliderWidth / 2f, 
+                physics.colliderHeight / 2f, 
+                physics.colliderOffset, 
+                0f
+            );
+            shape = box;
+        }
+        
+        // Create fixture
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.0f;
+        
+        body.createFixture(fixtureDef);
+        shape.dispose();
+        
+        return body;
+    }
 }
