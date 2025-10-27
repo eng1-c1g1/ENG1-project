@@ -41,7 +41,7 @@ public class LevelScreen implements Screen {
         // Create rendering singletons
         OrthographicCamera camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssets().get(AssetId.Tilemap, TiledMap.class); // Load the map using AssetManager
+        map = game.getAssets().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
         //create the font
         defaultFont = new BitmapFont();

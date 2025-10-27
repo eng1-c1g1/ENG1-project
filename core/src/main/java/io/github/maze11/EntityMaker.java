@@ -82,7 +82,7 @@ public class EntityMaker {
     }
     // makes the player entity with physics component and sprite
     public Entity makePlayer(float x, float y){
-        Entity entity = makeVisibleEntity(x, y, AssetId.PlayerTexture);
+        Entity entity = makeVisibleEntity(x, y, AssetId.PLAYER_TEXTURE);
 
         var playerComponent = engine.createComponent(PlayerComponent.class);
         entity.add(playerComponent);

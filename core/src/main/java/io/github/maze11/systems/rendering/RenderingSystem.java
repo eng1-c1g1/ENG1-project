@@ -29,7 +29,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     public RenderingSystem startDebugView() {
         isDebugging = true;
         if (originTexture == null) {
-            originTexture = game.getAssets().get(AssetId.OriginIndicator, Texture.class); // Load the texture using AssetManager
+            originTexture = game.getAssets().get(AssetId.ORIGIN_INDICATOR, Texture.class); // Load the texture using AssetManager
         }
         return this;
     }

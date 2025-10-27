@@ -21,7 +21,7 @@ public class DebuggingIndicatorManager {
         this.engine = engine;
 
         // Load the texture using the game's AssetManager
-        testSquare = game.getAssets().get(AssetId.DebugTexture, Texture.class);
+        testSquare = game.getAssets().get(AssetId.DEBUG_TEXTURE, Texture.class);
     }
 
     public Entity createDebugSquare(float x, float y, float xSize, float ySize){
