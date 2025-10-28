@@ -13,6 +13,7 @@ import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.*;
+import io.github.maze11.messages.CollectableMessage;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -67,7 +68,7 @@ public class EntityMaker {
         physics.setBox(width, height);
 
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physics.body = createPhysicsBody(world, physics, x, y, bodyType, fixedRotation, 0f);
+        physics.body = createPhysicsBody(entity, world, physics, x, y, bodyType, fixedRotation, 0f);
 
         entity.add(physics);
     }
@@ -82,7 +83,7 @@ public class EntityMaker {
         physics.setBox(width, height, offsetX, offsetY);
 
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physics.body = createPhysicsBody(world, physics, x, y, bodyType, fixedRotation, 0f);
+        physics.body = createPhysicsBody(entity, world, physics, x, y, bodyType, fixedRotation, 0f);
 
         entity.add(physics);
     }
@@ -95,7 +96,7 @@ public class EntityMaker {
         physics.setCircle(radius);
 
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physics.body = createPhysicsBody(world, physics, x, y, bodyType, false, 0f);
+        physics.body = createPhysicsBody(entity, world, physics, x, y, bodyType, false, 0f);
 
         entity.add(physics);
     }
@@ -196,19 +197,8 @@ public class EntityMaker {
         collectableComponent.activationMessage = message;
         entity.add(collectableComponent);
 
-        // FIXME: This is 13 lines of duplicated code, which is repeated any time you create a physicsComponent
-        PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
-        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
-        physicsComponent.colliderWidth = 0.9f;  // 2 * halfWidth
-        physicsComponent.colliderHeight = 0.9f; // 2 * halfHeight
-        physicsComponent.colliderOffset.set(0f, 0.5f); // offset upwards
+        addCircleCollider(entity, 0f, 0.5f, 0.75f, BodyDef.BodyType.DynamicBody);
 
-        var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physicsComponent.body = createPhysicsBody(entity, world, physicsComponent,
-            x, y,
-            BodyDef.BodyType.DynamicBody, true, 0f);
-
-        entity.add(physicsComponent);
         return entity;
     }
 
