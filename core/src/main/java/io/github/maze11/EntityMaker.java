@@ -11,6 +11,7 @@ import io.github.maze11.assetLoading.Assets;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
+import io.github.maze11.components.TimerComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.systems.physics.PhysicsSystem;
@@ -119,6 +120,22 @@ public class EntityMaker {
         
         return entity;
     }
+    
+    // Creates a countdown timer entity
+    public Entity makeTimer(float durationSeconds) {
+        Entity entity = makeEmptyEntity();
+        
+        TimerComponent timer = engine.createComponent(TimerComponent.class);
+        timer.timeRemaining = durationSeconds;
+        timer.totalTime = durationSeconds;
+        timer.isRunning = true;
+        timer.hasExpired = false;
+        
+        entity.add(timer);
+        return entity;
+    }
+
+    
 
     // Helper method to create physics body based on PhysicsComponent settings
     private Body createPhysicsBody(World world, PhysicsComponent physics, 
