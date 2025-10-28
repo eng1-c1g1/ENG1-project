@@ -90,13 +90,13 @@ public class EntityMaker {
 
     // Adds a circle collider to an entity
     private void addCircleCollider(Entity entity, float x, float y,
-                                   float radius,
+                                   float radius, float xOffset, float yOffset,
                                    BodyDef.BodyType bodyType) {
         PhysicsComponent physics = engine.createComponent(PhysicsComponent.class);
-        physics.setCircle(radius);
+        physics.setCircle(radius, xOffset, yOffset);
 
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physics.body = createPhysicsBody(entity, world, physics, x, y, bodyType, false, 0f);
+        physics.body = createPhysicsBody(entity, world, physics, x, y,  bodyType, false, 0f);
 
         entity.add(physics);
     }
@@ -197,7 +197,7 @@ public class EntityMaker {
         collectableComponent.activationMessage = message;
         entity.add(collectableComponent);
 
-        addCircleCollider(entity, 0f, 0.5f, 0.75f, BodyDef.BodyType.DynamicBody);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
 
         return entity;
     }
