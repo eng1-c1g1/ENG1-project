@@ -70,14 +70,14 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new CollectableSystem());
+        engine.addSystem(new CollectableSystem(messagePublisher, engine));
         engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
-        engine.addSystem(new TimerSystem()); // add timersystem to update timers
+        engine.addSystem(new TimerSystem()); // add Timer System to update timers
 
 
 

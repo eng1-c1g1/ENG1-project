@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class MessageListener {
-    private Queue<Message> queue = new LinkedList<Message>();
+    private final Queue<Message> queue = new LinkedList<Message>();
     public final MessagePublisher publisher;
 
     public MessageListener(MessagePublisher publisher) {

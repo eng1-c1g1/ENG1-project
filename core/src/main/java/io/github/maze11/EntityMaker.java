@@ -3,16 +3,11 @@ package io.github.maze11;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.Assets;
-import io.github.maze11.components.CameraFollowComponent;
-import io.github.maze11.components.PlayerComponent;
-import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.components.TransformComponent;
-import io.github.maze11.components.PhysicsComponent;
+import io.github.maze11.components.*;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -150,5 +145,27 @@ public class EntityMaker {
         shape.dispose();
 
         return body;
+    }
+
+    private Entity makeCollectable(float x, float y) {
+        Entity entity = makeVisibleEntity(x, y, AssetId.COFFEE);
+        var collectableComponent = new CollectableComponent();
+        collectableComponent.activationMessage = new; //TODO: put message here
+        entity.add(collectableComponent);
+
+        // FIXME: This is 13 lines of duplicated code, which is repeated any time you create a physicsComponent
+        PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
+        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
+        physicsComponent.colliderWidth = 0.9f;  // 2 * halfWidth
+        physicsComponent.colliderHeight = 0.9f; // 2 * halfHeight
+        physicsComponent.colliderOffset.set(0f, 0.5f); // offset upwards
+
+        var world = engine.getSystem(PhysicsSystem.class).getWorld();
+        physicsComponent.body = createPhysicsBody(entity, world, physicsComponent,
+            x, y,
+            BodyDef.BodyType.DynamicBody, true, 0f);
+
+        entity.add(physicsComponent);
+        return entity;
     }
 }

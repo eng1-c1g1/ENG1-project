@@ -16,7 +16,8 @@ public class AssetPaths {
     public static Map<AssetId, String> texturePaths = Map.ofEntries(
         entry(AssetId.DEBUG_TEXTURE, "Test_Square.png"),
         entry(AssetId.PLAYER_TEXTURE, "Path_Tile.png"),
-        entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png")
+        entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
+        entry(AssetId.COFFEE, "Test_Square.png")
     );
 
     // This map can be used to declare paths to loaded files of any type
