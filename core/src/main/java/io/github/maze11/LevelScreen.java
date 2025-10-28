@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -30,6 +31,9 @@ public class LevelScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private final FitViewport viewport;
     private final BitmapFont defaultFont;
+    // box2d debug renderer
+    private final Box2DDebugRenderer debugRenderer;
+    private boolean showDebugRenderer = true;
     private final FixedStepper fixedStepper;
 
     public LevelScreen(MazeGame game) {
@@ -40,13 +44,13 @@ public class LevelScreen implements Screen {
         viewport = new FitViewport(16, 12, camera);
         map = game.getAssets().get(AssetId.Tilemap, TiledMap.class); // Load the map using AssetManager
 
-        // create the font
+        //create the font
         defaultFont = new BitmapFont();
         defaultFont.setUseIntegerPositions(false);
-        // scale the font to the viewport
+        //scale the font to the viewport
         defaultFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
-        // create the engine
+        //create the engine
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
 
@@ -56,15 +60,19 @@ public class LevelScreen implements Screen {
         engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
-        engine.addSystem(new RenderingSystem(game)); // rendering system
+        engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
 
         // create walls from tiled layer
         createWallCollisions();
 
         // Populate the world with objects
         EntityMaker entityMaker = new EntityMaker(engine, game);
-        entityMaker.makePlayer(50f, 50);
+        entityMaker.makePlayer(4f, 4f);
+
+        debugRenderer = new Box2DDebugRenderer();
     }
+
+
 
     @Override
     public void show() {
@@ -87,26 +95,28 @@ public class LevelScreen implements Screen {
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
-        // Needs fixing!
-
-        // Render background (Floor, Walls, Furniture Below)
-        mapRenderer.render(new int[] { 0 });
-
+         mapRenderer.render(new int[] { 0 });
         fixedStepper.advanceSimulation(deltaTime);
         engine.update(deltaTime);
 
-        // Render foreground (things above player)
-        mapRenderer.render(new int[] { 1 });
-
         // ######## END RENDER ###############
         batch.end();
+
+         mapRenderer.render(new int[] { 1 });
+
+        //  render Box2D debug outlines
+        if (showDebugRenderer) {
+            var physicsSystem = engine.getSystem(PhysicsSystem.class);
+            if (physicsSystem != null) {
+                debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
+            }
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-        // if size is 0, it is minimised, no need to resize
-        if (width <= 0 || height <= 0)
-            return;
+        //if size is 0, it is minimised, no need to resize
+        if(width <= 0 || height <= 0) return;
 
         viewport.update(width, height, true);
     }
@@ -155,18 +165,22 @@ public class LevelScreen implements Screen {
         }
     }
 
+
+
     @Override
     public void dispose() {
-        if (map != null)
-            map.dispose();
-        if (mapRenderer != null)
-            mapRenderer.dispose();
+        if (map != null) map.dispose();
+        if (mapRenderer != null) mapRenderer.dispose();
         defaultFont.dispose();
 
         // dispose debug renderer and physics world
         var physicsSystem = engine.getSystem(PhysicsSystem.class);
         if (physicsSystem != null) {
             physicsSystem.getWorld().dispose();
+        }
+
+        if (debugRenderer != null) {
+            debugRenderer.dispose();
         }
     }
 }
