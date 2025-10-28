@@ -6,11 +6,15 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-public class CollisionManager implements ContactListener {
+/**
+ * Converts collision callbacks into messages which it sends via a publisher. This allows other systems to easily
+ * access collision data
+ */
+public class CollisionConverter implements ContactListener {
 
     MessagePublisher messagePublisher;
 
-    public CollisionManager(MessagePublisher messagePublisher)
+    public CollisionConverter(MessagePublisher messagePublisher)
     {
         this.messagePublisher = messagePublisher;
     }

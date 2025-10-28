@@ -3,6 +3,9 @@ package io.github.maze11.messages;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to send messages to all subscribed listeners
+ */
 public class MessagePublisher {
     List<MessageListener> listeners = new ArrayList<MessageListener>();
 

@@ -12,6 +12,9 @@ import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.MessageType;
 
+/**
+ * Manages collectable objects, making them activate and disappear whenever the player collides with them
+ */
 public class CollectableSystem extends EntitySystem {
     ComponentMapper<CollectableComponent> collectableMapper = ComponentMapper.getFor(CollectableComponent.class);
     ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
