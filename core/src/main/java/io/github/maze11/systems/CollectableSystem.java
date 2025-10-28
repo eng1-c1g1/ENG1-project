@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
+import io.github.maze11.EntityMaker;
 import io.github.maze11.components.CollectableComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.CollisionMessage;
@@ -16,10 +17,12 @@ public class CollectableSystem extends EntitySystem {
     ComponentMapper<PlayerComponent> playerMapper = ComponentMapper.getFor(PlayerComponent.class);
     MessageListener messageListener;
     PooledEngine engine;
+    EntityMaker entityMaker;
 
-    public CollectableSystem(MessagePublisher messagePublisher, PooledEngine engine) {
+    public CollectableSystem(MessagePublisher messagePublisher, PooledEngine engine, EntityMaker entityMaker) {
         this.messageListener = new MessageListener(messagePublisher);
         this.engine = engine;
+        this.entityMaker = entityMaker;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class CollectableSystem extends EntitySystem {
         var message = collectableMapper.get(collectable).activationMessage;
         messageListener.publisher.publish(message);
 
-        //Destroy the collectable object
-        engine.removeEntity(collectable);
+        // Remove the collectable object and all its components
+        entityMaker.destroy(collectable);
     }
 }

@@ -67,11 +67,11 @@ public class LevelScreen implements Screen {
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
 
-        //Create message objects
         messagePublisher = new MessagePublisher();
+        EntityMaker entityMaker = new EntityMaker(engine, game);
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new CollectableSystem(messagePublisher, engine));
+        engine.addSystem(new CollectableSystem(messagePublisher, engine, entityMaker));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -88,8 +88,7 @@ public class LevelScreen implements Screen {
         // create walls from tiled layer
         createWallCollisions();
 
-        // Populate the world with objects
-        EntityMaker entityMaker = new EntityMaker(engine, game);
+
         // Temporary debugging code to create objects here
         var debugManager = new DebuggingIndicatorManager(engine, game);
         debugManager.createDebugSquare(1,1);

@@ -172,4 +172,12 @@ public class EntityMaker {
         entity.add(physicsComponent);
         return entity;
     }
+
+    /**
+     * Removes the entity from the engine, disposing of all the components
+     */
+    public void destroy(Entity entity){
+        // TODO: Write code for disposing of entities
+        engine.removeEntity(entity);
+    }
 }
