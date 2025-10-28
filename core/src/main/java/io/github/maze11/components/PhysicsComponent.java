@@ -4,27 +4,84 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
+/**
+ * component that holds physics data for box2d bodies
+ * uses private field with getters and setters to prevent inconsistent data when pooling
+ */
+
 public class PhysicsComponent implements Component {
+    // Box2D body associated with this component
     public Body body;
     
-    // Collider shape type
+    // enum defining collider types
     public enum ColliderType { 
         BOX,      // Rectangle collider
         CIRCLE,   // Circle collider
         
     }
-    
-    public ColliderType colliderType = ColliderType.BOX;
-    
+    // type of collider (box or circle)
+    private ColliderType colliderType = ColliderType.BOX;
     // For BOX: width and height
-    public float colliderWidth = 32f;
-    public float colliderHeight = 32f;
+    private float colliderWidth = 32f;
+    private float colliderHeight = 32f;
     
     // For CIRCLE: radius
-    public float colliderRadius = 16f;
-    
-   
-    
+    private float colliderRadius = 16f;
     // Offset from body center (for BOX and CIRCLE only)
-    public Vector2 colliderOffset = new Vector2(0f, 0f);
+    private Vector2 colliderOffset = new Vector2(0f, 0f);
+
+    // Gets the collider type
+    public ColliderType getColliderType() {
+        return colliderType;
+    }
+    // gets the wifth of box collider
+    public float getColliderWidth() {
+        return colliderWidth;
+    }
+    // gets the height of box collider
+    public float getColliderHeight() {
+        return colliderHeight;
+    }
+    // gets radius of circle colldier
+    public float getColliderRadius() {
+        return colliderRadius;
+    }
+    // gets the offset from body centee for both 
+    public Vector2 getColliderOffset() {
+        return colliderOffset;
+    }
+
+     // Configures this component as a box collider
+    public PhysicsComponent setBox(float width, float height) {
+        this.colliderType = ColliderType.BOX;
+        this.colliderWidth = width;
+        this.colliderHeight = height;
+        this.colliderOffset.set(0f, 0f);
+        return this;
+    }
+    
+    // Configures this component as a box collider with offset
+    public PhysicsComponent setBox(float width, float height, float offsetX, float offsetY) {
+        this.colliderType = ColliderType.BOX;
+        this.colliderWidth = width;
+        this.colliderHeight = height;
+        this.colliderOffset.set(offsetX, offsetY);
+        return this;
+    }
+    
+    // Configures this component as a circle collider
+    public PhysicsComponent setCircle(float radius) {
+        this.colliderType = ColliderType.CIRCLE;
+        this.colliderRadius = radius;
+        this.colliderOffset.set(0f, 0f);
+        return this;
+    }
+    
+    // Configures this component as a circle collider with offset
+    public PhysicsComponent setCircle(float radius, float offsetX, float offsetY) {
+        this.colliderType = ColliderType.CIRCLE;
+        this.colliderRadius = radius;
+        this.colliderOffset.set(offsetX, offsetY);
+        return this;
+    }
 }

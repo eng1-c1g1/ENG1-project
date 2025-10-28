@@ -99,14 +99,7 @@ public class LevelScreen implements Screen {
 
 
         // Create 5-minute timer
-        timerEntity = engine.createEntity(); // Create a new entity for the timer
-        TimerComponent timer = engine.createComponent(TimerComponent.class); // Create TimerComponent
-        timer.timeRemaining = 300f; // Set remaining time to 5 minutes (300 seconds)
-        timer.totalTime = 300f; // Set total time to 5 minutes
-        timer.isRunning = true; // Ensure timer is running
-        timer.hasExpired = false; // Not expired initially
-        timerEntity.add(timer); // Add TimerComponent to the timer entity
-        engine.addEntity(timerEntity); // Add the timer entity to the engine
+        timerEntity = entityMaker.makeTimer(300f);
 
         debugRenderer = new Box2DDebugRenderer();
     }
