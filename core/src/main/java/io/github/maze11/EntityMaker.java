@@ -58,46 +58,65 @@ public class EntityMaker {
         return makeVisibleEntity(x, y, 1f, 1f, 0f, assets.get(textureId, Texture.class));
     }
 
-    public Entity makeWall(float x, float y, float width, float height) {
-        Entity entity = makeEmptyEntity();
-
-        // Add physics component for collision
-        PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
-        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
-        physicsComponent.colliderWidth = width;
-        physicsComponent.colliderHeight = height;
+    // Adds a box collider to an entity
+    private void addBoxCollider(Entity entity, float x, float y, 
+                                float width, float height, 
+                                BodyDef.BodyType bodyType, 
+                                boolean fixedRotation) {
+        PhysicsComponent physics = engine.createComponent(PhysicsComponent.class);
+        physics.setBox(width, height);
         
         var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
-            x + width/2, y + height/2, 
-            BodyDef.BodyType.StaticBody, false, 0f);
+        physics.body = createPhysicsBody(world, physics, x, y, bodyType, fixedRotation, 0f);
         
-        entity.add(physicsComponent);
+        entity.add(physics);
+    }
+
+    // Adds a box collider with offset to an entity
+    private void addBoxCollider(Entity entity, float x, float y, 
+                                float width, float height, 
+                                float offsetX, float offsetY,
+                                BodyDef.BodyType bodyType, 
+                                boolean fixedRotation) {
+        PhysicsComponent physics = engine.createComponent(PhysicsComponent.class);
+        physics.setBox(width, height, offsetX, offsetY);
+        
+        var world = engine.getSystem(PhysicsSystem.class).getWorld();
+        physics.body = createPhysicsBody(world, physics, x, y, bodyType, fixedRotation, 0f);
+        
+        entity.add(physics);
+    }
+
+    // Adds a circle collider to an entity
+    private void addCircleCollider(Entity entity, float x, float y, 
+                                   float radius, 
+                                   BodyDef.BodyType bodyType) {
+        PhysicsComponent physics = engine.createComponent(PhysicsComponent.class);
+        physics.setCircle(radius);
+        
+        var world = engine.getSystem(PhysicsSystem.class).getWorld();
+        physics.body = createPhysicsBody(world, physics, x, y, bodyType, false, 0f);
+        
+        entity.add(physics);
+    }
+    // Creates a wall entity with box collider
+    public Entity makeWall(float x, float y, float width, float height) {
+        Entity entity = makeEmptyEntity();
+        addBoxCollider(entity, x + width/2, y + height/2, width, height, 
+                      BodyDef.BodyType.StaticBody, false);
         return entity;
     }
 
-    // makes the player entity with physics component and sprite
+    // Creates the player entity with sprite, camera follow, and physics
     public Entity makePlayer(float x, float y){
         Entity entity = makeVisibleEntity(x, y, AssetId.PlayerTexture);
 
-        var playerComponent = engine.createComponent(PlayerComponent.class);
-        entity.add(playerComponent);
-        var cameraFollowComponent = engine.createComponent(CameraFollowComponent.class);
-        entity.add(cameraFollowComponent);
+        entity.add(engine.createComponent(PlayerComponent.class));
+        entity.add(engine.createComponent(CameraFollowComponent.class));
 
-        // add physics component and create box2d body
-        PhysicsComponent physicsComponent = engine.createComponent(PhysicsComponent.class);
-        physicsComponent.colliderType = PhysicsComponent.ColliderType.BOX;
-        physicsComponent.colliderWidth = 0.9f;  // 2 * halfWidth
-        physicsComponent.colliderHeight = 0.9f; // 2 * halfHeight
-        physicsComponent.colliderOffset.set(0f, 0.5f); // offset upwards
+        addBoxCollider(entity, x, y, 0.9f, 0.9f, 0f, 0.5f, 
+                      BodyDef.BodyType.DynamicBody, true);
         
-        var world = engine.getSystem(PhysicsSystem.class).getWorld();
-        physicsComponent.body = createPhysicsBody(world, physicsComponent, 
-            x, y, 
-            BodyDef.BodyType.DynamicBody, true, 0f);
-        
-        entity.add(physicsComponent);
         return entity;
     }
 
@@ -115,21 +134,22 @@ public class EntityMaker {
         bodyDef.linearDamping = linearDamping;
         Body body = world.createBody(bodyDef);
         
-        // Create collider based on type
+        
+        // Create shape based on collider type
         Shape shape;
-        if (physics.colliderType == PhysicsComponent.ColliderType.CIRCLE) {
-            // Circle collider
+        if (physics.getColliderType() == PhysicsComponent.ColliderType.CIRCLE) {
+            // Create circle shape
             CircleShape circle = new CircleShape();
-            circle.setRadius(physics.colliderRadius);
-            circle.setPosition(physics.colliderOffset);
+            circle.setRadius(physics.getColliderRadius());
+            circle.setPosition(physics.getColliderOffset());
             shape = circle;
-        }  else {
-            // Box collider (default)
+        } else {
+            // Create box shape
             PolygonShape box = new PolygonShape();
             box.setAsBox(
-                physics.colliderWidth / 2f, 
-                physics.colliderHeight / 2f, 
-                physics.colliderOffset, 
+                physics.getColliderWidth() / 2f, 
+                physics.getColliderHeight() / 2f, 
+                physics.getColliderOffset(), 
                 0f
             );
             shape = box;
