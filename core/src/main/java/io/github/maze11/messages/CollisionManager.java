@@ -21,7 +21,6 @@ public class CollisionManager implements ContactListener {
         var entityB = (Entity) contact.getFixtureB().getUserData();
 
         messagePublisher.publish(new CollisionMessage(entityA, entityB));
-        System.out.println("beginContact " + entityA + " " + entityB);
     }
 
     @Override

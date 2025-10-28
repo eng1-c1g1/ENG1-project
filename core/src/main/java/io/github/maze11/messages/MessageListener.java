@@ -9,6 +9,7 @@ public class MessageListener {
 
     public MessageListener(MessagePublisher publisher) {
         this.publisher = publisher;
+        publisher.addListener(this);
     }
 
     public void receive(Message message){

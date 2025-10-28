@@ -13,7 +13,7 @@ public class MessagePublisher {
         return listeners.remove(messageListener);
     }
     public void publish(Message message){
-        for(MessageListener listener : listeners){
+        for (MessageListener listener : listeners) {
             listener.receive(message);
         }
     }

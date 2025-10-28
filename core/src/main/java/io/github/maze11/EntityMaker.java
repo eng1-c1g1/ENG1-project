@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.Assets;
 import io.github.maze11.components.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.CollectableMessage;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -147,10 +149,12 @@ public class EntityMaker {
         return body;
     }
 
-    private Entity makeCollectable(float x, float y) {
-        Entity entity = makeVisibleEntity(x, y, AssetId.COFFEE);
+    // TODO: Make a proper way of creating collectables (by type)
+    // FIXME: Make the collectable a sensor so that it is not pushable
+    public Entity makeCollectable(float x, float y, CollectableMessage message, AssetId assetId) {
+        Entity entity = makeVisibleEntity(x, y, assetId);
         var collectableComponent = new CollectableComponent();
-        collectableComponent.activationMessage = new; //TODO: put message here
+        collectableComponent.activationMessage = message;
         entity.add(collectableComponent);
 
         // FIXME: This is 13 lines of duplicated code, which is repeated any time you create a physicsComponent

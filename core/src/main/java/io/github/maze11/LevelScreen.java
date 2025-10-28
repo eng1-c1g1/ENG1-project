@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.CollectableSystem;
@@ -71,7 +72,7 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new CollectableSystem(messagePublisher, engine));
-        engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
+        engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
@@ -94,6 +95,7 @@ public class LevelScreen implements Screen {
         debugManager.createDebugSquare(1,1);
         debugManager.createDebugSquare(1.5f,1.5f);
         debugManager.createDebugSquare(3f, 3f, 2f, 2f);
+        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
         entityMaker.makePlayer(4f, 4f);
 
 
