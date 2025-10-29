@@ -1,6 +1,9 @@
 package io.github.maze11;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -17,9 +20,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.assetLoading.AssetId;
+import io.github.maze11.components.PhysicsComponent;
+import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.CollectableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerRendererSystem;
@@ -27,8 +31,10 @@ import io.github.maze11.systems.TimerSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
+import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
+
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -44,6 +50,9 @@ public class LevelScreen implements Screen {
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
 
+    private static final ComponentMapper<PhysicsComponent> physicsMapper = 
+        ComponentMapper.getFor(PhysicsComponent.class);
+    
     private Entity timerEntity; // entity that holds the timer
     private TimerRendererSystem timerRendererSystem; // system to render the time
 
@@ -80,7 +89,7 @@ public class LevelScreen implements Screen {
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
         engine.addSystem(new TimerSystem()); // add Timer System to update timers
 
-
+        registerPhysicsCleanupListener(); // register listener to destroy physics bodies on entity removal
 
         timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
         engine.addSystem(timerRendererSystem); // add to system
@@ -211,11 +220,34 @@ public class LevelScreen implements Screen {
         // dispose debug renderer and physics world
         var physicsSystem = engine.getSystem(PhysicsSystem.class);
         if (physicsSystem != null) {
-            physicsSystem.getWorld().dispose();
+            engine.removeSystem(physicsSystem); // triggers removedFromEngine which drains SafeBodyDestroy
         }
 
         if (debugRenderer != null) {
             debugRenderer.dispose();
         }
+    }
+
+    /**
+     * Registers a listener that queues Box2d bodies for destruction
+     * when their associated entities are removed from the engine.
+     */
+    private void registerPhysicsCleanupListener(){
+        engine.addEntityListener(Family.all(PhysicsComponent.class).get(),
+        new EntityListener() {
+            @Override
+            public void entityAdded(Entity entity){
+                // No action needed on addition
+            }
+
+            @Override
+            public void entityRemoved(Entity entity){
+                PhysicsComponent physicsComp = physicsMapper.get(entity);
+                if (physicsComp != null && physicsComp.body != null){
+                    SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
+                    physicsComp.body = null; // Clear reference in component
+                }
+            }
+        });
     }
 }
