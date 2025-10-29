@@ -5,5 +5,7 @@ package io.github.maze11.messages;
  * This avoids unnecessary type casts and allows easy event sorting using switch statements
  */
 public enum MessageType {
-    COLLISION, COLLECTABLE_OBTAINED
+    COLLISION, 
+    COLLECTABLE_OBTAINED,
+    TIMER_EXPIRED // timer has reached zero
 }

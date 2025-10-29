@@ -29,6 +29,8 @@ import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
+import io.github.maze11.components.GameStateComponent;
+import io.github.maze11.systems.GameStateSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -70,7 +72,15 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
+        // create game state entity to track current state game (menu, playing, win, lose)
+        Entity gameStateEntity = engine.createEntity();
+        GameStateComponent gameState = engine.createComponent(GameStateComponent.class);
+        gameState.currentState = GameStateComponent.State.PLAYING; // Start in playing state
+        gameStateEntity.add(gameState);
+        engine.addEntity(gameStateEntity); 
+
         // input -> sync -> physics -> render (for no input delay)
+        engine.addSystem(new GameStateSystem(messagePublisher));
         engine.addSystem(new CollectableSystem(messagePublisher, engine, entityMaker));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
@@ -78,7 +88,7 @@ public class LevelScreen implements Screen {
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
-        engine.addSystem(new TimerSystem()); // add Timer System to update timers
+        engine.addSystem(new TimerSystem(messagePublisher)); // add Timer System to update timers
 
 
 
@@ -94,7 +104,7 @@ public class LevelScreen implements Screen {
 
 
         // Create 5-minute timer
-        timerEntity = entityMaker.makeTimer(300f);
+        timerEntity = entityMaker.makeTimer(10f);
 
         debugRenderer = new Box2DDebugRenderer();
     }
