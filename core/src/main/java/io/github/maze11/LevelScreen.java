@@ -15,26 +15,19 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.MessagePublisher;
 
 import io.github.maze11.assetLoading.AssetId;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.CollectableSystem;
-import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.PlayerSystem;
+import io.github.maze11.systems.TimerRendererSystem;
+import io.github.maze11.systems.TimerSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.rendering.RenderingSystem;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.math.Rectangle;
-import io.github.maze11.systems.TimerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
-import io.github.maze11.components.TimerComponent;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 
 public class LevelScreen implements Screen {
@@ -95,15 +88,8 @@ public class LevelScreen implements Screen {
         // create walls from tiled layer
         createWallCollisions();
 
-
-        // Temporary debugging code to create objects here
-        var debugManager = new DebuggingIndicatorManager(engine, game);
-        debugManager.createDebugSquare(1,1);
-        debugManager.createDebugSquare(1.5f,1.5f);
-        debugManager.createDebugSquare(3f, 3f, 2f, 2f);
-        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
         // Populate the world with objects
-        EntityMaker entityMaker = new EntityMaker(engine, game);
+        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
         entityMaker.makePlayer(4f, 4f);
 
 
@@ -143,12 +129,12 @@ public class LevelScreen implements Screen {
         // ######## END RENDER ###############
         batch.end();
 
+         mapRenderer.render(new int[] { 1 });
+         
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 
         viewport.apply();
-
-         mapRenderer.render(new int[] { 1 });
 
         //  render Box2D debug outlines
         if (showDebugRenderer) {
@@ -196,21 +182,14 @@ public class LevelScreen implements Screen {
             EntityMaker entityMaker = new EntityMaker(engine, game);
 
             for (MapObject object : wallsLayer.getObjects()) {
-                if (object instanceof RectangleMapObject) {
-                    Rectangle rect = ((RectangleMapObject)object).getRectangle();
+                if (object instanceof RectangleMapObject rectangleMapObject) {
+                    Rectangle rect = rectangleMapObject.getRectangle();
                     int pixelsToUnit = MazeGame.PIXELS_TO_UNIT;
 
                     float x = rect.x / pixelsToUnit;
                     float y = rect.y / pixelsToUnit;
                     float width = rect.width / pixelsToUnit;
                     float height = rect.height / pixelsToUnit;
-                if (object instanceof RectangleMapObject rectangleMapObject) {
-                    Rectangle rect = rectangleMapObject.getRectangle();
-                    // Convert to world units (divide by 32)
-                    float x = rect.x / 32f;
-                    float y = rect.y / 32f;
-                    float width = rect.width / 32f;
-                    float height = rect.height / 32f;
 
                     // Create a wall entity instead of directly creating Box2D body
                     entityMaker.makeWall(x, y, width, height);
