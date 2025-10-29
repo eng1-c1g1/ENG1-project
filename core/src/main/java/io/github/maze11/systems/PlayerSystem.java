@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.MessageListener;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
@@ -16,19 +19,16 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     ComponentMapper<PlayerComponent> playerMapper;
     ComponentMapper<TransformComponent> transformMapper;
     ComponentMapper<PhysicsComponent> physicsMapper;
+    MessageListener messageListener;
 
-    public PlayerSystem(FixedStepper fixedStepper) {
+    public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher) {
         // now requires physics component for physics based movement
         super(fixedStepper, Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
         physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
 
-    }
-
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        // Movement is processed in fixed step
+        this.messageListener = new MessageListener(messagePublisher);
     }
 
     private Vector2 getDirectionalInput(){
@@ -52,6 +52,21 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         }
         direction.nor();
         return direction;
+    }
+
+    @Override
+    public void fixedUpdate(float deltaTime) {
+
+        //Process new messages
+        while (messageListener.hasNext()){
+            var message = messageListener.next();
+
+            if (message instanceof CoffeeCollectMessage){
+                System.out.println("Coffee collected");
+            }
+        }
+
+        super.fixedUpdate(deltaTime);
     }
 
     @Override

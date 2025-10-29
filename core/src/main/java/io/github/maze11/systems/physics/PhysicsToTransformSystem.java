@@ -1,7 +1,9 @@
 package io.github.maze11.systems.physics;
 
-import com.badlogic.ashley.core.*;
-import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.systemTypes.FixedStepper;
@@ -16,11 +18,6 @@ public class PhysicsToTransformSystem extends IteratingFixedStepSystem {
 
     public PhysicsToTransformSystem(FixedStepper stepper) {
         super(stepper, Family.all(PhysicsComponent.class, TransformComponent.class).get());
-    }
-
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        // All logic in fixed step
     }
 
     @Override

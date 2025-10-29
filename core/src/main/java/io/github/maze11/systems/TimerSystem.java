@@ -6,11 +6,11 @@ import io.github.maze11.components.TimerComponent;
 
 /**
  * updates countdown timers and handles expiration
- * 
+ *
  */
 public class TimerSystem extends IteratingSystem {
     private final ComponentMapper<TimerComponent> timerM = ComponentMapper.getFor(TimerComponent.class);
-    // consrructor to define the family of entities this system will process
+    // constructor to define the family of entities this system will process
     public TimerSystem() {
         super(Family.all(TimerComponent.class).get());
     }
@@ -24,9 +24,9 @@ public class TimerSystem extends IteratingSystem {
             return;
         }
 
-        // decreasethe remaining time by the delta time (time since last frame)
+        // decrease the remaining time by the delta time (time since last frame)
         timer.timeRemaining -= deltaTime;
-        
+
         // check if timer has expired
         if (timer.timeRemaining <= 0) {
             timer.timeRemaining = 0; // set to 0

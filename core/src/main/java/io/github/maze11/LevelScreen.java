@@ -22,6 +22,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.systems.CollectableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerRendererSystem;
 import io.github.maze11.systems.TimerSystem;
@@ -45,6 +48,7 @@ public class LevelScreen implements Screen {
     private final Box2DDebugRenderer debugRenderer;
     private boolean showDebugRenderer = true;
     private final FixedStepper fixedStepper;
+    private final MessagePublisher messagePublisher;
 
     private static final ComponentMapper<PhysicsComponent> physicsMapper = 
         ComponentMapper.getFor(PhysicsComponent.class);
@@ -60,7 +64,7 @@ public class LevelScreen implements Screen {
         // Create rendering singletons
         OrthographicCamera camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssets().get(AssetId.Tilemap, TiledMap.class); // Load the map using AssetManager
+        map = game.getAssets().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
         //create the font
         defaultFont = new BitmapFont();
@@ -72,14 +76,18 @@ public class LevelScreen implements Screen {
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
 
+        messagePublisher = new MessagePublisher();
+        EntityMaker entityMaker = new EntityMaker(engine, game);
+
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new PlayerSystem(fixedStepper)); // player input system
+        engine.addSystem(new CollectableSystem(messagePublisher, engine, entityMaker));
+        engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
-        engine.addSystem(new PhysicsSystem(fixedStepper)); // run physics simulation
+        engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
         engine.addSystem(new PhysicsToTransformSystem(fixedStepper)); // sync physics to transform
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
-        engine.addSystem(new TimerSystem()); // add timersystem to update timers
+        engine.addSystem(new TimerSystem()); // add Timer System to update timers
 
         registerPhysicsCleanupListener(); // register listener to destroy physics bodies on entity removal
 
@@ -90,12 +98,7 @@ public class LevelScreen implements Screen {
         createWallCollisions();
 
         // Populate the world with objects
-        EntityMaker entityMaker = new EntityMaker(engine, game);
-        // Temporary debugging code to create objects here
-        var debugManager = new DebuggingIndicatorManager(engine, game);
-        debugManager.createDebugSquare(1,1);
-        debugManager.createDebugSquare(1.5f,1.5f);
-        debugManager.createDebugSquare(3f, 3f, 2f, 2f);
+        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
         entityMaker.makePlayer(4f, 4f);
 
 
@@ -128,14 +131,15 @@ public class LevelScreen implements Screen {
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
-        mapRenderer.render();
+         mapRenderer.render(new int[] { 0 });
         fixedStepper.advanceSimulation(deltaTime);
         engine.update(deltaTime);
-        defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############
         batch.end();
 
+         mapRenderer.render(new int[] { 1 });
+         
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 
@@ -157,7 +161,7 @@ public class LevelScreen implements Screen {
 
         viewport.update(width, height, true);
         timerRendererSystem.resize(width, height);
-        
+
     }
 
     @Override
@@ -187,13 +191,14 @@ public class LevelScreen implements Screen {
             EntityMaker entityMaker = new EntityMaker(engine, game);
 
             for (MapObject object : wallsLayer.getObjects()) {
-                if (object instanceof RectangleMapObject) {
-                    Rectangle rect = ((RectangleMapObject)object).getRectangle();
-                    // Convert to world units (divide by 32)
-                    float x = rect.x / 32f;
-                    float y = rect.y / 32f;
-                    float width = rect.width / 32f;
-                    float height = rect.height / 32f;
+                if (object instanceof RectangleMapObject rectangleMapObject) {
+                    Rectangle rect = rectangleMapObject.getRectangle();
+                    int pixelsToUnit = MazeGame.PIXELS_TO_UNIT;
+
+                    float x = rect.x / pixelsToUnit;
+                    float y = rect.y / pixelsToUnit;
+                    float width = rect.width / pixelsToUnit;
+                    float height = rect.height / pixelsToUnit;
 
                     // Create a wall entity instead of directly creating Box2D body
                     entityMaker.makeWall(x, y, width, height);

@@ -1,16 +1,15 @@
 package io.github.maze11;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+
 import io.github.maze11.assetLoading.Assets;
 
 
 public class MazeGame extends Game {
     private SpriteBatch batch;
     private Assets assets;
+    public static final int PIXELS_TO_UNIT = 32;
 
     public SpriteBatch getBatch() {
         return batch;
