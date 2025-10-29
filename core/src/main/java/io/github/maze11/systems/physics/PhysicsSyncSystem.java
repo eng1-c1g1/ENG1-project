@@ -1,10 +1,11 @@
 package io.github.maze11.systems.physics;
 
-import com.badlogic.ashley.core.*;
-import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.TransformComponent;
-import io.github.maze11.systemTypes.FixedStepSystem;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 

@@ -5,30 +5,30 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
+import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.CollectableSystem;
-import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.assetLoading.AssetId;
+import io.github.maze11.systems.PlayerSystem;
+import io.github.maze11.systems.TimerRendererSystem;
+import io.github.maze11.systems.TimerSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
-import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.rendering.RenderingSystem;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.math.Rectangle;
-import io.github.maze11.systems.TimerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
-import io.github.maze11.components.TimerComponent;
+import io.github.maze11.systems.rendering.WorldCameraSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -88,12 +88,7 @@ public class LevelScreen implements Screen {
         // create walls from tiled layer
         createWallCollisions();
 
-
-        // Temporary debugging code to create objects here
-        var debugManager = new DebuggingIndicatorManager(engine, game);
-        debugManager.createDebugSquare(1,1);
-        debugManager.createDebugSquare(1.5f,1.5f);
-        debugManager.createDebugSquare(3f, 3f, 2f, 2f);
+        // Populate the world with objects
         entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
         entityMaker.makePlayer(4f, 4f);
 
@@ -127,14 +122,15 @@ public class LevelScreen implements Screen {
         // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
-        mapRenderer.render();
+         mapRenderer.render(new int[] { 0 });
         fixedStepper.advanceSimulation(deltaTime);
         engine.update(deltaTime);
-        defaultFont.draw(batch, "Tiled floor level loaded!", 1, 1.5f);
 
         // ######## END RENDER ###############
         batch.end();
 
+         mapRenderer.render(new int[] { 1 });
+         
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 
@@ -186,8 +182,8 @@ public class LevelScreen implements Screen {
             EntityMaker entityMaker = new EntityMaker(engine, game);
 
             for (MapObject object : wallsLayer.getObjects()) {
-                if (object instanceof RectangleMapObject) {
-                    Rectangle rect = ((RectangleMapObject)object).getRectangle();
+                if (object instanceof RectangleMapObject rectangleMapObject) {
+                    Rectangle rect = rectangleMapObject.getRectangle();
                     int pixelsToUnit = MazeGame.PIXELS_TO_UNIT;
 
                     float x = rect.x / pixelsToUnit;
