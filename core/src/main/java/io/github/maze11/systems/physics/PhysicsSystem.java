@@ -28,15 +28,11 @@ public class PhysicsSystem extends FixedStepSystem {
 
     @Override
     public void removedFromEngine(com.badlogic.ashley.core.Engine engine) {
-        SafeBodyDestroy.drain(world); // Destroy any remaining unwanted bodies
         world.dispose();
     }
 
     @Override
     public void fixedUpdate(float deltaTime) {
         world.step(deltaTime, 6, 2);
-
-        // Drain the destruction queue after stepping the world
-        SafeBodyDestroy.drain(world);
     }
 }
