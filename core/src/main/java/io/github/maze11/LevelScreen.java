@@ -239,7 +239,6 @@ public class LevelScreen implements Screen {
             public void entityRemoved(Entity entity){
                 PhysicsComponent physicsComp = physicsMapper.get(entity);
                 if (physicsComp != null && physicsComp.body != null){
-                    physicsComp.body.setUserData(null); // Clear user data to prevent dangling references
                     SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
                     physicsComp.body = null; // Clear reference in component
                 }
