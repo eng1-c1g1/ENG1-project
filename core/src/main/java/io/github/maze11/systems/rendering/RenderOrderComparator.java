@@ -12,7 +12,7 @@ import java.util.Comparator;
  * then renders based off y coordinate in case of a tie.
  * Lower y are rendered last to achieve top-down illusion of depth.
  */
-public class RenderOrderComparator implements Comparator<Entity> {
+class RenderOrderComparator implements Comparator<Entity> {
     private final ComponentMapper<TransformComponent> transM;
     private final ComponentMapper<SpriteComponent> spriteM;
 

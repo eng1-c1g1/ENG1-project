@@ -21,11 +21,6 @@ public class PhysicsToTransformSystem extends IteratingFixedStepSystem {
     }
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        // All logic in fixed step
-    }
-
-    @Override
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         var physics = physicsM.get(entity);
         var transform = transformM.get(entity);

@@ -13,13 +13,15 @@ public class AssetPaths {
     // Texture paths is a special case of the more general paths, created for convenience of assignment
     // This prevents needing to constantly repeat that all the entries are textures
     public static Map<AssetId, String> texturePaths = Map.ofEntries(
-        entry(AssetId.PlayerTexture, "player.png"),
-        entry(AssetId.OriginIndicator, "origin_indicator.png")
+        entry(AssetId.DEBUG_TEXTURE, "Test_Square.png"),
+        entry(AssetId.PLAYER_TEXTURE, "Path_Tile.png"),
+        entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
+        entry(AssetId.COFFEE, "Test_Square.png")
     );
 
     // This map can be used to declare paths to loaded files of any type
     public static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
-        entry(new AssetKey<>(AssetId.Tilemap, TiledMap.class), "map/default.tmx")
+        entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx")
 
     );
 }

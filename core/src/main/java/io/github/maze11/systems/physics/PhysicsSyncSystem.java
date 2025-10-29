@@ -22,11 +22,6 @@ public class PhysicsSyncSystem extends IteratingFixedStepSystem {
     }
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        // Do nothing: all logic handled in fixed process step
-    }
-
-    @Override
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PhysicsComponent physics = physicsM.get(entity);
         TransformComponent transform = transformM.get(entity);

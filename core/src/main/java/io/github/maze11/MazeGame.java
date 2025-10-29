@@ -9,6 +9,7 @@ import io.github.maze11.assetLoading.Assets;
 public class MazeGame extends Game {
     private SpriteBatch batch;
     private Assets assets;
+    public static final int PIXELS_TO_UNIT = 32;
 
     public SpriteBatch getBatch() {
         return batch;
