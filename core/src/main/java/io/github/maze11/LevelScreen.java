@@ -20,7 +20,7 @@ import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systems.CollectableSystem;
+import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerRendererSystem;
 import io.github.maze11.systems.TimerSystem;
@@ -71,7 +71,7 @@ public class LevelScreen implements Screen {
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
         // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new CollectableSystem(messagePublisher, engine, entityMaker));
+        engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -130,7 +130,7 @@ public class LevelScreen implements Screen {
         batch.end();
 
          mapRenderer.render(new int[] { 1 });
-         
+
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 

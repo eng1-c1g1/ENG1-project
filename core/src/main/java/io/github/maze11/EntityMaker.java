@@ -13,7 +13,7 @@ import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.*;
-import io.github.maze11.messages.CollectableMessage;
+import io.github.maze11.messages.Message;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -191,10 +191,11 @@ public class EntityMaker {
 
     // TODO: Make a proper way of creating collectables (by type)
     // FIXME: Make the collectable a sensor so that it is not pushable
-    public Entity makeCollectable(float x, float y, CollectableMessage message, AssetId assetId) {
+    public Entity makeCollectable(float x, float y, Message message, AssetId assetId) {
         Entity entity = makeVisibleEntity(x, y, assetId);
-        var collectableComponent = new CollectableComponent();
+        var collectableComponent = new InteractableComponent();
         collectableComponent.activationMessage = message;
+        collectableComponent.disappearOnInteract = true;
         entity.add(collectableComponent);
 
         addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
