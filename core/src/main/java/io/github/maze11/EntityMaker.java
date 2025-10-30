@@ -16,6 +16,7 @@ import io.github.maze11.components.*;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.Message;
+import io.github.maze11.messages.Message;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
