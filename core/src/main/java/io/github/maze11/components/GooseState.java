@@ -1,5 +1,5 @@
 package io.github.maze11.components;
 
-public enum ChaseState {
+public enum GooseState {
     IDLE, CHASE
 }

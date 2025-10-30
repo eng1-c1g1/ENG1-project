@@ -8,15 +8,15 @@ import io.github.maze11.components.*;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
-public class ChaseSystem extends IteratingFixedStepSystem {
-    ComponentMapper<ChaseComponent> chaseMapper =  ComponentMapper.getFor(ChaseComponent.class);
+public class GooseSystem extends IteratingFixedStepSystem {
+    ComponentMapper<GooseComponent> chaseMapper =  ComponentMapper.getFor(GooseComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
     ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
 
     private Entity target;
 
-    public ChaseSystem(FixedStepper fixedStepper) {
-        super(fixedStepper, Family.all(ChaseComponent.class, TransformComponent.class, PhysicsComponent.class).get());
+    public GooseSystem(FixedStepper fixedStepper) {
+        super(fixedStepper, Family.all(GooseComponent.class, TransformComponent.class, PhysicsComponent.class).get());
     }
 
     public void setTarget(Entity target){
@@ -52,7 +52,7 @@ public class ChaseSystem extends IteratingFixedStepSystem {
     private void processIdle(ProcessData data) {
         // If it is within range, switch to chase state
         if (magnitudeIsWithin(data.displacementFromTarget, data.chase.detectionRadius)){
-            data.chase.state = ChaseState.CHASE;
+            data.chase.state = GooseState.CHASE;
             return;
         }
         // Does not need to do anything else while idle
@@ -64,7 +64,7 @@ public class ChaseSystem extends IteratingFixedStepSystem {
     private void processChase(ProcessData data) {
         // If it is too far away, switches to idle state
         if (magnitudeIsWithin(data.displacementFromTarget, data.chase.forgetRadius)){
-            data.chase.state = ChaseState.IDLE;
+            data.chase.state = GooseState.IDLE;
             return;
         }
 
@@ -83,6 +83,6 @@ public class ChaseSystem extends IteratingFixedStepSystem {
         return vector.len2() <= limit * limit;
     }
 
-    private record ProcessData(Entity entity, float deltaTime, ChaseComponent chase, TransformComponent transform,
+    private record ProcessData(Entity entity, float deltaTime, GooseComponent chase, TransformComponent transform,
                                PhysicsComponent physics, TransformComponent target, Vector2 displacementFromTarget) {}
 }

@@ -5,8 +5,8 @@ import com.badlogic.ashley.core.Component;
 /**
  * Makes the entity chase a target
  */
-public class ChaseComponent implements Component {
-    public ChaseState state = ChaseState.IDLE;
+public class GooseComponent implements Component {
+    public GooseState state = GooseState.IDLE;
     public float speed = 4f;
     /** The distance to the target below which it begins chasing */
     public float detectionRadius = 5f;

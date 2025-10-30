@@ -60,7 +60,7 @@ public class InteractableSystem extends EntitySystem {
 
         if (interactableComponent.disappearOnInteract) {
             // Remove the interactable object and all its components
-            entityMaker.destroy(interactable);
+            engine.removeEntity(interactable);
         }
     }
 }

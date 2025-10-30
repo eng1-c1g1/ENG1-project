@@ -13,6 +13,8 @@ import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.Message;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
@@ -190,25 +192,33 @@ public class EntityMaker {
     }
 
     // TODO: Make a proper way of creating collectables (by type)
-    // FIXME: Make the collectable a sensor so that it is not pushable
-    public Entity makeCollectable(float x, float y, Message message, AssetId assetId) {
+    private Entity makeInteractable(float x, float y, Message message, boolean disappearOnInteract, AssetId assetId) {
         Entity entity = makeVisibleEntity(x, y, assetId);
-        var collectableComponent = new InteractableComponent();
-        collectableComponent.activationMessage = message;
-        collectableComponent.disappearOnInteract = true;
-        entity.add(collectableComponent);
-
-        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
-
+        var interactableComponent = new InteractableComponent();
+        interactableComponent.activationMessage = message;
+        interactableComponent.disappearOnInteract = disappearOnInteract;
+        entity.add(interactableComponent);
         return entity;
     }
 
-    /**
-     * Removes the entity from the engine, disposing of all the components
-     */
-    public void destroy(Entity entity){
-        // TODO: Write code for disposing of entities
-        engine.removeEntity(entity);
+    public Entity makeCoffee(float x, float y){
+        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(),true, AssetId.COFFEE);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
+        return entity;
+    }
+
+    public Entity makeGoose(float x, float y){
+        // Create an interactable and set the message to match it
+        var message = new GooseBiteMessage();
+        Entity entity = makeInteractable(x, y, message,false, AssetId.GOOSE);
+        message.setGooseEntity(entity);
+
+        // Add behaviour and physics
+        entity.add(engine.createComponent(GooseComponent.class));
+        addBoxCollider(entity, x, y, 0.9f, 0.9f, 0f, 0.5f,
+            BodyDef.BodyType.DynamicBody, true);
+
+        return entity;
     }
 }
 

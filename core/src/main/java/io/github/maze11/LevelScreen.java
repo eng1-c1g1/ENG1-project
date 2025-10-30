@@ -18,12 +18,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.Message;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systems.InteractableSystem;
-import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
-import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.*;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
@@ -70,8 +68,12 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
+        // Initialise gooseSystem beforehand
+        GooseSystem gooseSystem;
+
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
+        engine.addSystem(gooseSystem = new GooseSystem(fixedStepper));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -79,22 +81,21 @@ public class LevelScreen implements Screen {
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
         engine.addSystem(new TimerSystem()); // add Timer System to update timers
-
-
-
-        timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
-        engine.addSystem(timerRendererSystem); // add to system
+        engine.addSystem(timerRendererSystem = new TimerRendererSystem(game)); // initialise timerRenderingSystem
 
         // create walls from tiled layer
         createWallCollisions();
 
         // Populate the world with objects
-        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
-        entityMaker.makePlayer(4f, 4f);
+        Entity player = entityMaker.makePlayer(4f, 4f);
+        entityMaker.makeCoffee(6f, 10f);
+        entityMaker.makeGoose(10f, 10f);
 
 
         // Create 5-minute timer
         timerEntity = entityMaker.makeTimer(300f);
+        // Give geese a reference to the player, now that the player has been created
+        gooseSystem.setTarget(player);
 
         debugRenderer = new Box2DDebugRenderer();
     }
