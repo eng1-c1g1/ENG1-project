@@ -63,7 +63,7 @@ public class GooseSystem extends IteratingFixedStepSystem {
 
     private void processChase(ProcessData data) {
         // If it is too far away, switches to idle state
-        if (magnitudeIsWithin(data.displacementFromTarget, data.chase.forgetRadius)){
+        if (!magnitudeIsWithin(data.displacementFromTarget, data.chase.forgetRadius)){
             data.chase.state = GooseState.IDLE;
             return;
         }

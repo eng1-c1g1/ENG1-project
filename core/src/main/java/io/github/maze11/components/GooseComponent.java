@@ -11,5 +11,5 @@ public class GooseComponent implements Component {
     /** The distance to the target below which it begins chasing */
     public float detectionRadius = 5f;
     /** If it is chasing and the target goes outside this radius, it stops chasing */
-    public float forgetRadius = 8f;
+    public float forgetRadius = 10f;
 }
