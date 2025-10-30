@@ -16,12 +16,13 @@ public class GooseSystem extends IteratingFixedStepSystem {
     ComponentMapper<GooseComponent> gooseMapper =  ComponentMapper.getFor(GooseComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
     ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
+    ComponentMapper<InteractableComponent> interactableMapper = ComponentMapper.getFor(InteractableComponent.class);
 
     private Entity target;
-    private MessageListener messageListener;
+    private final MessageListener messageListener;
 
     public GooseSystem(FixedStepper fixedStepper, MessagePublisher publisher) {
-        super(fixedStepper, Family.all(GooseComponent.class, TransformComponent.class, PhysicsComponent.class).get());
+        super(fixedStepper, Family.all(GooseComponent.class, TransformComponent.class, PhysicsComponent.class, InteractableComponent.class).get());
         this.messageListener = new MessageListener(publisher);
     }
 
@@ -37,10 +38,11 @@ public class GooseSystem extends IteratingFixedStepSystem {
         // Find useful references and values here, to avoid doing this in every state
         var transform = transformMapper.get(entity);
         var targetTransform = transformMapper.get(target);
+        var interactable = interactableMapper.get(entity);
         // Displacement vector to get to the target
         Vector2 displacement = new Vector2(targetTransform.position).sub(transform.position);
         var data = new ProcessData(entity, deltaTime, gooseMapper.get(entity), transform,
-            physicsMapper.get(entity), targetTransform, displacement);
+            physicsMapper.get(entity), interactable, targetTransform, displacement);
 
         // Determine what to do based on the state
         switch (gooseMapper.get(entity).state) {
@@ -102,12 +104,17 @@ public class GooseSystem extends IteratingFixedStepSystem {
 
         // When the time elapses, the goose resumes aggression
         if (data.goose.retreatTimeElapsed > data.goose().retreatTime){
+            // Re-enable interactions so that the goose can bite the player again
+            data.interactable.interactionEnabled = true;
             enterChase(data.goose);
         }
 
         // Calculate velocity vector to move away from the player based on speed and direction
         var velocity = new Vector2(data.displacementFromTarget).nor().scl(-data.goose.retreatSpeed);
         data.physics.body.setLinearVelocity(velocity);
+
+        // Note: the goose cannot bite the player in the retreat phase, since interactions are disabled when a bite happens
+        // The bite behaviour is re-enabled when the goose exits this state
     }
 
     // These 3 methods ensure that any additional transition logic is carried out
@@ -134,5 +141,6 @@ public class GooseSystem extends IteratingFixedStepSystem {
     }
 
     private record ProcessData(Entity entity, float deltaTime, GooseComponent goose, TransformComponent transform,
-                               PhysicsComponent physics, TransformComponent target, Vector2 displacementFromTarget) {}
+                               PhysicsComponent physics, InteractableComponent interactable, TransformComponent target,
+                               Vector2 displacementFromTarget) {}
 }
