@@ -5,18 +5,24 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.components.*;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.MessageListener;
+import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.MessageType;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
 public class GooseSystem extends IteratingFixedStepSystem {
-    ComponentMapper<GooseComponent> chaseMapper =  ComponentMapper.getFor(GooseComponent.class);
+    ComponentMapper<GooseComponent> gooseMapper =  ComponentMapper.getFor(GooseComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
     ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
 
     private Entity target;
+    private MessageListener messageListener;
 
-    public GooseSystem(FixedStepper fixedStepper) {
+    public GooseSystem(FixedStepper fixedStepper, MessagePublisher publisher) {
         super(fixedStepper, Family.all(GooseComponent.class, TransformComponent.class, PhysicsComponent.class).get());
+        this.messageListener = new MessageListener(publisher);
     }
 
     public void setTarget(Entity target){
@@ -26,51 +32,95 @@ public class GooseSystem extends IteratingFixedStepSystem {
     @Override
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
 
+        handleMessages();
+
         // Find useful references and values here, to avoid doing this in every state
         var transform = transformMapper.get(entity);
         var targetTransform = transformMapper.get(target);
         // Displacement vector to get to the target
         Vector2 displacement = new Vector2(targetTransform.position).sub(transform.position);
-        var data = new ProcessData(entity, deltaTime, chaseMapper.get(entity), transform,
+        var data = new ProcessData(entity, deltaTime, gooseMapper.get(entity), transform,
             physicsMapper.get(entity), targetTransform, displacement);
 
         // Determine what to do based on the state
-        switch (chaseMapper.get(entity).state) {
+        switch (gooseMapper.get(entity).state) {
             case IDLE:
                 processIdle(data);
                 break;
             case CHASE:
                 processChase(data);
                 break;
+            case RETREAT:
+                processRetreat(data);
+                break;
             default:
-                System.out.println("Unknown state: " + chaseMapper.get(entity).state);
+                System.out.println("Unknown state: " + gooseMapper.get(entity).state);
                 break;
 
         }
     }
 
+    private void handleMessages(){
+        while (messageListener.hasNext()){
+            var message = messageListener.next();
+            if (message.type == MessageType.GOOSE_BITE){
+                //Should be safe to cast since only messages of this type should be called GOOSE_BITE
+                // Throwing an exception on invalid cast is acceptable for this reason
+                Entity entity = ((GooseBiteMessage)message).getGooseEntity();
+                var gooseComponent = gooseMapper.get(entity);
+                // After successfully biting the player, the goose should flee for a short time
+                enterRetreat(gooseComponent);
+            }
+        }
+    }
+
     private void processIdle(ProcessData data) {
-        // If it is within range, switch to chase state
-        if (magnitudeIsWithin(data.displacementFromTarget, data.chase.detectionRadius)){
-            data.chase.state = GooseState.CHASE;
+        // If it is within range, switch to goose state
+        if (magnitudeIsWithin(data.displacementFromTarget, data.goose.detectionRadius)){
+            enterChase(data.goose);
             return;
         }
         // Does not need to do anything else while idle
-
         // Ensure velocity is zero in case it was non-zero from previous state
         data.physics.body.setLinearVelocity(0f, 0f);
     }
 
     private void processChase(ProcessData data) {
         // If it is too far away, switches to idle state
-        if (!magnitudeIsWithin(data.displacementFromTarget, data.chase.forgetRadius)){
-            data.chase.state = GooseState.IDLE;
+        if (!magnitudeIsWithin(data.displacementFromTarget, data.goose.forgetRadius)){
+            enterIdle(data.goose);
             return;
         }
 
         // Calculate velocity vector from speed and direction
-        var velocity = new Vector2(data.displacementFromTarget).nor().scl(data.chase.speed);
+        var velocity = new Vector2(data.displacementFromTarget).nor().scl(data.goose.attackSpeed);
         data.physics.body.setLinearVelocity(velocity);
+    }
+
+    private void processRetreat(ProcessData data) {
+        data.goose.retreatTimeElapsed += data.deltaTime;
+
+        // When the time elapses, the goose resumes aggression
+        if (data.goose.retreatTimeElapsed > data.goose().retreatTime){
+            enterChase(data.goose);
+        }
+
+        // Calculate velocity vector to move away from the player based on speed and direction
+        var velocity = new Vector2(data.displacementFromTarget).nor().scl(-data.goose.retreatSpeed);
+        data.physics.body.setLinearVelocity(velocity);
+    }
+
+    // These 3 methods ensure that any additional transition logic is carried out
+
+    private void enterIdle(GooseComponent gooseComponent){
+        gooseComponent.state = GooseState.IDLE;
+    }
+    private void enterChase(GooseComponent gooseComponent){
+        gooseComponent.state = GooseState.CHASE;
+    }
+    private void enterRetreat(GooseComponent gooseComponent){
+        gooseComponent.retreatTimeElapsed = 0f;
+        gooseComponent.state = GooseState.RETREAT;
     }
 
     /**
@@ -83,6 +133,6 @@ public class GooseSystem extends IteratingFixedStepSystem {
         return vector.len2() <= limit * limit;
     }
 
-    private record ProcessData(Entity entity, float deltaTime, GooseComponent chase, TransformComponent transform,
+    private record ProcessData(Entity entity, float deltaTime, GooseComponent goose, TransformComponent transform,
                                PhysicsComponent physics, TransformComponent target, Vector2 displacementFromTarget) {}
 }

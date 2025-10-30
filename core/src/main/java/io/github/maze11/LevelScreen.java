@@ -78,7 +78,7 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
-        engine.addSystem(gooseSystem = new GooseSystem(fixedStepper));
+        engine.addSystem(gooseSystem = new GooseSystem(fixedStepper, messagePublisher));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
