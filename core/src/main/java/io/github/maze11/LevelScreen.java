@@ -17,8 +17,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.Message;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systems.*;
@@ -58,7 +56,7 @@ public class LevelScreen implements Screen {
         // Create rendering singletons
         OrthographicCamera camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssets().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
+        map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
         //create the font
         defaultFont = new BitmapFont();

@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.assetLoading.Assets;
+import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
@@ -17,7 +17,6 @@ import io.github.maze11.components.*;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.Message;
-import io.github.maze11.messages.Message;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -25,11 +24,11 @@ import io.github.maze11.systems.physics.PhysicsSystem;
  */
 public class EntityMaker {
     private final PooledEngine engine;
-    private final Assets assets;
+    private final AssetLoader assetLoader;
 
     public EntityMaker(PooledEngine engine, MazeGame game) {
         this.engine = engine;
-        this.assets = game.getAssets();
+        this.assetLoader = game.getAssetLoader();
     }
 
     private Entity makeEmptyEntity(){
@@ -60,7 +59,7 @@ public class EntityMaker {
     }
 
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
-        return makeVisibleEntity(x, y, 1f, 1f, 0f, assets.get(textureId, Texture.class));
+        return makeVisibleEntity(x, y, 1f, 1f, 0f, assetLoader.get(textureId, Texture.class));
     }
 
     // Adds a box collider to an entity
