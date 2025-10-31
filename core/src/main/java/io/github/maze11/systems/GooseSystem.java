@@ -13,6 +13,9 @@ import io.github.maze11.messages.MessageType;
 import io.github.maze11.systemTypes.FixedStepper;
 import io.github.maze11.systemTypes.IteratingFixedStepSystem;
 
+/**
+ * Represents a goose which wanders aimlessly until it sees the player, then attacks
+ */
 public class GooseSystem extends IteratingFixedStepSystem {
     ComponentMapper<GooseComponent> gooseMapper =  ComponentMapper.getFor(GooseComponent.class);
     ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
