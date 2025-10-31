@@ -3,6 +3,7 @@ package io.github.maze11;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.maze11.assetLoading.AssetId;
@@ -215,7 +216,9 @@ public class EntityMaker {
         message.setGooseEntity(entity);
 
         // Add behaviour and physics
-        entity.add(engine.createComponent(GooseComponent.class));
+        var gooseComponent = engine.createComponent(GooseComponent.class);
+        gooseComponent.homePosition = new Vector2(x, y);
+        entity.add(gooseComponent);
         addBoxCollider(entity, x, y, 0.9f, 0.9f, 0f, 0.5f,
             BodyDef.BodyType.DynamicBody, true);
 
