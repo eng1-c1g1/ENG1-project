@@ -54,13 +54,21 @@ public class InteractableSystem extends EntitySystem {
     }
 
     private void handleInteraction(Entity player, Entity interactable){
-        // Sends a message causing the interaction effect to occur
         var interactableComponent = interactableMapper.get(interactable);
+
+        if (!interactableComponent.interactionEnabled){
+            return;
+        }
+        // Sends a message causing the interaction effect to occur
+
         messageListener.publisher.publish(interactableComponent.activationMessage);
+        // Interactions are disabled once it has occurred once, to prevent the interaction firing multiple times in
+        // quick succession. Can be re-enabled by other systems if necessary
+        interactableComponent.interactionEnabled = false;
 
         if (interactableComponent.disappearOnInteract) {
             // Remove the interactable object and all its components
-            entityMaker.destroy(interactable);
+            engine.removeEntity(interactable);
         }
     }
 }

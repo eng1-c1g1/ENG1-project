@@ -12,11 +12,11 @@ import java.util.HashMap;
  * Manages all assets using symbolic identifiers instead of hard-coding addresses.
  * This is to prevent the need to duplicate address data across the code and lead to unmaintainable code
  */
-public class Assets {
+public class AssetLoader {
     private final AssetManager assetManager;
     private final HashMap<AssetKey<?>, String> assetMap;
 
-    public Assets() {
+    public AssetLoader() {
         assetManager = new AssetManager();
 
         assetMap = new HashMap<>();

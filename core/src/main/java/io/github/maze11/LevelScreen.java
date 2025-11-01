@@ -1,10 +1,6 @@
 package io.github.maze11;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -21,13 +17,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systems.InteractableSystem;
-import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
-import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.*;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
@@ -50,9 +42,9 @@ public class LevelScreen implements Screen {
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
 
-    private static final ComponentMapper<PhysicsComponent> physicsMapper = 
+    private static final ComponentMapper<PhysicsComponent> physicsMapper =
         ComponentMapper.getFor(PhysicsComponent.class);
-    
+
     private Entity timerEntity; // entity that holds the timer
     private TimerRendererSystem timerRendererSystem; // system to render the time
 
@@ -64,7 +56,7 @@ public class LevelScreen implements Screen {
         // Create rendering singletons
         OrthographicCamera camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssets().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
+        map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
         //create the font
         defaultFont = new BitmapFont();
@@ -79,8 +71,12 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
+        // Initialise gooseSystem beforehand
+        GooseSystem gooseSystem;
+
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
+        engine.addSystem(gooseSystem = new GooseSystem(fixedStepper, messagePublisher));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -88,22 +84,22 @@ public class LevelScreen implements Screen {
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
         engine.addSystem(new TimerSystem()); // add Timer System to update timers
+        engine.addSystem(timerRendererSystem = new TimerRendererSystem(game)); // initialise timerRenderingSystem
 
         registerPhysicsCleanupListener(); // register listener to destroy physics bodies on entity removal
-
-        timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
-        engine.addSystem(timerRendererSystem); // add to system
-
         // create walls from tiled layer
         createWallCollisions();
 
         // Populate the world with objects
-        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
-        entityMaker.makePlayer(4f, 4f);
+        Entity player = entityMaker.makePlayer(4f, 4f);
+        entityMaker.makeCoffee(6f, 10f);
+        entityMaker.makeGoose(10f, 10f);
 
 
         // Create 5-minute timer
         timerEntity = entityMaker.makeTimer(300f);
+        // Give geese a reference to the player, now that the player has been created
+        gooseSystem.setTarget(player);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -139,7 +135,7 @@ public class LevelScreen implements Screen {
         batch.end();
 
          mapRenderer.render(new int[] { 1 });
-         
+
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 
