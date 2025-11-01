@@ -1,4 +1,5 @@
 package io.github.maze11.systems;
+
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -35,22 +36,13 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         Vector2 direction = new Vector2(0f, 0f);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            direction.x = 1f;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            direction.y = 1f;
-        }
+        // Reduce instead of setting to handle scenario where both left and right or up and down are pressed
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) direction.x += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) direction.x -= 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) direction.y += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) direction.y -= 1f;
 
-        // If negative direction is pressed, reduce by 1
-        //Reduce instead of setting to handle scenario where both left and right are pressed
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            direction.x -= 1f;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            direction.y -= 1f;
-        }
-        direction.nor();
+        if (direction.len2() > 0f) direction.nor();
         return direction;
     }
 
@@ -65,19 +57,43 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 System.out.println("Coffee collected");
             }
         }
-
         super.fixedUpdate(deltaTime);
     }
 
     @Override
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PlayerComponent player = playerMapper.get(entity);
-        TransformComponent transform = transformMapper.get(entity);
         PhysicsComponent physics = physicsMapper.get(entity);
-
         Vector2 direction = getDirectionalInput();
 
+        Vector2 velocity = physics.body.getLinearVelocity();
+        Vector2 desiredVelocity = new Vector2(direction).scl(player.maxSpeed);
+
+        if (direction.len2() > 0) {
+            //Accelerate
+            Vector2 toTarget = desiredVelocity.sub(velocity);
+            float accelStep = player.acceleration * deltaTime;
+
+            if (toTarget.len2() > accelStep * accelStep) {
+                toTarget.nor().scl(accelStep);
+            }
+            velocity.add(toTarget);
+        } else {
+            //Decelerate
+            float speed = velocity.len();
+            if (speed > 0) {
+                float decelAmount = player.deceleration * deltaTime;
+                speed = Math.max(speed - decelAmount, 0);
+                velocity.nor().scl(speed);
+            }
+        }
+
+        //Clamp to max speed just in case
+        if (velocity.len2() > player.maxSpeed * player.maxSpeed) {
+            velocity.nor().scl(player.maxSpeed);
+        }
+        
         //modify velocity, to be handled by physics system for clean collisions
-        physics.body.setLinearVelocity(direction.scl(player.moveSpeed));
+        physics.body.setLinearVelocity(velocity);
     }
 }
