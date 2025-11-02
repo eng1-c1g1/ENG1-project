@@ -26,7 +26,6 @@ import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.components.GameStateComponent;
 import io.github.maze11.systems.GameStateSystem;
 
 
@@ -73,19 +72,13 @@ public class LevelScreen implements Screen {
         messagePublisher = new MessagePublisher();
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
-        // create game state entity to track current state game (menu, playing, win, lose)
-        Entity gameStateEntity = engine.createEntity();
-        GameStateComponent gameState = engine.createComponent(GameStateComponent.class);
-        gameState.currentState = GameStateComponent.State.PLAYING; // Start in playing state
-        gameStateEntity.add(gameState);
-        engine.addEntity(gameStateEntity); 
+    
 
-        // input -> sync -> physics -> render (for no input delay)
-        engine.addSystem(new GameStateSystem(messagePublisher));
         // Initialise gooseSystem beforehand
         GooseSystem gooseSystem;
 
         // input -> sync -> physics -> render (for no input delay)
+        engine.addSystem(new GameStateSystem(messagePublisher, game));
         engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
         engine.addSystem(gooseSystem = new GooseSystem(fixedStepper, messagePublisher));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
@@ -113,6 +106,8 @@ public class LevelScreen implements Screen {
         gooseSystem.setTarget(player);
 
         debugRenderer = new Box2DDebugRenderer();
+
+        System.out.println("Level Screen created - game started!");
     }
 
 
@@ -233,6 +228,9 @@ public class LevelScreen implements Screen {
         if (debugRenderer != null) {
             debugRenderer.dispose();
         }
+
+        engine.removeAllEntities();
+        System.out.println("Level Screen disposed - all entities cleaned up");
     }
 
     /**

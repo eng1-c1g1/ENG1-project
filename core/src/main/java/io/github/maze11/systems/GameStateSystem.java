@@ -1,56 +1,39 @@
 package io.github.maze11.systems;
 
 import com.badlogic.ashley.core.*;
-import com.badlogic.ashley.utils.ImmutableArray;
-import io.github.maze11.components.GameStateComponent;
 import io.github.maze11.messages.*;
+import io.github.maze11.MazeGame;
+import io.github.maze11.GameOverScreen;
+import io.github.maze11.WinScreen;
 
 /**
  * systemm responsive for managing game state transitions.
- * listens for game events (like timer expiry) and updates the game state accordingly 
- * 
+ * listens for game events and tells MazeGame to switchs screen when needed
  */
 public class GameStateSystem extends EntitySystem {
-    private ImmutableArray<Entity> entities;
     private final MessageListener messageListener;
+    private final MazeGame game;
 
     // creates a new game state system.
-    public GameStateSystem(MessagePublisher messagePublisher) {
+    public GameStateSystem(MessagePublisher messagePublisher, MazeGame game) {
         this.messageListener = new MessageListener(messagePublisher);
+        this.game = game;
     }
 
-    /**
-     * called when this system is added to engine
-     * sets up familty of entities this system processes (entities with GameStateCOmponent)
-     */
-
-     @Override
-     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor(Family.all(GameStateComponent.class).get());
-     }
-
-     /**
-      * updates the game state based on received messages.
-      called every frame by engine
-      */
       @Override
       public void update(float deltaTime) {
-        // process al lmessages recived since last update
         while (messageListener.hasNext()) {
             Message msg = messageListener.next();
 
             // handle timer expiration 
             if (msg.type == MessageType.TIMER_EXPIRED) {
-                //change state to LOSE when timer expires
-                for (Entity entity : entities) {
-                    GameStateComponent state = entity.getComponent(GameStateComponent.class);
-                    // only tranasition to LOSE if currently playing
-                    if (state.currentState == GameStateComponent.State.PLAYING) {
-                        state.currentState = GameStateComponent.State.LOSE;
-                        System.out.println("Game Over! Timer Expired. State changed to LOSE.");
-                    }
-                }
+                System.out.println("Timer Expired! Switching to Game Over Screen...");
+                // TODO: Replace 0 with actual score when scoring system is implemented
+                game.setScreen(new GameOverScreen(game, 0));
             }
+
+            //TODO: Add win condition handling
+
         }
       }
     
