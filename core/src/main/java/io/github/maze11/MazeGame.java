@@ -10,6 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import io.github.maze11.assetLoading.AssetLoader;
 
+/**
+ * main game class that manages screen switching and shared resources.
+ * Extends LibGDX Game class which provides screen management via setScreen().
+ * 
+ * Each Screen is indepedent and owns its own resources (fonts, UI, ECS)
+ */
 public class MazeGame extends Game {
     private SpriteBatch batch;
     private AssetLoader assetLoader;

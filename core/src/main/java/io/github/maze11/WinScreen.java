@@ -15,7 +15,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * Win screen shown when player completes the game.
- * Displays total score and breakdown.
+ * Displays total score and breakdown of how score was calcualted.
+ * 
+ * this scene is triggered when player reaches the exit (//TODO: Implement win condition)
  */
 public class WinScreen implements Screen {
     private final MazeGame game;
@@ -27,7 +29,7 @@ public class WinScreen implements Screen {
     private final int completionBonus;
     private BitmapFont titleFont;
     private BitmapFont bodyFont;
-
+    // 
     public WinScreen(MazeGame game, int totalScore, int coffeeScore, int timeBonus, int completionBonus) {
         this.game = game;
         this.totalScore = totalScore;

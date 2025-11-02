@@ -14,7 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
- * Main menu screen contains UI logic for buttons.
+ * Main menu screen contains UI logic for buttons when game starts
+ * provides options to start gam or quit
  */
 public class MenuScreen implements Screen {
     private final MazeGame game;
@@ -22,21 +23,24 @@ public class MenuScreen implements Screen {
     private final Skin skin;
     private BitmapFont titleFont;
     private BitmapFont bodyFont;
-
+    // creates menu screen
     public MenuScreen(MazeGame game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport());
         this.skin = new Skin(Gdx.files.internal("ui/uiskin.json")); // Own skin
 
-        // Generate Roboto fonts for this screen
+        // create custom Roboto fonts for this screen
         generateRobotoFonts();
 
         buildUI();
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage); // enables input handling for buttons
         
         System.out.println("Menu screen launched with Roboto font");
     }
-
+    /**
+     * generates roboto fonts from ttf (trueType) file
+     * uses default skin fonts if loading fails 
+     */
     private void generateRobotoFonts() {
         try {
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
@@ -66,7 +70,14 @@ public class MenuScreen implements Screen {
             bodyFont = skin.getFont("default-font");
         }
     }
-
+    /**
+     * builds the UI layout for the menu scr
+     * Layout (top to bottom):
+     * - title: "Maze Game"
+     * - subtitle: "navigate the maze!"
+     * - start game button -> switches to levelscreen
+     * - quit button -> exits application
+     */
     private void buildUI() {
         Table table = new Table();
         table.setFillParent(true);
@@ -84,11 +95,11 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Starting game...");
-                game.setScreen(new LevelScreen(game));
-                dispose();
+                game.setScreen(new LevelScreen(game)); // switch to gameplayscreen 
+                dispose(); // clean up menyu screen rsources 
             }
         });
-
+        // quit button - exits application 
         TextButton quitButton = new TextButton("Quit", skin);
         quitButton.addListener(new ClickListener() {
             @Override
@@ -96,8 +107,8 @@ public class MenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
-
-        table.add(title).padBottom(20).row();
+        // vertical stack layout for elements in menu screen
+        table.add(title).padBottom(20).row(); // e.g. title with 20px space below
         table.add(subtitle).padBottom(40).row();
         table.add(startButton).width(200).height(60).padBottom(10).row();
         table.add(quitButton).width(200).height(60);
@@ -116,7 +127,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, true); // updates viewport on window resize
     }
 
     @Override

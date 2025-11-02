@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 /**
  * Game over screen shown when timer runs out.
  * Displays score passed from GameStateSystem.
+ * provides options to restart or return to main menu 
+ * 
+ * this screen is triggered by GameStateSystem when it recieves a TIMER_EXPIRED message.
  */
 public class GameOverScreen implements Screen {
     private final MazeGame game;
@@ -24,7 +27,7 @@ public class GameOverScreen implements Screen {
     private final int score;
     private BitmapFont titleFont;
     private BitmapFont bodyFont;
-
+    // creates the game over screen
     public GameOverScreen(MazeGame game, int score) {
         this.game = game;
         this.score = score;
@@ -70,6 +73,9 @@ public class GameOverScreen implements Screen {
         }
     }
 
+    /**
+     * builds the UI layout using scene2D table same as MenuScreen
+     */
     private void buildUI() {
         Table table = new Table();
         table.setFillParent(true);
@@ -91,11 +97,11 @@ public class GameOverScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Restarting game...");
-                game.setScreen(new LevelScreen(game));
-                dispose();
+                game.setScreen(new LevelScreen(game)); // new LevelScreen i.e. fresh ECS World
+                dispose(); // clean up game over screen resources 
             }
         });
-
+        // main menu button to return to menuScreeen
         TextButton menuButton = new TextButton("Main Menu", skin);
         menuButton.addListener(new ClickListener() {
             @Override
@@ -105,7 +111,7 @@ public class GameOverScreen implements Screen {
                 dispose();
             }
         });
-
+        // vertical stack layout again between elements 
         table.add(title).padBottom(20).row();
         table.add(subtitle).padBottom(20).row();
         table.add(scoreLabel).padBottom(40).row();
@@ -141,6 +147,10 @@ public class GameOverScreen implements Screen {
     @Override
     public void hide() {}
 
+    /**
+     * cleans up resources when screen is disposed
+     * each Screen uses its own resource so must dispose them there. 
+     */
     @Override
     public void dispose() {
         stage.dispose();
