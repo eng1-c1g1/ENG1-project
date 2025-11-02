@@ -1,7 +1,6 @@
 package io.github.maze11;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -17,20 +16,19 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systems.CollectableSystem;
-import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
-import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.*;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
+import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 import io.github.maze11.components.GameStateComponent;
 import io.github.maze11.systems.GameStateSystem;
+
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -46,6 +44,9 @@ public class LevelScreen implements Screen {
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
 
+    private static final ComponentMapper<PhysicsComponent> physicsMapper =
+        ComponentMapper.getFor(PhysicsComponent.class);
+
     private Entity timerEntity; // entity that holds the timer
     private TimerRendererSystem timerRendererSystem; // system to render the time
 
@@ -57,7 +58,7 @@ public class LevelScreen implements Screen {
         // Create rendering singletons
         OrthographicCamera camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssets().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
+        map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
         //create the font
         defaultFont = new BitmapFont();
@@ -81,7 +82,12 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         engine.addSystem(new GameStateSystem(messagePublisher));
-        engine.addSystem(new CollectableSystem(messagePublisher, engine, entityMaker));
+        // Initialise gooseSystem beforehand
+        GooseSystem gooseSystem;
+
+        // input -> sync -> physics -> render (for no input delay)
+        engine.addSystem(new InteractableSystem(messagePublisher, engine, entityMaker));
+        engine.addSystem(gooseSystem = new GooseSystem(fixedStepper, messagePublisher));
         engine.addSystem(new PlayerSystem(fixedStepper, messagePublisher)); // player input system
         engine.addSystem(new PhysicsSyncSystem(fixedStepper)); // sync transform to physics bodies
         engine.addSystem(new PhysicsSystem(fixedStepper, messagePublisher)); // run physics simulation
@@ -89,22 +95,22 @@ public class LevelScreen implements Screen {
         engine.addSystem(new WorldCameraSystem(camera, game.getBatch()));
         engine.addSystem(new RenderingSystem(game).startDebugView()); // rendering system
         engine.addSystem(new TimerSystem(messagePublisher)); // add Timer System to update timers
+        engine.addSystem(timerRendererSystem = new TimerRendererSystem(game)); // initialise timerRenderingSystem
 
-
-
-        timerRendererSystem = new TimerRendererSystem(game); // initialise timerRenderingSystem
-        engine.addSystem(timerRendererSystem); // add to system
-
+        registerPhysicsCleanupListener(); // register listener to destroy physics bodies on entity removal
         // create walls from tiled layer
         createWallCollisions();
 
         // Populate the world with objects
-        entityMaker.makeCollectable(6f, 10f, new CoffeeCollectMessage(), AssetId.COFFEE);
-        entityMaker.makePlayer(4f, 4f);
+        Entity player = entityMaker.makePlayer(4f, 4f);
+        entityMaker.makeCoffee(6f, 10f);
+        entityMaker.makeGoose(10f, 10f);
 
 
         // Create 5-minute timer
-        timerEntity = entityMaker.makeTimer(10f);
+        timerEntity = entityMaker.makeTimer(10f); // short timer for testing
+        // Give geese a reference to the player, now that the player has been created
+        gooseSystem.setTarget(player);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -140,7 +146,7 @@ public class LevelScreen implements Screen {
         batch.end();
 
          mapRenderer.render(new int[] { 1 });
-         
+
         // render timer UI after main batch
         timerRendererSystem.renderTimer();
 
@@ -221,11 +227,34 @@ public class LevelScreen implements Screen {
         // dispose debug renderer and physics world
         var physicsSystem = engine.getSystem(PhysicsSystem.class);
         if (physicsSystem != null) {
-            physicsSystem.getWorld().dispose();
+            engine.removeSystem(physicsSystem); // triggers removedFromEngine which drains SafeBodyDestroy
         }
 
         if (debugRenderer != null) {
             debugRenderer.dispose();
         }
+    }
+
+    /**
+     * Registers a listener that queues Box2d bodies for destruction
+     * when their associated entities are removed from the engine.
+     */
+    private void registerPhysicsCleanupListener(){
+        engine.addEntityListener(Family.all(PhysicsComponent.class).get(),
+        new EntityListener() {
+            @Override
+            public void entityAdded(Entity entity){
+                // No action needed on addition
+            }
+
+            @Override
+            public void entityRemoved(Entity entity){
+                PhysicsComponent physicsComp = physicsMapper.get(entity);
+                if (physicsComp != null && physicsComp.body != null){
+                    SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
+                    physicsComp.body = null; // Clear reference in component
+                }
+            }
+        });
     }
 }

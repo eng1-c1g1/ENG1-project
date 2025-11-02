@@ -3,17 +3,20 @@ package io.github.maze11;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.assetLoading.Assets;
+import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.*;
-import io.github.maze11.messages.CollectableMessage;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.Message;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -21,11 +24,11 @@ import io.github.maze11.systems.physics.PhysicsSystem;
  */
 public class EntityMaker {
     private final PooledEngine engine;
-    private final Assets assets;
+    private final AssetLoader assetLoader;
 
     public EntityMaker(PooledEngine engine, MazeGame game) {
         this.engine = engine;
-        this.assets = game.getAssets();
+        this.assetLoader = game.getAssetLoader();
     }
 
     private Entity makeEmptyEntity(){
@@ -56,7 +59,7 @@ public class EntityMaker {
     }
 
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
-        return makeVisibleEntity(x, y, 1f, 1f, 0f, assets.get(textureId, Texture.class));
+        return makeVisibleEntity(x, y, 1f, 1f, 0f, assetLoader.get(textureId, Texture.class));
     }
 
     // Adds a box collider to an entity
@@ -190,24 +193,35 @@ public class EntityMaker {
     }
 
     // TODO: Make a proper way of creating collectables (by type)
-    // FIXME: Make the collectable a sensor so that it is not pushable
-    public Entity makeCollectable(float x, float y, CollectableMessage message, AssetId assetId) {
+    private Entity makeInteractable(float x, float y, Message message, boolean disappearOnInteract, AssetId assetId) {
         Entity entity = makeVisibleEntity(x, y, assetId);
-        var collectableComponent = new CollectableComponent();
-        collectableComponent.activationMessage = message;
-        entity.add(collectableComponent);
-
-        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
-
+        var interactableComponent = new InteractableComponent();
+        interactableComponent.activationMessage = message;
+        interactableComponent.disappearOnInteract = disappearOnInteract;
+        entity.add(interactableComponent);
         return entity;
     }
 
-    /**
-     * Removes the entity from the engine, disposing of all the components
-     */
-    public void destroy(Entity entity){
-        // TODO: Write code for disposing of entities
-        engine.removeEntity(entity);
+    public Entity makeCoffee(float x, float y){
+        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(),true, AssetId.COFFEE);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
+        return entity;
+    }
+
+    public Entity makeGoose(float x, float y){
+        // Create an interactable and set the message to match it
+        var message = new GooseBiteMessage();
+        Entity entity = makeInteractable(x, y, message,false, AssetId.GOOSE);
+        message.setGooseEntity(entity);
+
+        // Add behaviour and physics
+        var gooseComponent = engine.createComponent(GooseComponent.class);
+        gooseComponent.homePosition = new Vector2(x, y);
+        entity.add(gooseComponent);
+        addBoxCollider(entity, x, y, 0.9f, 0.9f, 0f, 0.5f,
+            BodyDef.BodyType.DynamicBody, true);
+
+        return entity;
     }
 }
 
