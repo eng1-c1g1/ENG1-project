@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="55">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="60">
  <tileset firstgid="1" source="limezu-interior.tsx"/>
  <tileset firstgid="1425" source="limezu-room.tsx"/>
  <tileset firstgid="1816" source="limezu-office-walls.tsx"/>
@@ -736,7 +736,7 @@
 </data>
   </layer>
  </group>
- <objectgroup id="4" name="Collisions">
+ <objectgroup id="4" name="Collisions" visible="0" locked="1">
   <object id="31" x="1371.31" y="191.581" width="2.5208"/>
   <object id="32" x="1280" y="1632" width="320" height="32"/>
   <object id="33" x="1728" y="1632" width="160" height="32"/>
@@ -752,5 +752,9 @@
   <object id="45" x="1538.36" y="1534.5" width="26.5752" height="25.718"/>
   <object id="53" x="1696" y="1376" width="64" height="192"/>
   <object id="54" x="1568" y="1376" width="64" height="192"/>
+ </objectgroup>
+ <objectgroup id="12" name="Entities">
+  <object id="56" name="Player" type="player" x="1632" y="1696" width="32" height="32"/>
+  <object id="59" name="Goose 1" type="goose" x="1757.77" y="1736.52" width="32" height="32"/>
  </objectgroup>
 </map>
