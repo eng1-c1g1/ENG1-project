@@ -101,7 +101,7 @@ public class LevelScreen implements Screen {
 
 
         // Create 5-minute timer
-        timerEntity = entityMaker.makeTimer(10f); // short timer for testing
+        timerEntity = entityMaker.makeTimer(300f); // 5-minute timer
         // Give geese a reference to the player, now that the player has been created
         gooseSystem.setTarget(player);
 

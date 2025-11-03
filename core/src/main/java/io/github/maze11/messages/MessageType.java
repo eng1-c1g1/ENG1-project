@@ -6,7 +6,6 @@ package io.github.maze11.messages;
  */
 public enum MessageType {
     COLLISION, 
-    COLLECTABLE_OBTAINED,
     TIMER_EXPIRED, // timer has reached zero
     COLLECT_COFFEE, 
     GOOSE_BITE
