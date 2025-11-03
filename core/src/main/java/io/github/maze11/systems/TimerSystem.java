@@ -3,6 +3,8 @@ package io.github.maze11.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import io.github.maze11.components.TimerComponent;
+import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.TimerExpiredMessage;
 
 /**
  * updates countdown timers and handles expiration
@@ -10,9 +12,11 @@ import io.github.maze11.components.TimerComponent;
  */
 public class TimerSystem extends IteratingSystem {
     private final ComponentMapper<TimerComponent> timerM = ComponentMapper.getFor(TimerComponent.class);
+    private final MessagePublisher messagePublisher;
     // constructor to define the family of entities this system will process
-    public TimerSystem() {
+    public TimerSystem(MessagePublisher messagePublisher) {
         super(Family.all(TimerComponent.class).get());
+        this.messagePublisher = messagePublisher;
     }
 
     @Override
@@ -31,7 +35,10 @@ public class TimerSystem extends IteratingSystem {
         if (timer.timeRemaining <= 0) {
             timer.timeRemaining = 0; // set to 0
             timer.hasExpired = true; // mark as expired
-            System.out.println("Timer expired!"); // log expiration
+
+            // publish timer expired message for other systems to react to 
+            messagePublisher.publish(new TimerExpiredMessage());
+            System.out.println("Timer expired! Publishing TimerExpiredMessage..."); // log expiration
         }
     }
 }

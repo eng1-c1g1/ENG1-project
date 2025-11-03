@@ -41,6 +41,7 @@ import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
+import io.github.maze11.systems.GameStateSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -90,6 +91,7 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         List<EntitySystem> systems = List.of(
+            new GameStateSystem(messagePublisher, game),
             new InteractableSystem(messagePublisher, engine, entityMaker),
             gooseSystem,
             new PlayerSystem(fixedStepper, messagePublisher),
@@ -98,7 +100,7 @@ public class LevelScreen implements Screen {
             new PhysicsToTransformSystem(fixedStepper),
             new WorldCameraSystem(camera, game.getBatch()),
             new RenderingSystem(game).startDebugView(),
-            new TimerSystem(),
+            new TimerSystem(messagePublisher),
             timerRendererSystem
         );
 
@@ -112,7 +114,7 @@ public class LevelScreen implements Screen {
         // Populate the world with objects
         // create walls and entities from tiled layer
         Map<String, List<Entity>> entities = extractEntities(entityMaker);
-        
+
         // Extract player
         List<Entity> players = entities.get("player");
         Entity player;
@@ -123,12 +125,13 @@ public class LevelScreen implements Screen {
         }
 
         // Create 5-minute timer
-        timerEntity = entityMaker.makeTimer(300f);
-        
+        timerEntity = entityMaker.makeTimer(300f); // 5-minute timer
         // Give geese a reference to the player, now that the player has been created
         gooseSystem.setTarget(player);
 
         debugRenderer = new Box2DDebugRenderer();
+
+        System.out.println("Level Screen created - game started!");
     }
 
     /**
@@ -291,6 +294,9 @@ public class LevelScreen implements Screen {
         if (debugRenderer != null) {
             debugRenderer.dispose();
         }
+
+        engine.removeAllEntities();
+        System.out.println("Level Screen disposed - all entities cleaned up");
     }
 
     /**
@@ -299,20 +305,20 @@ public class LevelScreen implements Screen {
      */
     private void registerPhysicsCleanupListener() {
         engine.addEntityListener(Family.all(PhysicsComponent.class).get(),
-                new EntityListener() {
-                    @Override
-                    public void entityAdded(Entity entity) {
-                        // No action needed on addition
-                    }
+        new EntityListener() {
+            @Override
+            public void entityAdded(Entity entity){
+                // No action needed on addition
+            }
 
-                    @Override
-                    public void entityRemoved(Entity entity) {
-                        PhysicsComponent physicsComp = physicsMapper.get(entity);
-                        if (physicsComp != null && physicsComp.body != null) {
-                            SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
-                            physicsComp.body = null; // Clear reference in component
-                        }
-                    }
-                });
+            @Override
+            public void entityRemoved(Entity entity){
+                PhysicsComponent physicsComp = physicsMapper.get(entity);
+                if (physicsComp != null && physicsComp.body != null){
+                    SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
+                    physicsComp.body = null; // Clear reference in component
+                }
+            }
+        });
     }
 }
