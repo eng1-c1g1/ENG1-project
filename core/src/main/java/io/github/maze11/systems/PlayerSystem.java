@@ -11,6 +11,7 @@ import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.fixedStep.FixedStepper;
@@ -53,11 +54,20 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         while (messageListener.hasNext()){
             var message = messageListener.next();
 
-            if (message instanceof CoffeeCollectMessage){
-                System.out.println("Coffee collected");
+            switch (message.type) {
+                case COLLECT_COFFEE -> {
+                    System.out.println("Coffee collected");
+                }
+                case GOOSE_BITE ->  {
+                    processGooseBite((GooseBiteMessage) message);
+                }
             }
         }
         super.fixedUpdate(deltaTime);
+    }
+
+    private void processGooseBite(GooseBiteMessage message){
+        // TODO
     }
 
     @Override

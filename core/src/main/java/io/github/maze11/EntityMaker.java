@@ -206,10 +206,7 @@ public class EntityMaker {
     }
 
     public Entity makeGoose(float x, float y){
-        // Create an interactable and set the message to match it
-        var message = new GooseBiteMessage();
-        Entity entity = makeInteractable(x, y, message,false, AssetId.GOOSE);
-        message.setGooseEntity(entity);
+        Entity entity = makeInteractable(x, y, new GooseBiteMessage(),false, AssetId.GOOSE);
 
         // Add behaviour and physics
         var gooseComponent = engine.createComponent(GooseComponent.class);
