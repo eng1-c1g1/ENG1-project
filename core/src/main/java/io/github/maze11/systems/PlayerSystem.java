@@ -13,8 +13,8 @@ import io.github.maze11.components.TransformComponent;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systemTypes.IteratingFixedStepSystem;
+import io.github.maze11.fixedStep.FixedStepper;
+import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 
 public class PlayerSystem extends IteratingFixedStepSystem {
     ComponentMapper<PlayerComponent> playerMapper;

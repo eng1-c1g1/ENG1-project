@@ -3,8 +3,9 @@ package io.github.maze11.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import io.github.maze11.components.TimerComponent;
+import io.github.maze11.messages.Message;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.TimerExpiredMessage;
+import io.github.maze11.messages.MessageType;
 
 /**
  * updates countdown timers and handles expiration
@@ -36,8 +37,8 @@ public class TimerSystem extends IteratingSystem {
             timer.timeRemaining = 0; // set to 0
             timer.hasExpired = true; // mark as expired
 
-            // publish timer expired message for other systems to react to 
-            messagePublisher.publish(new TimerExpiredMessage());
+            // publish timer expired message for other systems to react to
+            messagePublisher.publish(new Message(MessageType.TIMER_EXPIRED));
             System.out.println("Timer expired! Publishing TimerExpiredMessage..."); // log expiration
         }
     }

@@ -1,4 +1,4 @@
-package io.github.maze11;
+package io.github.maze11.screens;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +26,12 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import io.github.maze11.EntityMaker;
+import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.systems.GooseSystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
@@ -41,7 +43,7 @@ import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.systems.GameStateSystem;
+import io.github.maze11.systems.gameState.GameStateSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -61,8 +63,8 @@ public class LevelScreen implements Screen {
     private static final ComponentMapper<PhysicsComponent> physicsMapper =
         ComponentMapper.getFor(PhysicsComponent.class);
 
-    private Entity timerEntity; // entity that holds the timer
-    private TimerRendererSystem timerRendererSystem; // system to render the time
+    private final Entity timerEntity; // entity that holds the timer
+    private final TimerRendererSystem timerRendererSystem; // system to render the time
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -91,7 +93,7 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         List<EntitySystem> systems = List.of(
-            new GameStateSystem(messagePublisher, game),
+            new GameStateSystem(messagePublisher, game, engine),
             new InteractableSystem(messagePublisher, engine, entityMaker),
             gooseSystem,
             new PlayerSystem(fixedStepper, messagePublisher),
@@ -196,6 +198,7 @@ public class LevelScreen implements Screen {
                         float height = rect.height / pixelsToUnit;
                         entity = entityMaker.makeWall(x, y, width, height);
                     }
+                    case "exit" -> entity = entityMaker.makeExit(x, y);
                     default -> System.out.println("Unknown entity class: " + className);
                 }
 

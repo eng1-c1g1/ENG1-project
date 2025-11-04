@@ -3,11 +3,12 @@ package io.github.maze11;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.maze11.assetLoading.AssetLoader;
+import io.github.maze11.screens.MenuScreen;
 
 /**
  * main game class that manages screen switching and shared resources.
  * Extends LibGDX Game class which provides screen management via setScreen().
- * 
+ *
  * Each Screen is indepedent and owns its own resources (fonts, UI, ECS)
  */
 public class MazeGame extends Game {
