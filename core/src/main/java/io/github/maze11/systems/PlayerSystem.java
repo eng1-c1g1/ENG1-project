@@ -92,8 +92,23 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         if (velocity.len2() > player.maxSpeed * player.maxSpeed) {
             velocity.nor().scl(player.maxSpeed);
         }
-        
+
         //modify velocity, to be handled by physics system for clean collisions
         physics.body.setLinearVelocity(velocity);
+    }
+
+    /** Adds knockback to the player. Performs calculations to avoid two knockbacks in the same direction stacking */
+    private void addKnockback(PlayerComponent playerComponent, Vector2 extraKnockback) {
+        var currentKnockback = playerComponent.currentKnockback;
+
+        // Find what the maximum knockback is
+        float maxMagnitude = currentKnockback.len2() > extraKnockback.len2() ? currentKnockback.len() : extraKnockback.len();
+        currentKnockback.add(extraKnockback);
+
+        // If the knockbacks were in the same direction, scale so that the result is no larger than the largest of the two
+        // This prevents a player being launched very far if colliding with two sources of knockback at once
+        if (currentKnockback.len2() > maxMagnitude * maxMagnitude) {
+            currentKnockback.nor().scl(maxMagnitude);
+        }
     }
 }
