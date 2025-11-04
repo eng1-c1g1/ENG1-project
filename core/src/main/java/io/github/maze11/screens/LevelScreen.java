@@ -93,7 +93,7 @@ public class LevelScreen implements Screen {
 
         // input -> sync -> physics -> render (for no input delay)
         List<EntitySystem> systems = List.of(
-            new GameStateSystem(messagePublisher, game),
+            new GameStateSystem(messagePublisher, game, engine),
             new InteractableSystem(messagePublisher, engine, entityMaker),
             gooseSystem,
             new PlayerSystem(fixedStepper, messagePublisher),

@@ -1,6 +1,7 @@
 package io.github.maze11.systems.gameState;
 
 import com.badlogic.ashley.core.*;
+import io.github.maze11.components.TimerComponent;
 import io.github.maze11.messages.*;
 import io.github.maze11.MazeGame;
 import io.github.maze11.screens.GameOverScreen;
@@ -17,12 +18,14 @@ public class GameStateSystem extends EntitySystem {
     private final MessageListener messageListener;
     private final MazeGame game;
     private final EventCounter eventCounter;
+    private final Engine engine;
 
     // creates a new game state system.
-    public GameStateSystem(MessagePublisher messagePublisher, MazeGame game) {
+    public GameStateSystem(MessagePublisher messagePublisher, MazeGame game, Engine engine) {
         this.messageListener = new MessageListener(messagePublisher);
         this.game = game;
         this.eventCounter = new EventCounter();
+        this.engine = engine;
     }
     /**
      * updates systems by processing incoming messages.
@@ -49,12 +52,18 @@ public class GameStateSystem extends EntitySystem {
                 case EXIT_MAZE -> {
                     System.out.println("Maze exit reached! Switching to Win Screen...");
                     // TODO: Replace 0 with the number of seconds remaining
-                    var scoreCard = eventCounter.makeScoreCard(true, 0);
+                    var scoreCard = eventCounter.makeScoreCard(true, (int)getSecondsRemaining());
                     game.setScreen(new WinScreen(game, scoreCard));
                 }
             }
-
         }
       }
+    private float getSecondsRemaining(){
+          var timers = engine.getEntitiesFor(Family.all(TimerComponent.class).get());
+          if (timers.size() != 1){
+              throw new RuntimeException("There must be exactly one timer in the scene. Found " +  timers.size());
+          }
+          return timers.get(0).getComponent(TimerComponent.class).timeRemaining;
+    }
 
 }

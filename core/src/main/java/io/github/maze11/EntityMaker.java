@@ -225,10 +225,9 @@ public class EntityMaker {
     }
 
     public Entity makeExit(float x, float y){
-        Entity entity = makeInteractable(x, y, new Message(MessageType.EXIT_MAZE),false, AssetId.COFFEE);
+        Entity entity = makeInteractable(x, y, new Message(MessageType.EXIT_MAZE),false, AssetId.EXIT);
         addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
             BodyDef.BodyType.DynamicBody, true);
         return entity;
     }
 }
-

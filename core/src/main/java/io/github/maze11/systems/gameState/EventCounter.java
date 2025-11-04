@@ -19,8 +19,9 @@ public class EventCounter {
         entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -20))
     );
 
-
     private final Map<MessageType, Integer> recordedCounts = new HashMap<>();
+    private final int scorePerLeftoverSecond = 1;
+    private final int completionBonus = 100;
 
     public void receiveMessage(MessageType messageType) {
         // Check if this is a message this class is supposed to track
@@ -47,13 +48,26 @@ public class EventCounter {
 
             int scoreContribution = data.scoreBonus * occurrences;
             totalScore += scoreContribution;
-            // Add a + to the displayed contribution if it is positive or 0
-            String scoreContributionFormatted = scoreContribution >= 0 ? "+" + scoreContribution : scoreContribution + "";
 
-            breakdown.add(occurrences + " " + data.name + ": " + scoreContributionFormatted);
+            breakdown.add(occurrences + " " + data.name + ": " + formatBonus(scoreContribution));
+        }
+
+        // Time left over and completion bonus is only available if the player has left the maze
+        if (mazeExited) {
+            // Add score for left over time
+            int scoreContribution = scorePerLeftoverSecond * secondsRemaining;
+            totalScore += scoreContribution;
+            breakdown.add("Time remaining bonus: " + formatBonus(scoreContribution));
+            totalScore += completionBonus;
+            breakdown.add("Escape bonus: " + formatBonus(completionBonus));
         }
 
         return new ScoreCard(totalScore, breakdown);
+    }
+
+    private String formatBonus(int bonus) {
+        // Add a + to the displayed contribution if it is positive or 0
+        return bonus >= 0 ? "+" + bonus : bonus + "";
     }
 
     private record MessageData(String name, int scoreBonus){ }
