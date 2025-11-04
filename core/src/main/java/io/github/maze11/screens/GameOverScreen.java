@@ -22,6 +22,7 @@ public class GameOverScreen extends BaseMenuScreen {
         super(game);
         this.score = score;
         System.out.println("Game Over screen launched - Score: " + score);
+        buildUI();
     }
 
     @Override

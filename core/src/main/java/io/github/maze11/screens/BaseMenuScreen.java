@@ -35,8 +35,8 @@ public abstract class BaseMenuScreen implements Screen {
         this.titleFont = FontGenerator.generateRobotoFont(72, Color.WHITE, skin);
         this.bodyFont = FontGenerator.generateRobotoFont(28, Color.WHITE, skin);
 
-        buildUI();
         Gdx.input.setInputProcessor(stage);
+        // Edited: should not build UI in this method, since the derived constructor needs to conclude first
     }
 
     /**

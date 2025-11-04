@@ -2,7 +2,9 @@ package io.github.maze11.systems.gameState;
 
 import io.github.maze11.messages.MessageType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -31,6 +33,27 @@ public class EventCounter {
                 recordedCounts.put(messageType, 1);
             }
         }
+    }
+
+    public ScoreCard makeScoreCard(boolean mazeExited, int secondsRemaining) {
+        List<String> breakdown = new ArrayList<>();
+        int totalScore = 0;
+
+        // Calculate score from each of the tracked events
+        for (var term : messageMappings.entrySet()) {
+            // Get the number of events of this type collected. If no term, none of this event have been collected
+            int occurrences = recordedCounts.getOrDefault(term.getKey(), 0);
+            MessageData data = term.getValue();
+
+            int scoreContribution = data.scoreBonus * occurrences;
+            totalScore += scoreContribution;
+            // Add a + to the displayed contribution if it is positive or 0
+            String scoreContributionFormatted = scoreContribution >= 0 ? "+" + scoreContribution : scoreContribution + "";
+
+            breakdown.add(occurrences + " " + data.name + ": " + scoreContributionFormatted);
+        }
+
+        return new ScoreCard(totalScore, breakdown);
     }
 
     private record MessageData(String name, int scoreBonus){ }

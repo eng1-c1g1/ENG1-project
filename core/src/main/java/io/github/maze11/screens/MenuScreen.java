@@ -17,6 +17,7 @@ public class MenuScreen extends BaseMenuScreen {
     public MenuScreen(MazeGame game) {
         super(game);
         System.out.println("Menu screen launched");
+        buildUI();
     }
 
     @Override

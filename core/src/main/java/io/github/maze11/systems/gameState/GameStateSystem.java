@@ -43,13 +43,14 @@ public class GameStateSystem extends EntitySystem {
                 // handle timer expiration
                 case TIMER_EXPIRED -> {
                     System.out.println("Timer Expired! Switching to Game Over Screen...");
-                    // TODO: Replace 0 with actual score when scoring system is implemented
-                    game.setScreen(new GameOverScreen(game, 0));
+                    int totalScore = eventCounter.makeScoreCard(true, 0).totalScore();
+                    game.setScreen(new GameOverScreen(game, totalScore));
                 }
                 case EXIT_MAZE -> {
                     System.out.println("Maze exit reached! Switching to Win Screen...");
-                    // TODO: Replace 0 with actual score when scoring system is implemented
-                    game.setScreen(new WinScreen(game, 0, 0,0, 0));
+                    // TODO: Replace 0 with the number of seconds remaining
+                    var scoreCard = eventCounter.makeScoreCard(true, 0);
+                    game.setScreen(new WinScreen(game, scoreCard));
                 }
             }
 

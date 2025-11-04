@@ -6,27 +6,25 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.maze11.MazeGame;
+import io.github.maze11.systems.gameState.ScoreCard;
 import io.github.maze11.ui.FontGenerator;
+
+import java.util.ArrayList;
 
 /**
  * Win screen shown when player completes the game.
  * Displays total score and breakdown of how score was calcualted.
  *
- * this scene is triggered when player reaches the exit (//TODO: Implement win condition)
+ * this scene is triggered when player reaches the exit
  */
 public class WinScreen extends BaseMenuScreen {
-    private final int totalScore;
-    private final int coffeeScore;
-    private final int timeBonus;
-    private final int completionBonus;
+    private final ScoreCard scoreCard;
 
-    public WinScreen(MazeGame game, int totalScore, int coffeeScore, int timeBonus, int completionBonus) {
+    public WinScreen(MazeGame game, ScoreCard scoreCard) {
         super(game);
-        this.totalScore = totalScore;
-        this.coffeeScore = coffeeScore;
-        this.timeBonus = timeBonus;
-        this.completionBonus = completionBonus;
-        System.out.println("Win screen launched - Total Score: " + totalScore);
+        this.scoreCard = scoreCard;
+        System.out.println("Win screen launched - Total Score: " + scoreCard.totalScore());
+        buildUI();
     }
 
     @Override
@@ -40,15 +38,18 @@ public class WinScreen extends BaseMenuScreen {
 
         // Score labels with Roboto
         Label.LabelStyle bodyStyle = new Label.LabelStyle(bodyFont, Color.WHITE);
-        Label scoreLabel = new Label("Score: " + totalScore, bodyStyle);
+        Label scoreLabel = new Label("Score: " + scoreCard.totalScore(), bodyStyle);
 
         Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
         Label summaryTitle = new Label("Score Breakdown:", subtitleStyle);
 
         Label.LabelStyle detailStyle = new Label.LabelStyle(bodyFont, Color.CYAN);
-        Label coffeeLabel = new Label("Coffee collected: +" + coffeeScore, detailStyle);
-        Label timeBonusLabel = new Label("Time bonus: +" + timeBonus, detailStyle);
-        Label completionLabel = new Label("Completion bonus: +" + completionBonus, detailStyle);
+
+        // Create the breakdown labels from the scorecard
+        ArrayList<Label> breakdownLabels = new ArrayList<>();
+        for (String str : scoreCard.breakdown()){
+            breakdownLabels.add(new Label(str, detailStyle));
+        }
 
         BitmapFont buttonFont = FontGenerator.generateRobotoFont(24, Color.WHITE, skin);
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
@@ -75,9 +76,13 @@ public class WinScreen extends BaseMenuScreen {
         table.add(title).padBottom(30).row();
         table.add(scoreLabel).padBottom(20).row();
         table.add(summaryTitle).padBottom(10).row();
-        table.add(coffeeLabel).padBottom(5).row();
-        table.add(timeBonusLabel).padBottom(5).row();
-        table.add(completionLabel).padBottom(30).row();
+
+        // Display all the breakdown labels
+        for (var label : breakdownLabels){
+            table.add(label).padBottom(5).row();
+        }
+        table.padBottom(25).row();
+
         table.add(playAgainButton).width(200).height(60).padBottom(10).row();
         table.add(menuButton).width(200).height(60);
 
