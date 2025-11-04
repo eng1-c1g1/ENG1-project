@@ -14,4 +14,6 @@ public class PlayerComponent implements Component {
 
     /** The current knockback velocity the player is experiencing */
     public Vector2 currentKnockback = new Vector2();
+    /** The current velocity of the player's natural movement: eg key inputs. Excludes knockback */
+    public Vector2 naturalVelocity = new Vector2();
 }

@@ -9,7 +9,6 @@ import io.github.maze11.messages.MessageType;
 
 /**
  * updates countdown timers and handles expiration
- *
  */
 public class TimerSystem extends IteratingSystem {
     private final ComponentMapper<TimerComponent> timerM = ComponentMapper.getFor(TimerComponent.class);
@@ -24,7 +23,7 @@ public class TimerSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         TimerComponent timer = timerM.get(entity); // get the timer component for the entity
 
-        // if the timer is not running or has expured, do nothing
+        // if the timer is not running or has expired, do nothing
         if (!timer.isRunning || timer.hasExpired) {
             return;
         }

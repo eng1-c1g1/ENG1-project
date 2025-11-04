@@ -66,38 +66,47 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         PhysicsComponent physics = physicsMapper.get(entity);
         Vector2 direction = getDirectionalInput();
 
-        Vector2 velocity = physics.body.getLinearVelocity();
+        Vector2 naturalVelocity = player.naturalVelocity;
         Vector2 desiredVelocity = new Vector2(direction).scl(player.maxSpeed);
 
         if (direction.len2() > 0) {
             //Accelerate
-            Vector2 toTarget = desiredVelocity.sub(velocity);
+            Vector2 toTarget = desiredVelocity.sub(naturalVelocity);
             float accelStep = player.acceleration * deltaTime;
 
             if (toTarget.len2() > accelStep * accelStep) {
                 toTarget.nor().scl(accelStep);
             }
-            velocity.add(toTarget);
+            naturalVelocity.add(toTarget);
         } else {
             //Decelerate
-            float speed = velocity.len();
+            float speed = naturalVelocity.len();
             if (speed > 0) {
                 float decelAmount = player.deceleration * deltaTime;
                 speed = Math.max(speed - decelAmount, 0);
-                velocity.nor().scl(speed);
+                naturalVelocity.nor().scl(speed);
             }
         }
 
         //Clamp to max speed just in case
-        if (velocity.len2() > player.maxSpeed * player.maxSpeed) {
-            velocity.nor().scl(player.maxSpeed);
+        if (naturalVelocity.len2() > player.maxSpeed * player.maxSpeed) {
+            naturalVelocity.nor().scl(player.maxSpeed);
+        }
+
+        // Update the knockback values
+        Vector2 knockbackVelocity = player.currentKnockback;
+        // Compare to small value, not zero to account for any floating point precision errors
+        if (knockbackVelocity.len2() > 0.001f) {
+            float recoverAmount = player.knockbackRecovery * deltaTime;
+            float newSpeed = Math.max(knockbackVelocity.len() - recoverAmount, 0);
+            knockbackVelocity.nor().scl(newSpeed);
         }
 
         //modify velocity, to be handled by physics system for clean collisions
-        physics.body.setLinearVelocity(velocity);
+        physics.body.setLinearVelocity(naturalVelocity.x + knockbackVelocity.x,  naturalVelocity.y + knockbackVelocity.y);
     }
 
-    /** Adds knockback to the player. Performs calculations to avoid two knockbacks in the same direction stacking */
+    /** Adds knockback to the player. Performs calculations to avoid knockbacks stacking with each other */
     private void addKnockback(PlayerComponent playerComponent, Vector2 extraKnockback) {
         var currentKnockback = playerComponent.currentKnockback;
 
