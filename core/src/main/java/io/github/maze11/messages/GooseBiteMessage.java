@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 /**
  * Sent whenever the player is bitten by a goose
  */
-public class GooseBiteMessage extends Message{
+public class GooseBiteMessage extends InteractableMessage{
     // Represents the entity that bit the player
     private Entity gooseEntity;
 
