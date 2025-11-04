@@ -73,7 +73,7 @@ public class GooseSystem extends IteratingFixedStepSystem {
             if (message.type == MessageType.GOOSE_BITE){
                 //Should be safe to cast since only messages of this type should be called GOOSE_BITE
                 // Throwing an exception on invalid cast is acceptable for this reason
-                Entity entity = ((GooseBiteMessage)message).getGooseEntity();
+                Entity entity = ((GooseBiteMessage)message).getInteractable();
                 var gooseComponent = gooseMapper.get(entity);
                 // After successfully biting the player, the goose should flee for a short time
                 enterRetreat(gooseComponent);

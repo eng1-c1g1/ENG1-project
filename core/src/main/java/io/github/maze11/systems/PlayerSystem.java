@@ -67,7 +67,13 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     }
 
     private void processGooseBite(GooseBiteMessage message){
-        // TODO
+        // Get vectors to calculate with
+        Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
+        Vector2 goosePos = transformMapper.get(message.getInteractable()).position;
+
+        // Work out the direction and apply the knockback
+        Vector2 knockDirection = new Vector2(playerPos).sub(goosePos).nor();
+        addKnockback(playerMapper.get(message.getPlayer()), knockDirection.scl(message.knockbackSpeed));
     }
 
     @Override
