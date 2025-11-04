@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class PlayerComponent implements Component {
     public final float maxSpeed = 10f;
-    public final float acceleration = 65f;
-    public final float deceleration = 55f;
+    public final float acceleration = 80f;
+    public final float deceleration = 50f;
     public final float knockbackRecovery = 25f;
 
     /** The current knockback velocity the player is experiencing */

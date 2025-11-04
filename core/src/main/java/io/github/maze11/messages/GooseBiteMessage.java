@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Entity;
  * Sent whenever the player is bitten by a goose
  */
 public class GooseBiteMessage extends InteractableMessage{
-    public final float knockbackSpeed = 20f;
+    public final float knockbackSpeed = 15f;
     public GooseBiteMessage() {
         super(MessageType.GOOSE_BITE);
     }
