@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="60">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="62">
  <tileset firstgid="1" source="limezu-interior.tsx"/>
  <tileset firstgid="1425" source="limezu-room.tsx"/>
  <tileset firstgid="1816" source="limezu-office-walls.tsx"/>
@@ -756,5 +756,6 @@
  <objectgroup id="12" name="Entities">
   <object id="56" name="Player" type="player" x="1632" y="1696" width="32" height="32"/>
   <object id="59" name="Goose 1" type="goose" x="1757.77" y="1736.52" width="32" height="32"/>
+  <object id="61" name="Exit" type="exit" x="1214.67" y="1633.33" width="32" height="32"/>
  </objectgroup>
 </map>

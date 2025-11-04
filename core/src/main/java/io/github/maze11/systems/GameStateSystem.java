@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.*;
 import io.github.maze11.messages.*;
 import io.github.maze11.MazeGame;
 import io.github.maze11.screens.GameOverScreen;
+import io.github.maze11.screens.WinScreen;
 
 /**
  * systemm responsive for managing game state transitions betwween screens.
@@ -22,12 +23,12 @@ public class GameStateSystem extends EntitySystem {
         this.game = game;
     }
     /**
-     * updates systems by processsing incomming messages.
+     * updates systems by processing incoming messages.
      * called every frame by the engine.
-     *
+     * <p>
      * checks for:
      * - TIMER_EXPIRED: 5-min timer ran out -> switch to gameOverScreen
-     * - WIN: player reached exit -> switch to WinScreen (//TODO: implement win condition handling)
+     * - WIN: player reached exit -> switch to WinScreen
      */
       @Override
       public void update(float deltaTime) {
@@ -35,15 +36,19 @@ public class GameStateSystem extends EntitySystem {
         while (messageListener.hasNext()) {
             Message msg = messageListener.next();
 
-            // handle timer expiration
-            if (msg.type == MessageType.TIMER_EXPIRED) {
-                System.out.println("Timer Expired! Switching to Game Over Screen...");
-                // switch to GameOverScreen with current score
-                // TODO: Replace 0 with actual score when scoring system is implemented
-                game.setScreen(new GameOverScreen(game, 0));
+            switch (msg.type) {
+                // handle timer expiration
+                case TIMER_EXPIRED -> {
+                    System.out.println("Timer Expired! Switching to Game Over Screen...");
+                    // TODO: Replace 0 with actual score when scoring system is implemented
+                    game.setScreen(new GameOverScreen(game, 0));
+                }
+                case EXIT_MAZE -> {
+                    System.out.println("Maze exit reached! Switching to Win Screen...");
+                    // TODO: Replace 0 with actual score when scoring system is implemented
+                    game.setScreen(new WinScreen(game, 0, 0,0, 0));
+                }
             }
-
-            //TODO: Add win condition handling
 
         }
       }

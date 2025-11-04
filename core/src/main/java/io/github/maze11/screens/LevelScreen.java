@@ -63,8 +63,8 @@ public class LevelScreen implements Screen {
     private static final ComponentMapper<PhysicsComponent> physicsMapper =
         ComponentMapper.getFor(PhysicsComponent.class);
 
-    private Entity timerEntity; // entity that holds the timer
-    private TimerRendererSystem timerRendererSystem; // system to render the time
+    private final Entity timerEntity; // entity that holds the timer
+    private final TimerRendererSystem timerRendererSystem; // system to render the time
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -198,6 +198,7 @@ public class LevelScreen implements Screen {
                         float height = rect.height / pixelsToUnit;
                         entity = entityMaker.makeWall(x, y, width, height);
                     }
+                    case "exit" -> entity = entityMaker.makeExit(x, y);
                     default -> System.out.println("Unknown entity class: " + className);
                 }
 
