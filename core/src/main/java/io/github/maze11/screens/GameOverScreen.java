@@ -1,17 +1,18 @@
-package io.github.maze11;
+package io.github.maze11.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.maze11.MazeGame;
 import io.github.maze11.ui.FontGenerator;
 
 /**
  * Game over screen shown when timer runs out.
  * Displays score passed from GameStateSystem.
- * provides options to restart or return to main menu 
- * 
+ * provides options to restart or return to main menu
+ *
  * this screen is triggered by GameStateSystem when it recieves a TIMER_EXPIRED message.
  */
 public class GameOverScreen extends BaseMenuScreen {
@@ -61,7 +62,7 @@ public class GameOverScreen extends BaseMenuScreen {
                 dispose();
             }
         });
-        // vertical stack layout again between elements 
+        // vertical stack layout again between elements
         table.add(title).padBottom(20).row();
         table.add(subtitle).padBottom(20).row();
         table.add(scoreLabel).padBottom(40).row();

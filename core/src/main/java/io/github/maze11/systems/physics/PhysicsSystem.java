@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.maze11.messages.CollisionConverter;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepSystem;
-import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.fixedStep.FixedStepSystem;
+import io.github.maze11.fixedStep.FixedStepper;
 
 /**
  *  Handles the Box2D physics simulation for the game.

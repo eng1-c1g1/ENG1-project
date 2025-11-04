@@ -1,4 +1,4 @@
-package io.github.maze11;
+package io.github.maze11.screens;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +26,12 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import io.github.maze11.EntityMaker;
+import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.systems.GooseSystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;

@@ -1,4 +1,4 @@
-package io.github.maze11.systemTypes;
+package io.github.maze11.fixedStep;
 
 import com.badlogic.ashley.core.EntitySystem;
 

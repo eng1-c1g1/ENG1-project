@@ -1,16 +1,17 @@
-package io.github.maze11;
+package io.github.maze11.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.maze11.MazeGame;
 import io.github.maze11.ui.FontGenerator;
 
 /**
  * Win screen shown when player completes the game.
  * Displays total score and breakdown of how score was calcualted.
- * 
+ *
  * this scene is triggered when player reaches the exit (//TODO: Implement win condition)
  */
 public class WinScreen extends BaseMenuScreen {
@@ -40,7 +41,7 @@ public class WinScreen extends BaseMenuScreen {
         // Score labels with Roboto
         Label.LabelStyle bodyStyle = new Label.LabelStyle(bodyFont, Color.WHITE);
         Label scoreLabel = new Label("Score: " + totalScore, bodyStyle);
-        
+
         Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
         Label summaryTitle = new Label("Score Breakdown:", subtitleStyle);
 

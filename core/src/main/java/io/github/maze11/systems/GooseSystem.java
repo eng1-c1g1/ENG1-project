@@ -10,8 +10,8 @@ import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.MessageType;
-import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systemTypes.IteratingFixedStepSystem;
+import io.github.maze11.fixedStep.FixedStepper;
+import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 
 /**
  * Represents a goose which wanders aimlessly until it sees the player, then attacks

@@ -1,4 +1,4 @@
-package io.github.maze11.systemTypes;
+package io.github.maze11.fixedStep;
 
 /**
  * Interface used by FixedStepper to send fixedUpdate callbacks

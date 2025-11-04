@@ -1,4 +1,4 @@
-package io.github.maze11;
+package io.github.maze11.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.maze11.MazeGame;
 import io.github.maze11.ui.FontGenerator;
 
 /**
@@ -61,14 +62,14 @@ public abstract class BaseMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        
+
         // Regenerate fonts for new screen size
         if (titleFont != null) titleFont.dispose();
         if (bodyFont != null) bodyFont.dispose();
-        
+
         titleFont = FontGenerator.generateRobotoFont(72, Color.WHITE, skin);
         bodyFont = FontGenerator.generateRobotoFont(28, Color.WHITE, skin);
-        
+
         // Rebuild UI with new fonts
         stage.clear();
         buildUI();
