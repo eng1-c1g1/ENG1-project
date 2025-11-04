@@ -1,4 +1,4 @@
-package io.github.maze11.systems;
+package io.github.maze11.systems.gameState;
 
 import com.badlogic.ashley.core.*;
 import io.github.maze11.messages.*;
@@ -16,11 +16,13 @@ import io.github.maze11.screens.WinScreen;
 public class GameStateSystem extends EntitySystem {
     private final MessageListener messageListener;
     private final MazeGame game;
+    private final EventCounter eventCounter;
 
     // creates a new game state system.
     public GameStateSystem(MessagePublisher messagePublisher, MazeGame game) {
         this.messageListener = new MessageListener(messagePublisher);
         this.game = game;
+        this.eventCounter = new EventCounter();
     }
     /**
      * updates systems by processing incoming messages.
@@ -35,6 +37,7 @@ public class GameStateSystem extends EntitySystem {
         // process all messages received since last update
         while (messageListener.hasNext()) {
             Message msg = messageListener.next();
+            eventCounter.receiveMessage(msg.type);
 
             switch (msg.type) {
                 // handle timer expiration

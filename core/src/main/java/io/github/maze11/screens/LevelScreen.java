@@ -43,7 +43,7 @@ import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.systems.GameStateSystem;
+import io.github.maze11.systems.gameState.GameStateSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
