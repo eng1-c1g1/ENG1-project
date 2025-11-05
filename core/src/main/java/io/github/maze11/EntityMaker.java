@@ -205,6 +205,12 @@ public class EntityMaker {
         return entity;
     }
 
+    public Entity makeCheckInCode(float x, float y){
+        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT),true, AssetId.CHECK_IN);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
     public Entity makeGoose(float x, float y){
         Entity entity = makeInteractable(x, y, new GooseBiteMessage(),false, AssetId.GOOSE);
 

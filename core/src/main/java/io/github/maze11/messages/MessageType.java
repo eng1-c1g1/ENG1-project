@@ -9,5 +9,6 @@ public enum MessageType {
     TIMER_EXPIRED, // timer has reached zero
     COLLECT_COFFEE,
     GOOSE_BITE,
-    EXIT_MAZE
+    EXIT_MAZE,
+    CHECK_IN_CODE_COLLECT
 }

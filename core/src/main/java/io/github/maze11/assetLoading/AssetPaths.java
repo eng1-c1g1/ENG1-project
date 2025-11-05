@@ -17,7 +17,8 @@ public class AssetPaths {
         entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
         entry(AssetId.COFFEE, "items/coffee.png"),
         entry(AssetId.GOOSE, "player.png"),
-        entry(AssetId.EXIT, "player.png")
+        entry(AssetId.EXIT, "player.png"),
+        entry(AssetId.CHECK_IN, "player.png")
     );
 
     // This map can be used to declare paths to loaded files of any type
