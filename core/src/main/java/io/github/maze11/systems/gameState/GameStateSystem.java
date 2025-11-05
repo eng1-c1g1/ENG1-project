@@ -1,0 +1,69 @@
+package io.github.maze11.systems.gameState;
+
+import com.badlogic.ashley.core.*;
+import io.github.maze11.components.TimerComponent;
+import io.github.maze11.messages.*;
+import io.github.maze11.MazeGame;
+import io.github.maze11.screens.GameOverScreen;
+import io.github.maze11.screens.WinScreen;
+
+/**
+ * systemm responsive for managing game state transitions betwween screens.
+ * listens for game events (timer's expiry, win condition..) and tells MazeGame to switchs screen when needed
+ *
+ * this system runs in levelScreen's ECS and monitors messages from other systems/
+ * when a game-ending condition occurs, it instructs MazeGame to switch to appropriate screen.
+ */
+public class GameStateSystem extends EntitySystem {
+    private final MessageListener messageListener;
+    private final MazeGame game;
+    private final EventCounter eventCounter;
+    private final Engine engine;
+
+    // creates a new game state system.
+    public GameStateSystem(MessagePublisher messagePublisher, MazeGame game, Engine engine) {
+        this.messageListener = new MessageListener(messagePublisher);
+        this.game = game;
+        this.eventCounter = new EventCounter();
+        this.engine = engine;
+    }
+    /**
+     * updates systems by processing incoming messages.
+     * called every frame by the engine.
+     * <p>
+     * checks for:
+     * - TIMER_EXPIRED: 5-min timer ran out -> switch to gameOverScreen
+     * - WIN: player reached exit -> switch to WinScreen
+     */
+      @Override
+      public void update(float deltaTime) {
+        // process all messages received since last update
+        while (messageListener.hasNext()) {
+            Message msg = messageListener.next();
+            eventCounter.receiveMessage(msg.type);
+
+            switch (msg.type) {
+                // handle timer expiration
+                case TIMER_EXPIRED -> {
+                    System.out.println("Timer Expired! Switching to Game Over Screen...");
+                    int totalScore = eventCounter.makeScoreCard(true, 0).totalScore();
+                    game.setScreen(new GameOverScreen(game, totalScore));
+                }
+                case EXIT_MAZE -> {
+                    System.out.println("Maze exit reached! Switching to Win Screen...");
+                    // TODO: Replace 0 with the number of seconds remaining
+                    var scoreCard = eventCounter.makeScoreCard(true, (int)getSecondsRemaining());
+                    game.setScreen(new WinScreen(game, scoreCard));
+                }
+            }
+        }
+      }
+    private float getSecondsRemaining(){
+          var timers = engine.getEntitiesFor(Family.all(TimerComponent.class).get());
+          if (timers.size() != 1){
+              throw new RuntimeException("There must be exactly one timer in the scene. Found " +  timers.size());
+          }
+          return timers.get(0).getComponent(TimerComponent.class).timeRemaining;
+    }
+
+}

@@ -34,7 +34,7 @@ public class TimerRendererSystem extends IteratingSystem {
     
     private BitmapFont createHDFont() {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-            Gdx.files.internal("fonts/arial.ttf")
+            Gdx.files.internal("fonts/Roboto-Regular.ttf")
         );
         
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();

@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.maze11.messages.CollisionConverter;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systemTypes.FixedStepSystem;
-import io.github.maze11.systemTypes.FixedStepper;
+import io.github.maze11.fixedStep.FixedStepSystem;
+import io.github.maze11.fixedStep.FixedStepper;
 
 /**
  *  Handles the Box2D physics simulation for the game.
@@ -28,11 +28,15 @@ public class PhysicsSystem extends FixedStepSystem {
 
     @Override
     public void removedFromEngine(com.badlogic.ashley.core.Engine engine) {
+        SafeBodyDestroy.drain(world); // Destroy any remaining unwanted bodies
         world.dispose();
     }
 
     @Override
     public void fixedUpdate(float deltaTime) {
         world.step(deltaTime, 6, 2);
+
+        // Drain the destruction queue after stepping the world
+        SafeBodyDestroy.drain(world);
     }
 }

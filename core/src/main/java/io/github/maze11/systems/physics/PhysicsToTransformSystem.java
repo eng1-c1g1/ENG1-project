@@ -6,8 +6,8 @@ import com.badlogic.ashley.core.Family;
 
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.TransformComponent;
-import io.github.maze11.systemTypes.FixedStepper;
-import io.github.maze11.systemTypes.IteratingFixedStepSystem;
+import io.github.maze11.fixedStep.FixedStepper;
+import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 
 /**
  * Physics -> Transform: copy Box2D position back after simulation.

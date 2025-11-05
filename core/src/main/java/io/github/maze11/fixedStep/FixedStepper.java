@@ -1,4 +1,4 @@
-package io.github.maze11.systemTypes;
+package io.github.maze11.fixedStep;
 
 import java.util.ArrayList;
 
@@ -19,18 +19,18 @@ public class FixedStepper {
         listeners.remove(listener);
     }
 
-    private void fireFixedUpdate(float deltaTime) {
+    private void fireFixedUpdate() {
         for (FixedUpdateListener listener : listeners) {
-            listener.fixedUpdate(deltaTime);
+            listener.fixedUpdate(TIME_STEP);
         }
     }
 
     public void advanceSimulation(float deltaTime) {
         accumulator += deltaTime;
         // step the physics world in fixed increments
-        while (accumulator >= deltaTime) {
+        while (accumulator >= TIME_STEP) {
             // 6 velocity, 2 positions iterations (standard values)
-            fireFixedUpdate(TIME_STEP);
+            fireFixedUpdate();
             accumulator -= TIME_STEP;
         }
     }
