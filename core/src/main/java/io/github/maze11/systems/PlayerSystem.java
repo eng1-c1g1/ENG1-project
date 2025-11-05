@@ -38,10 +38,10 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         Vector2 direction = new Vector2(0f, 0f);
 
         // Reduce instead of setting to handle scenario where both left and right or up and down are pressed
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) direction.x += 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) direction.x -= 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) direction.y += 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) direction.y -= 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) direction.x += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) direction.x -= 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) direction.y += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) direction.y -= 1f;
 
         if (direction.len2() > 0f) direction.nor();
         return direction;
