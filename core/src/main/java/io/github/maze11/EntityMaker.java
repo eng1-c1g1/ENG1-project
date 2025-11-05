@@ -201,7 +201,7 @@ public class EntityMaker {
 
     public Entity makeCoffee(float x, float y){
         Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(),true, AssetId.COFFEE);
-        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
@@ -221,7 +221,7 @@ public class EntityMaker {
     public Entity makeExit(float x, float y){
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE),false, AssetId.EXIT);
         addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
-            BodyDef.BodyType.DynamicBody, true);
+            BodyDef.BodyType.StaticBody, true);
         return entity;
     }
 }
