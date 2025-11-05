@@ -14,10 +14,7 @@ import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.*;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.Message;
-import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.*;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -193,7 +190,7 @@ public class EntityMaker {
         return body;
     }
 
-    private Entity makeInteractable(float x, float y, Message message, boolean disappearOnInteract, AssetId assetId) {
+    private Entity makeInteractable(float x, float y, InteractableMessage message, boolean disappearOnInteract, AssetId assetId) {
         Entity entity = makeVisibleEntity(x, y, assetId);
         var interactableComponent = new InteractableComponent();
         interactableComponent.activationMessage = message;
@@ -209,10 +206,7 @@ public class EntityMaker {
     }
 
     public Entity makeGoose(float x, float y){
-        // Create an interactable and set the message to match it
-        var message = new GooseBiteMessage();
-        Entity entity = makeInteractable(x, y, message,false, AssetId.GOOSE);
-        message.setGooseEntity(entity);
+        Entity entity = makeInteractable(x, y, new GooseBiteMessage(),false, AssetId.GOOSE);
 
         // Add behaviour and physics
         var gooseComponent = engine.createComponent(GooseComponent.class);
@@ -225,7 +219,7 @@ public class EntityMaker {
     }
 
     public Entity makeExit(float x, float y){
-        Entity entity = makeInteractable(x, y, new Message(MessageType.EXIT_MAZE),false, AssetId.EXIT);
+        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE),false, AssetId.EXIT);
         addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
             BodyDef.BodyType.DynamicBody, true);
         return entity;

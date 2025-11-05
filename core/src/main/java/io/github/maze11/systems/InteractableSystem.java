@@ -7,10 +7,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import io.github.maze11.EntityMaker;
 import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PlayerComponent;
-import io.github.maze11.messages.CollisionMessage;
-import io.github.maze11.messages.MessageListener;
-import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.*;
 
 /**
  * Manages interactable objects, making them publish messages on collision with a player
@@ -61,7 +58,9 @@ public class InteractableSystem extends EntitySystem {
         }
         // Sends a message causing the interaction effect to occur
 
-        messageListener.publisher.publish(interactableComponent.activationMessage);
+        InteractableMessage specialisedMessage = (InteractableMessage) interactableComponent.activationMessage.clone();
+        specialisedMessage.specifyInteraction(player, interactable);
+        messageListener.publisher.publish(specialisedMessage);
         // Interactions are disabled once it has occurred once, to prevent the interaction firing multiple times in
         // quick succession. Can be re-enabled by other systems if necessary
         interactableComponent.interactionEnabled = false;
