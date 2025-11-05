@@ -1,5 +1,8 @@
 package io.github.maze11.components;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 
@@ -7,7 +10,22 @@ import com.badlogic.gdx.math.Vector2;
  * Represents a player character
  */
 public class PlayerComponent implements Component {
+    /* The default maximum speed of the player */
     public final float maxSpeed = 10f;
+
+    /* Accumulator for any bonuses to speed collected */
+    public List<SpeedBonus> speedBonuses = new ArrayList<>();
+
+    public static class SpeedBonus {
+        public float amount;
+        public float timeRemaining;
+
+        public SpeedBonus(float amount, float timeRemaining) {
+            this.amount = amount;
+            this.timeRemaining = timeRemaining;
+        }
+    }
+
     public final float acceleration = 80f;
     public final float deceleration = 50f;
     public final float knockbackRecovery = 25f;

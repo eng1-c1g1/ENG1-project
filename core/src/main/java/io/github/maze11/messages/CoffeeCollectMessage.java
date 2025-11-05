@@ -5,7 +5,7 @@ package io.github.maze11.messages;
  */
 public class CoffeeCollectMessage extends InteractableMessage {
     public final float duration = 5f;
-    public final float speedMultiplier = 2f;
+    public final float speedBonusAmount = 5f;
 
     public CoffeeCollectMessage() {
         super(MessageType.COLLECT_COFFEE);
