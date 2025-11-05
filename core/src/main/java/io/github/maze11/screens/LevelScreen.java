@@ -193,6 +193,7 @@ public class LevelScreen implements Screen {
                     case "player" -> entity = entityMaker.makePlayer(x, y);
                     case "goose" -> entity = entityMaker.makeGoose(x, y);
                     case "coffee" -> entity = entityMaker.makeCoffee(x, y);
+                    case "check-in" -> entity = entityMaker.makeCheckInCode(x, y);
                     case "wall" -> {
                         float width = rect.width / pixelsToUnit;
                         float height = rect.height / pixelsToUnit;

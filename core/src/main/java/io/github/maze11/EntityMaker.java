@@ -4,17 +4,28 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.CameraFollowComponent;
+import io.github.maze11.components.GooseComponent;
+import io.github.maze11.components.InteractableComponent;
+import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
+import io.github.maze11.components.TimerComponent;
 import io.github.maze11.components.TransformComponent;
-import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.components.*;
-import io.github.maze11.messages.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.InteractableMessage;
+import io.github.maze11.messages.MessageType;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -201,6 +212,12 @@ public class EntityMaker {
 
     public Entity makeCoffee(float x, float y){
         Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(),true, AssetId.COFFEE);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makeCheckInCode(float x, float y){
+        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT),true, AssetId.CHECK_IN);
         addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
