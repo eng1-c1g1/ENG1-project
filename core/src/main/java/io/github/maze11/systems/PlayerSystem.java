@@ -10,12 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
+import io.github.maze11.fixedStep.FixedStepper;
+import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.fixedStep.FixedStepper;
-import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 
 public class PlayerSystem extends IteratingFixedStepSystem {
     ComponentMapper<PlayerComponent> playerMapper;
@@ -33,32 +33,38 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         this.messageListener = new MessageListener(messagePublisher);
     }
 
-    private Vector2 getDirectionalInput(){
+    private Vector2 getDirectionalInput() {
 
         Vector2 direction = new Vector2(0f, 0f);
 
-        // Reduce instead of setting to handle scenario where both left and right or up and down are pressed
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) direction.x += 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) direction.x -= 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) direction.y += 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) direction.y -= 1f;
+        // Reduce instead of setting to handle scenario where both left and right or up
+        // and down are pressed
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
+            direction.x += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
+            direction.x -= 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
+            direction.y += 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
+            direction.y -= 1f;
 
-        if (direction.len2() > 0f) direction.nor();
+        if (direction.len2() > 0f)
+            direction.nor();
         return direction;
     }
 
     @Override
     public void fixedUpdate(float deltaTime) {
 
-        //Process new messages
-        while (messageListener.hasNext()){
+        // Process new messages
+        while (messageListener.hasNext()) {
             var message = messageListener.next();
 
             switch (message.type) {
                 case COLLECT_COFFEE -> {
-                    System.out.println("Coffee collected");
+                    processCoffeeCollect((CoffeeCollectMessage) message);
                 }
-                case GOOSE_BITE ->  {
+                case GOOSE_BITE -> {
                     processGooseBite((GooseBiteMessage) message);
                 }
             }
@@ -66,7 +72,15 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         super.fixedUpdate(deltaTime);
     }
 
-    private void processGooseBite(GooseBiteMessage message){
+    private void processCoffeeCollect(CoffeeCollectMessage message) {
+        // Get vectors to calculate with
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+
+        // Add a speed bonus when coffee is collected
+        player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+    }
+
+    private void processGooseBite(GooseBiteMessage message) {
         // Get vectors to calculate with
         Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
         Vector2 goosePos = transformMapper.get(message.getInteractable()).position;
@@ -82,11 +96,23 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         PhysicsComponent physics = physicsMapper.get(entity);
         Vector2 direction = getDirectionalInput();
 
+        // Calculate maxSpeed including bonuses
+        float maxSpeed = player.maxSpeed;
+        for (int i = 0; i < player.speedBonuses.size(); i++) {
+            PlayerComponent.SpeedBonus bonus = player.speedBonuses.get(i);
+            maxSpeed += bonus.amount;
+            bonus.timeRemaining -= deltaTime;
+            if (bonus.timeRemaining <= 0) {
+                player.speedBonuses.remove(i);
+                i--; // Adjust index after removal
+            }
+        }
+
         Vector2 naturalVelocity = player.naturalVelocity;
-        Vector2 desiredVelocity = new Vector2(direction).scl(player.maxSpeed);
+        Vector2 desiredVelocity = new Vector2(direction).scl(maxSpeed);
 
         if (direction.len2() > 0) {
-            //Accelerate
+            // Accelerate
             Vector2 toTarget = desiredVelocity.sub(naturalVelocity);
             float accelStep = player.acceleration * deltaTime;
 
@@ -95,7 +121,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
             }
             naturalVelocity.add(toTarget);
         } else {
-            //Decelerate
+            // Decelerate
             float speed = naturalVelocity.len();
             if (speed > 0) {
                 float decelAmount = player.deceleration * deltaTime;
@@ -104,34 +130,42 @@ public class PlayerSystem extends IteratingFixedStepSystem {
             }
         }
 
-        //Clamp to max speed just in case
-        if (naturalVelocity.len2() > player.maxSpeed * player.maxSpeed) {
-            naturalVelocity.nor().scl(player.maxSpeed);
+        // Clamp to max speed just in case
+        if (naturalVelocity.len2() > maxSpeed * maxSpeed) {
+            naturalVelocity.nor().scl(maxSpeed);
         }
 
         // Update the knockback values
         Vector2 knockbackVelocity = player.currentKnockback;
-        // Compare to small value, not zero to account for any floating point precision errors
+        // Compare to small value, not zero to account for any floating point precision
+        // errors
         if (knockbackVelocity.len2() > 0.001f) {
             float recoverAmount = player.knockbackRecovery * deltaTime;
             float newSpeed = Math.max(knockbackVelocity.len() - recoverAmount, 0);
             knockbackVelocity.nor().scl(newSpeed);
         }
 
-        //modify velocity, to be handled by physics system for clean collisions
-        physics.body.setLinearVelocity(naturalVelocity.x + knockbackVelocity.x,  naturalVelocity.y + knockbackVelocity.y);
+        // modify velocity, to be handled by physics system for clean collisions
+        physics.body.setLinearVelocity(naturalVelocity.x + knockbackVelocity.x,
+                naturalVelocity.y + knockbackVelocity.y);
     }
 
-    /** Adds knockback to the player. Performs calculations to avoid knockbacks stacking with each other */
+    /**
+     * Adds knockback to the player. Performs calculations to avoid knockbacks
+     * stacking with each other
+     */
     private void addKnockback(PlayerComponent playerComponent, Vector2 extraKnockback) {
         var currentKnockback = playerComponent.currentKnockback;
 
         // Find what the maximum knockback is
-        float maxMagnitude = currentKnockback.len2() > extraKnockback.len2() ? currentKnockback.len() : extraKnockback.len();
+        float maxMagnitude = currentKnockback.len2() > extraKnockback.len2() ? currentKnockback.len()
+                : extraKnockback.len();
         currentKnockback.add(extraKnockback);
 
-        // If the knockbacks were in the same direction, scale so that the result is no larger than the largest of the two
-        // This prevents a player being launched very far if colliding with two sources of knockback at once
+        // If the knockbacks were in the same direction, scale so that the result is no
+        // larger than the largest of the two
+        // This prevents a player being launched very far if colliding with two sources
+        // of knockback at once
         if (currentKnockback.len2() > maxMagnitude * maxMagnitude) {
             currentKnockback.nor().scl(maxMagnitude);
         }
