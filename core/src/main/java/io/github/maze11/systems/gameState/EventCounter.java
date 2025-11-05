@@ -16,7 +16,8 @@ public class EventCounter {
     /** Stores the event types this records, along with their effect on score and message to show in the win screen*/
     private final Map<MessageType, MessageData> messageMappings = Map.ofEntries(
         entry(MessageType.COLLECT_COFFEE, new MessageData("Coffees Collected", 10)),
-        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -20))
+        entry(MessageType.CHECK_IN_CODE_COLLECT, new MessageData("Check-in codes collected", 20)),
+        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -1))
     );
 
     private final Map<MessageType, Integer> recordedCounts = new HashMap<>();
