@@ -22,6 +22,6 @@ public class SpriteComponent implements Component {
     /**
      * The size of the texture on the screen in world units when the transform has a scale of (1f,1f)
      */
-    public Vector2 size =  new Vector2(1f, 1f);
+    public Vector2 size = new Vector2(1f, 1f);
 
 }

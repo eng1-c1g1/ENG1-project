@@ -7,7 +7,25 @@ import com.badlogic.gdx.math.Vector2;
  * Represents a goose, which wanders aimlessly, but attacks the player if they get too close
  */
 public class GooseComponent implements Component {
+    public enum GooseState {
+        WANDER, CHASE, RETREAT
+    }
+
+    public enum GooseAnimState {
+        IDLE_UP,
+        IDLE_RIGHT,
+        IDLE_DOWN,
+        IDLE_LEFT,
+
+        WALK_UP,
+        WALK_RIGHT,
+        WALK_DOWN,
+        WALK_LEFT
+    }
+
     public GooseState state = GooseState.WANDER;
+    public GooseAnimState animState = GooseAnimState.IDLE_DOWN;
+
     public float chaseSpeed = 7f;
     public float retreatSpeed = 7f;
     public float wanderSpeed =  1.5f;

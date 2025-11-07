@@ -7,8 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.maze11.components.AnimationComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
+import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
@@ -18,93 +20,98 @@ import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 
 public class PlayerSystem extends IteratingFixedStepSystem {
+
     ComponentMapper<PlayerComponent> playerMapper;
     ComponentMapper<TransformComponent> transformMapper;
     ComponentMapper<PhysicsComponent> physicsMapper;
+
+    // Generic animation component for PlayerState
+    ComponentMapper<AnimationComponent> animMapper;
+
     MessageListener messageListener;
 
     public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher) {
-        // now requires physics component for physics based movement
-        super(fixedStepper, Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
+        super(fixedStepper,
+                Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
+
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
         physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
+
+        // Ashley ignores generics at runtime, so this is correct:
+        animMapper = ComponentMapper.getFor(AnimationComponent.class); // ComponentMapper<AnimationComponent>>
 
         this.messageListener = new MessageListener(messagePublisher);
     }
 
     private Vector2 getDirectionalInput() {
+        Vector2 direction = new Vector2();
 
-        Vector2 direction = new Vector2(0f, 0f);
-
-        // Reduce instead of setting to handle scenario where both left and right or up
-        // and down are pressed
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
             direction.x += 1f;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
             direction.x -= 1f;
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
             direction.y += 1f;
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
             direction.y -= 1f;
 
-        if (direction.len2() > 0f)
+        if (direction.len2() > 0)
             direction.nor();
+
         return direction;
     }
 
     @Override
     public void fixedUpdate(float deltaTime) {
-
-        // Process new messages
         while (messageListener.hasNext()) {
             var message = messageListener.next();
 
             switch (message.type) {
-                case COLLECT_COFFEE -> {
-                    processCoffeeCollect((CoffeeCollectMessage) message);
-                }
-                case GOOSE_BITE -> {
-                    processGooseBite((GooseBiteMessage) message);
+                case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
+                case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
+                default -> {
                 }
             }
         }
+
         super.fixedUpdate(deltaTime);
     }
 
     private void processCoffeeCollect(CoffeeCollectMessage message) {
-        // Get vectors to calculate with
         PlayerComponent player = playerMapper.get(message.getPlayer());
-
-        // Add a speed bonus when coffee is collected
         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
     }
 
     private void processGooseBite(GooseBiteMessage message) {
-        // Get vectors to calculate with
         Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
         Vector2 goosePos = transformMapper.get(message.getInteractable()).position;
 
-        // Work out the direction and apply the knockback
-        Vector2 knockDirection = new Vector2(playerPos).sub(goosePos).nor();
-        addKnockback(playerMapper.get(message.getPlayer()), knockDirection.scl(message.knockbackSpeed));
+        Vector2 knockDir = new Vector2(playerPos).sub(goosePos).nor();
+        addKnockback(playerMapper.get(message.getPlayer()), knockDir.scl(message.knockbackSpeed));
     }
 
     @Override
     protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
         PlayerComponent player = playerMapper.get(entity);
         PhysicsComponent physics = physicsMapper.get(entity);
+
+        // Generic component pulled as correct type
+        AnimationComponent<PlayerState> anim = animMapper.get(entity);
+
         Vector2 direction = getDirectionalInput();
 
-        // Calculate maxSpeed including bonuses
+        // Movement
         float maxSpeed = player.maxSpeed;
         for (int i = 0; i < player.speedBonuses.size(); i++) {
-            PlayerComponent.SpeedBonus bonus = player.speedBonuses.get(i);
+            var bonus = player.speedBonuses.get(i);
             maxSpeed += bonus.amount;
             bonus.timeRemaining -= deltaTime;
+
             if (bonus.timeRemaining <= 0) {
                 player.speedBonuses.remove(i);
-                i--; // Adjust index after removal
+                i--;
             }
         }
 
@@ -112,62 +119,80 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         Vector2 desiredVelocity = new Vector2(direction).scl(maxSpeed);
 
         if (direction.len2() > 0) {
-            // Accelerate
             Vector2 toTarget = desiredVelocity.sub(naturalVelocity);
             float accelStep = player.acceleration * deltaTime;
 
-            if (toTarget.len2() > accelStep * accelStep) {
+            if (toTarget.len2() > accelStep * accelStep)
                 toTarget.nor().scl(accelStep);
-            }
+
             naturalVelocity.add(toTarget);
         } else {
-            // Decelerate
             float speed = naturalVelocity.len();
             if (speed > 0) {
-                float decelAmount = player.deceleration * deltaTime;
-                speed = Math.max(speed - decelAmount, 0);
+                float dec = player.deceleration * deltaTime;
+                speed = Math.max(speed - dec, 0);
                 naturalVelocity.nor().scl(speed);
             }
         }
 
-        // Clamp to max speed just in case
-        if (naturalVelocity.len2() > maxSpeed * maxSpeed) {
+        if (naturalVelocity.len2() > maxSpeed * maxSpeed)
             naturalVelocity.nor().scl(maxSpeed);
+
+        // Knockback decay
+        Vector2 knockback = player.currentKnockback;
+        if (knockback.len2() > 0.001f) {
+            float r = player.knockbackRecovery * deltaTime;
+            float newSpeed = Math.max(knockback.len() - r, 0);
+            knockback.nor().scl(newSpeed);
         }
 
-        // Update the knockback values
-        Vector2 knockbackVelocity = player.currentKnockback;
-        // Compare to small value, not zero to account for any floating point precision
-        // errors
-        if (knockbackVelocity.len2() > 0.001f) {
-            float recoverAmount = player.knockbackRecovery * deltaTime;
-            float newSpeed = Math.max(knockbackVelocity.len() - recoverAmount, 0);
-            knockbackVelocity.nor().scl(newSpeed);
+        physics.body.setLinearVelocity(
+                naturalVelocity.x + knockback.x,
+                naturalVelocity.y + knockback.y);
+
+        // Animation
+        PlayerState newState;
+
+        if (direction.len2() == 0) {
+            PlayerState last = anim.currentState;
+
+            switch (last) {
+                case WALK_UP, IDLE_UP -> newState = PlayerState.IDLE_UP;
+                case WALK_DOWN, IDLE_DOWN -> newState = PlayerState.IDLE_DOWN;
+                case WALK_LEFT, IDLE_LEFT -> newState = PlayerState.IDLE_LEFT;
+                case WALK_RIGHT, IDLE_RIGHT -> newState = PlayerState.IDLE_RIGHT;
+
+                default -> newState = PlayerState.IDLE_DOWN;
+            }
+
+        } else {
+            if (Math.abs(direction.x) > Math.abs(direction.y)) {
+                newState = direction.x > 0 ? PlayerState.WALK_RIGHT : PlayerState.WALK_LEFT;
+            } else {
+                newState = direction.y > 0 ? PlayerState.WALK_UP : PlayerState.WALK_DOWN;
+            }
         }
 
-        // modify velocity, to be handled by physics system for clean collisions
-        physics.body.setLinearVelocity(naturalVelocity.x + knockbackVelocity.x,
-                naturalVelocity.y + knockbackVelocity.y);
+        if (anim.currentState != newState) {
+            anim.currentState = newState;
+            anim.elapsed = 0f;
+        } else {
+            anim.elapsed += deltaTime;
+        }
+
+        var animation = anim.animations.get(anim.currentState);
+        if (animation != null) {
+            anim.currentFrame = animation.getKeyFrame(anim.elapsed, true);
+        }
     }
 
-    /**
-     * Adds knockback to the player. Performs calculations to avoid knockbacks
-     * stacking with each other
-     */
-    private void addKnockback(PlayerComponent playerComponent, Vector2 extraKnockback) {
-        var currentKnockback = playerComponent.currentKnockback;
+    private void addKnockback(PlayerComponent pc, Vector2 extra) {
+        Vector2 current = pc.currentKnockback;
+        float maxMag = Math.max(current.len(), extra.len());
 
-        // Find what the maximum knockback is
-        float maxMagnitude = currentKnockback.len2() > extraKnockback.len2() ? currentKnockback.len()
-                : extraKnockback.len();
-        currentKnockback.add(extraKnockback);
+        current.add(extra);
 
-        // If the knockbacks were in the same direction, scale so that the result is no
-        // larger than the largest of the two
-        // This prevents a player being launched very far if colliding with two sources
-        // of knockback at once
-        if (currentKnockback.len2() > maxMagnitude * maxMagnitude) {
-            currentKnockback.nor().scl(maxMagnitude);
-        }
+        if (current.len() > maxMag)
+            current.nor().scl(maxMag);
     }
 }

@@ -10,6 +10,19 @@ import com.badlogic.gdx.math.Vector2;
  * Represents a player character
  */
 public class PlayerComponent implements Component {
+    public enum PlayerState {
+        IDLE_UP,
+        IDLE_DOWN,
+        IDLE_LEFT,
+        IDLE_RIGHT,
+        WALK_UP,
+        WALK_DOWN,
+        WALK_LEFT,
+        WALK_RIGHT
+    }
+
+    public PlayerState currentState = PlayerState.IDLE_DOWN;
+
     /* The default maximum speed of the player */
     public final float maxSpeed = 10f;
 
@@ -32,6 +45,9 @@ public class PlayerComponent implements Component {
 
     /** The current knockback velocity the player is experiencing */
     public Vector2 currentKnockback = new Vector2();
-    /** The current velocity of the player's natural movement: eg key inputs. Excludes knockback */
+    /**
+     * The current velocity of the player's natural movement: eg key inputs.
+     * Excludes knockback
+     */
     public Vector2 naturalVelocity = new Vector2();
 }
