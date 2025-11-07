@@ -26,8 +26,6 @@ public class GooseSystem extends IteratingFixedStepSystem {
     ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
     ComponentMapper<InteractableComponent> interactableMapper = ComponentMapper.getFor(InteractableComponent.class);
 
-    // Correct generic animation component
-    @SuppressWarnings("rawtypes")
     ComponentMapper<AnimationComponent> animMapper = ComponentMapper.getFor(AnimationComponent.class);
 
     private Entity target;
@@ -66,16 +64,7 @@ public class GooseSystem extends IteratingFixedStepSystem {
 
         Vector2 displacement = new Vector2(targetTransform.position).sub(transform.position);
 
-        var data = new ProcessData(
-                entity,
-                deltaTime,
-                goose,
-                transform,
-                physics,
-                interactable,
-                targetTransform,
-                displacement
-        );
+        var data = new ProcessData(entity, deltaTime, goose, transform, physics, interactable, targetTransform, displacement);
 
         // AI behaviour
         switch (goose.state) {

@@ -149,9 +149,8 @@ public class EntityMaker {
                 BodyDef.BodyType.DynamicBody,
                 true);
 
-
-        @SuppressWarnings("unchecked")
-        AnimationComponent<PlayerComponent.PlayerState> anim = (AnimationComponent<PlayerComponent.PlayerState>) engine.createComponent(AnimationComponent.class);
+        AnimationComponent<PlayerComponent.PlayerState> anim = (AnimationComponent<PlayerComponent.PlayerState>) engine
+                .createComponent(AnimationComponent.class);
 
         // Load player spritesheet
         Texture sheet = assetLoader.get(AssetId.PLAYER_SHEET, Texture.class);
@@ -359,29 +358,28 @@ public class EntityMaker {
                 true);
 
         // Animation
-        @SuppressWarnings("unchecked")
-        AnimationComponent<GooseComponent.GooseAnimState> anim =
-                (AnimationComponent<GooseComponent.GooseAnimState>)
-                        engine.createComponent(AnimationComponent.class);
+        AnimationComponent<GooseComponent.GooseAnimState> anim = (AnimationComponent<GooseComponent.GooseAnimState>) engine
+                .createComponent(AnimationComponent.class);
 
         Texture sheet = assetLoader.get(AssetId.GOOSE_SHEET, Texture.class);
 
         // Build animations for goose
         float idleTime = 0.25f;
         float walkTime = 0.12f;
-        record GAnim(GooseComponent.GooseAnimState state, int start, int end, float time) {}
+        record GAnim(GooseComponent.GooseAnimState state, int start, int end, float time) {
+        }
         GAnim[] table = {
                 // IDLE
                 new GAnim(GooseComponent.GooseAnimState.IDLE_RIGHT, 0, 5, idleTime),
-                new GAnim(GooseComponent.GooseAnimState.IDLE_UP,    6, 11, idleTime),
-                new GAnim(GooseComponent.GooseAnimState.IDLE_LEFT,  12, 17, idleTime),
-                new GAnim(GooseComponent.GooseAnimState.IDLE_DOWN,  18, 23, idleTime),
+                new GAnim(GooseComponent.GooseAnimState.IDLE_UP, 6, 11, idleTime),
+                new GAnim(GooseComponent.GooseAnimState.IDLE_LEFT, 12, 17, idleTime),
+                new GAnim(GooseComponent.GooseAnimState.IDLE_DOWN, 18, 23, idleTime),
 
                 // WALK
                 new GAnim(GooseComponent.GooseAnimState.WALK_RIGHT, 0, 5, walkTime),
-                new GAnim(GooseComponent.GooseAnimState.WALK_UP,    6, 11, walkTime),
-                new GAnim(GooseComponent.GooseAnimState.WALK_LEFT,  12, 17, walkTime),
-                new GAnim(GooseComponent.GooseAnimState.WALK_DOWN,  18, 23, walkTime)
+                new GAnim(GooseComponent.GooseAnimState.WALK_UP, 6, 11, walkTime),
+                new GAnim(GooseComponent.GooseAnimState.WALK_LEFT, 12, 17, walkTime),
+                new GAnim(GooseComponent.GooseAnimState.WALK_DOWN, 18, 23, walkTime)
         };
 
         for (GAnim g : table) {
