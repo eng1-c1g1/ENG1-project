@@ -30,20 +30,20 @@ import io.github.maze11.EntityMaker;
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.fixedStep.FixedStepper;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.systems.GooseSystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerRendererSystem;
 import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.gameState.GameStateSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.systems.gameState.GameStateSystem;
 
 public class LevelScreen implements Screen {
     private final MazeGame game;
@@ -55,7 +55,7 @@ public class LevelScreen implements Screen {
 
     // box2d debug renderer
     private final Box2DDebugRenderer debugRenderer;
-    private final boolean showDebugRenderer = true;
+    private final boolean debugMode = false;
 
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
@@ -88,8 +88,13 @@ public class LevelScreen implements Screen {
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
         // Systems that need to be referenced later
-        GooseSystem gooseSystem = new GooseSystem(fixedStepper, messagePublisher);
+        final GooseSystem gooseSystem = new GooseSystem(fixedStepper, messagePublisher);
         timerRendererSystem = new TimerRendererSystem(game);
+
+        final RenderingSystem renderingSystem = new RenderingSystem(game);
+        if (debugMode) {
+            renderingSystem.startDebugView();
+        }
 
         // input -> sync -> physics -> render (for no input delay)
         List<EntitySystem> systems = List.of(
@@ -101,7 +106,7 @@ public class LevelScreen implements Screen {
             new PhysicsSystem(fixedStepper, messagePublisher),
             new PhysicsToTransformSystem(fixedStepper),
             new WorldCameraSystem(camera, game.getBatch()),
-            new RenderingSystem(game).startDebugView(),
+            renderingSystem,
             new TimerSystem(messagePublisher),
             timerRendererSystem
         );
@@ -250,7 +255,7 @@ public class LevelScreen implements Screen {
         viewport.apply();
 
         // render Box2D debug outlines
-        if (showDebugRenderer) {
+        if (debugMode) {
             var physicsSystem = engine.getSystem(PhysicsSystem.class);
             if (physicsSystem != null) {
                 debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
