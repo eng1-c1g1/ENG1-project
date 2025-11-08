@@ -49,21 +49,21 @@ public class EntityMaker {
         return entity;
     }
 
-    private Entity makeEntity(float x, float y, float xScale, float yScale, float rotation) {
+    private Entity makeEntity(float x, float y, float xScale, float yScale) {
         Entity entity = makeEmptyEntity();
 
         TransformComponent transform = engine.createComponent(TransformComponent.class);
-        transform.Initialize(x, y, xScale, yScale, rotation);
+        transform.Initialize(x, y, xScale, yScale);
         entity.add(transform);
         return entity;
     }
 
     private Entity makeEntity(float x, float y) {
-        return makeEntity(x, y, 1f, 1f, 0f);
+        return makeEntity(x, y, 1f, 1f);
     }
 
-    private Entity makeVisibleEntity(float x, float y, float xScale, float yScale, float rotation, Texture texture) {
-        Entity entity = makeEntity(x, y, xScale, yScale, rotation);
+    private Entity makeVisibleEntity(float x, float y, float xScale, float yScale, Texture texture) {
+        Entity entity = makeEntity(x, y, xScale, yScale);
         SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
         sprite.texture = texture;
         entity.add(sprite);
@@ -71,7 +71,7 @@ public class EntityMaker {
     }
 
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
-        return makeVisibleEntity(x, y, 1f, 1f, 0f, assetLoader.get(textureId, Texture.class));
+        return makeVisibleEntity(x, y, 1f, 1f, assetLoader.get(textureId, Texture.class));
     }
 
     // Adds a box collider to an entity

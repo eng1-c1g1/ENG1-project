@@ -27,6 +27,6 @@ public class PhysicsSyncSystem extends IteratingFixedStepSystem {
         TransformComponent transform = transformM.get(entity);
 
         // Sync the physics with the transform in case the transform is edited outside the physics engine
-        physics.body.setTransform(transform.position.x, transform.position.y, transform.rotation);
+        physics.body.setTransform(transform.position.x, transform.position.y, 0f);
     }
 }
