@@ -46,7 +46,6 @@ public class InteractableSystem extends EntitySystem {
                 handleInteraction(collisionMessage.entityA, collisionMessage.entityB);
             }
             // If not between an interactable and a player, ignore this collision
-
         }
     }
 

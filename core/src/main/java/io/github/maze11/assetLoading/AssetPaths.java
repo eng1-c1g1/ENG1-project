@@ -22,6 +22,10 @@ public class AssetPaths {
         entry(AssetId.CHECK_IN, "debug.png")
     );
 
+    static Map<AssetId, String> soundPaths = Map.ofEntries(
+        entry(AssetId.TEST_SOUND, "audio/test_sound.mp3")
+    );
+
     // This map can be used to declare paths to loaded files of any type
     static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
         entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx")
