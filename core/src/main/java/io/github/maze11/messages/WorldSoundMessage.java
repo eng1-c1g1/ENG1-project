@@ -3,7 +3,9 @@ package io.github.maze11.messages;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
-/** Represents a sound at a specific location in the world, with falloff depending on distance from the listener */
+/**
+ * Represents a sound at a specific location in the world, with falloff depending on distance from the listener
+ * */
 public class WorldSoundMessage extends SoundMessage{
     /** The position the sound effect is emitted from */
     public final Vector2 worldPosition;

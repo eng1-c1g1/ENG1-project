@@ -1,15 +1,14 @@
 package io.github.maze11.systems;
 
 import com.badlogic.ashley.core.*;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
-import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AudioListenerComponent;
-import io.github.maze11.components.TimerComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.messages.*;
 
+/**
+ * Plays any sound effects from their corresponding messages
+ */
 public class AudioSystem extends EntitySystem {
 
     private final Engine engine;
