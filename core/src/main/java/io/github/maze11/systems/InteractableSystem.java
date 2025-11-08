@@ -55,11 +55,17 @@ public class InteractableSystem extends EntitySystem {
         if (!interactableComponent.interactionEnabled){
             return;
         }
-        // Sends a message causing the interaction effect to occur
 
+        // Sends a message signalling the interaction has occurred
         InteractableMessage specialisedMessage = (InteractableMessage) interactableComponent.activationMessage.clone();
         specialisedMessage.specifyInteraction(player, interactable);
         messageListener.publisher.publish(specialisedMessage);
+
+        // Sends any additional messages that are attached, for example, sound effects
+        for (Message message : interactableComponent.additionalMessages){
+            messageListener.publisher.publish(message);
+        }
+
         // Interactions are disabled once it has occurred once, to prevent the interaction firing multiple times in
         // quick succession. Can be re-enabled by other systems if necessary
         interactableComponent.interactionEnabled = false;

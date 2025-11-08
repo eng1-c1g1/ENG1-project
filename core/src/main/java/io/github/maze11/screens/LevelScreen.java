@@ -101,7 +101,7 @@ public class LevelScreen implements Screen {
             new PhysicsSyncSystem(fixedStepper),
             new PhysicsSystem(fixedStepper, messagePublisher),
             new PhysicsToTransformSystem(fixedStepper),
-            new AudioSystem(game.getAssetLoader()),
+            new AudioSystem(engine, messagePublisher),
             new WorldCameraSystem(camera, game.getBatch()),
             renderingSystem,
             new TimerSystem(messagePublisher),

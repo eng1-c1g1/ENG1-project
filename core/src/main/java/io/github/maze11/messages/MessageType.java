@@ -10,5 +10,6 @@ public enum MessageType {
     COLLECT_COFFEE,
     GOOSE_BITE,
     EXIT_MAZE,
-    CHECK_IN_CODE_COLLECT
+    CHECK_IN_CODE_COLLECT,
+    SOUND_EFFECT
 }
