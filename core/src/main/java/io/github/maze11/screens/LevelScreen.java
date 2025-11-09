@@ -235,8 +235,8 @@ public class LevelScreen implements Screen {
 
     @Override
     public void dispose() {
+        engine.removeAllEntities(); // Clean up entities first to trigger physics body removal
         var phys = engine.getSystem(PhysicsSystem.class);
-
         if (phys != null) {
             engine.removeSystem(phys);
         }
