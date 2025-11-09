@@ -24,6 +24,7 @@ public enum AssetId {
     PRESSURE_PLATE_SOUND,
     SCREEN_BUTTON,
     WIN_SOUND,
+    GAME_MUSIC,
 
 
     // Sprite sheets
