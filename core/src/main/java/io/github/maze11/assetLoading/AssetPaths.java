@@ -19,7 +19,10 @@ public class AssetPaths {
         entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
         entry(AssetId.COFFEE, "items/coffee.png"),
         entry(AssetId.EXIT, "debug.png"),
-        entry(AssetId.CHECK_IN, "debug.png")
+        entry(AssetId.CHECK_IN, "debug.png"),
+
+        entry(AssetId.FALSE_WALL, "sprites/false-wall.png"),
+        entry(AssetId.PRESSURE_PLATE, "debug.png")
     );
 
     static Map<AssetId, String> soundPaths = Map.ofEntries(

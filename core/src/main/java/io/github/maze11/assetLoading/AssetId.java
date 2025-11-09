@@ -10,6 +10,9 @@ public enum AssetId {
     EXIT,
     CHECK_IN,
 
+    FALSE_WALL,
+    PRESSURE_PLATE,
+
     // Sounds
     TEST_SOUND,
     COFFEE_SLURP,

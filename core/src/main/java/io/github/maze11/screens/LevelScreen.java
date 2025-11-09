@@ -31,6 +31,7 @@ import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.systems.AudioSystem;
 import io.github.maze11.systems.GooseSystem;
+import io.github.maze11.systems.HiddenWallSystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerSystem;
@@ -75,6 +76,7 @@ public class LevelScreen implements Screen {
                 new InteractableSystem(messagePublisher, engine, entityMaker),
                 gooseSystem,
                 new PlayerSystem(fixedStepper, messagePublisher),
+                new HiddenWallSystem(fixedStepper, messagePublisher),
                 new PhysicsSyncSystem(fixedStepper),
                 new PhysicsSystem(fixedStepper, messagePublisher),
                 new PhysicsToTransformSystem(fixedStepper),
@@ -170,12 +172,34 @@ public class LevelScreen implements Screen {
                 if (type == null)
                     continue;
 
+                if (isDebugging) {
+                    System.out.println("=== Entity Properties ===");
+                    var props = obj.getProperties();
+
+                    var keys = props.getKeys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        Object value = props.get(key);
+                        System.out.printf(" • %-20s : %s%n", key, value);
+                    }
+                }
+
                 Entity e = switch (type.toLowerCase()) {
                     case "player" -> entityMaker.makePlayer(x, y);
                     case "goose" -> entityMaker.makeGoose(x, y);
                     case "coffee" -> entityMaker.makeCoffee(x, y);
                     case "check-in" -> entityMaker.makeCheckInCode(x, y);
                     case "exit" -> entityMaker.makeExit(x, y);
+                    case "pressure-plate" -> {
+                        String triggers = obj.getProperties().get("triggers", String.class);
+                        yield entityMaker.makePressurePlate(x, y, triggers);
+                    }
+                    case "false-wall" -> {
+                        float w = rect.width / pixelsToUnit;
+                        float h = rect.height / pixelsToUnit;
+                        String triggeredBy = obj.getProperties().get("triggeredBy", String.class);
+                        yield entityMaker.makeFalseWall(x, y, w, h, triggeredBy);
+                    }
                     case "wall" -> {
                         float w = rect.width / pixelsToUnit;
                         float h = rect.height / pixelsToUnit;
