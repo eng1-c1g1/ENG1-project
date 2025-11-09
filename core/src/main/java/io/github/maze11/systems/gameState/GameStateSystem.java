@@ -1,9 +1,14 @@
 package io.github.maze11.systems.gameState;
 
-import com.badlogic.ashley.core.*;
-import io.github.maze11.components.TimerComponent;
-import io.github.maze11.messages.*;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+
 import io.github.maze11.MazeGame;
+import io.github.maze11.components.TimerComponent;
+import io.github.maze11.messages.Message;
+import io.github.maze11.messages.MessageListener;
+import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.screens.GameOverScreen;
 import io.github.maze11.screens.WinScreen;
 
@@ -51,10 +56,10 @@ public class GameStateSystem extends EntitySystem {
                 }
                 case EXIT_MAZE -> {
                     System.out.println("Maze exit reached! Switching to Win Screen...");
-                    // TODO: Replace 0 with the number of seconds remaining
-                    var scoreCard = eventCounter.makeScoreCard(true, (int)getSecondsRemaining());
+                    var scoreCard = eventCounter.makeScoreCard(true, (int) getSecondsRemaining());
                     game.setScreen(new WinScreen(game, scoreCard));
                 }
+                default -> {}
             }
         }
       }
