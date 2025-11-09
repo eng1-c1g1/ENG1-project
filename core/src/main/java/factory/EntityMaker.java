@@ -21,12 +21,10 @@ import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
 import io.github.maze11.components.TimerComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.InteractableMessage;
-import io.github.maze11.messages.MessageType;
-import io.github.maze11.messages.PressurePlateTriggerMessage;
-import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -49,24 +47,21 @@ public class EntityMaker {
     }
 
     public Entity makeFalseWall(float x, float y, float width, float height, String triggeredBy) {
-        Entity entity = makeVisibleEntity(x + width / 2, y + height / 2, width, height,
-                assetLoader.get(AssetId.FALSE_WALL, Texture.class));
-        cMaker.addBoxCollider(entity, x, y, width, height, BodyDef.BodyType.StaticBody, false);
+        Entity entity = makeEmptyEntity();
 
-        HiddenWallComponent hiddenWall = engine.createComponent(HiddenWallComponent.class);
-        hiddenWall.triggeredBy = triggeredBy;
-        entity.add(hiddenWall);
+        cMaker.addTransform(entity, x, y, width, height);
+        cMaker.addSprite(entity, AssetId.FALSE_WALL);
+        cMaker.addBoxCollider(entity, x, y, width, height, 0f, 0f, BodyDef.BodyType.StaticBody, false);
+        cMaker.addHiddenWall(entity,  triggeredBy);
 
         SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
-        if (sprite != null) {
-            sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
-        }
+        sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
 
         return entity;
     }
 
     public Entity makePressurePlate(float x, float y, String triggers) {
-        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE);
+        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, null);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
@@ -74,35 +69,28 @@ public class EntityMaker {
     // Creates a wall entity with box collider
     public Entity makeWall(float x, float y, float width, float height) {
         Entity entity = makeEmptyEntity();
-        cMaker.addBoxCollider(entity, x + width / 2, y + height / 2, width, height,
+        cMaker.addBoxCollider(entity, x + width / 2, y + height / 2, width, height, 0f, 0f,
                 BodyDef.BodyType.StaticBody, false);
         return entity;
     }
 
-    // Creates the player entity with sprite, camera follow, and physics
+    /** Creates the player entity with sprite, camera follow, and physics */
     public Entity makePlayer(float x, float y) {
-        // Create the base entity (TransformComponent included)
-        Entity entity = makeEntity(x, y);
+        Entity entity = makeEmptyEntity();
 
-        // Sprite (used only for size + offset)
-        SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
-        sprite.size.set(1f, 2f);
-        sprite.textureOffset.set(0f, 0.05f);
-        sprite.texture = null; // The animation will provide the frame each render
-        entity.add(sprite);
-
-        // Player logic
-        PlayerComponent player = engine.createComponent(PlayerComponent.class);
-        entity.add(player);
+        cMaker.addTransform(entity, x, y);
+        cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.5f);
+        entity.add(engine.createComponent(PlayerComponent.class));
 
         // Camera follows the player
         entity.add(engine.createComponent(CameraFollowComponent.class));
 
         // Physics
-        addBoxCollider(entity, x, y, 0.9f, 0.9f,
+        cMaker.addBoxCollider(entity, x, y, 0.9f, 0.9f,
                 0f, 0.5f,
                 BodyDef.BodyType.DynamicBody,
                 true);
+        cMaker.addAudioListener(entity, new Vector2(0f, 1f));
 
         AnimationComponent<PlayerComponent.PlayerState> anim = (AnimationComponent<PlayerComponent.PlayerState>) engine
                 .createComponent(AnimationComponent.class);
@@ -147,10 +135,6 @@ public class EntityMaker {
 
         entity.add(anim);
 
-        // Make the player listen for sounds
-        var audioListener = new AudioListenerComponent();
-        audioListener.offset.set(0f, 1f);
-        entity.add(audioListener);
 
         return entity;
     }
@@ -202,74 +186,52 @@ public class EntityMaker {
     // Creates a countdown timer entity
     public Entity makeTimer(float durationSeconds) {
         Entity entity = makeEmptyEntity();
-
-        TimerComponent timer = engine.createComponent(TimerComponent.class);
-        timer.timeRemaining = durationSeconds;
-        timer.totalTime = durationSeconds;
-        timer.isRunning = true;
-        timer.hasExpired = false;
-
-        entity.add(timer);
+        cMaker.addTimer(entity, durationSeconds);
         return entity;
     }
 
     private Entity makeInteractable(float x, float y, InteractableMessage message, boolean disappearOnInteract,
-            AssetId assetId) {
+            AssetId assetId, List<Message> additionalMessages) {
         Entity entity = makeEmptyEntity();
         cMaker.addTransform(entity, x, y);
         cMaker.addSprite(entity, assetId);
-        cMaker.addInteractable(entity, message, disappearOnInteract);
+        cMaker.addInteractable(entity, message, disappearOnInteract, additionalMessages);
 
         return entity;
     }
 
     public Entity makeCoffee(float x, float y) {
-        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE);
+        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, null);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
     public Entity makeCheckInCode(float x, float y) {
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
-                AssetId.CHECK_IN);
+                AssetId.CHECK_IN, null);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
     public Entity makeExit(float x, float y) {
-        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT);
+        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT, null);
         cMaker.addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
             BodyDef.BodyType.StaticBody, true);
         return entity;
     }
 
     public Entity makeGoose(float x, float y) {
-        Entity entity = makeEntity(x, y);
+        Entity entity = makeEmptyEntity();
 
-        // Sprite
-        SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
-        sprite.size.set(2f, 2f);
-        sprite.textureOffset.set(0f, -0.3f);
-        sprite.texture = null;
-        entity.add(sprite);
+        List<Message> messages = new ArrayList<>();
+        messages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
+            1f));
 
-        // Goose
-        GooseComponent goose = engine.createComponent(GooseComponent.class);
-        goose.homePosition = new Vector2(x, y);
-        goose.currentWanderWaypoint = null;
-        entity.add(goose);
-
-        // Interactable
-        InteractableComponent interact = engine.createComponent(InteractableComponent.class);
-        interact.activationMessage = new GooseBiteMessage();
-        interact.additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
-                1f));
-        interact.disappearOnInteract = false;
-        interact.interactionEnabled = true;
-        entity.add(interact);
-
-        // Physics
-        addBoxCollider(entity, x, y,
+        cMaker.addTransform(entity, x, y);
+        cMaker.addSprite(entity, null, 2f, 2f, 0f, -0.3f);
+        cMaker.addGoose(entity, x, y);
+        cMaker.addInteractable(entity, new GooseBiteMessage(), false, messages);
+        cMaker.addBoxCollider(entity, x, y,
                 0.9f, 0.9f,
                 0f, 0.4f,
                 BodyDef.BodyType.DynamicBody,
