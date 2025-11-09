@@ -2,6 +2,7 @@ package io.github.maze11.assetLoading;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -25,6 +26,10 @@ public class AssetLoader {
         // Puts all the texture paths into the map
         for (var entry : AssetPaths.texturePaths.entrySet()) {
             assetMap.put(new AssetKey<>(entry.getKey(), Texture.class), entry.getValue());
+        }
+        // Puts all the texture paths into the map
+        for (var entry : AssetPaths.soundPaths.entrySet()) {
+            assetMap.put(new AssetKey<>(entry.getKey(), Sound.class), entry.getValue());
         }
     }
 

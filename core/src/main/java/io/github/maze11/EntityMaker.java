@@ -2,6 +2,7 @@ package io.github.maze11;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,19 +17,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
-import io.github.maze11.components.AnimationComponent;
-import io.github.maze11.components.CameraFollowComponent;
-import io.github.maze11.components.GooseComponent;
-import io.github.maze11.components.InteractableComponent;
-import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.components.PlayerComponent;
-import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.components.TimerComponent;
-import io.github.maze11.components.TransformComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.InteractableMessage;
-import io.github.maze11.messages.MessageType;
+import io.github.maze11.components.*;
+import io.github.maze11.messages.*;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -49,21 +39,21 @@ public class EntityMaker {
         return entity;
     }
 
-    private Entity makeEntity(float x, float y, float xScale, float yScale, float rotation) {
+    private Entity makeEntity(float x, float y, float xScale, float yScale) {
         Entity entity = makeEmptyEntity();
 
         TransformComponent transform = engine.createComponent(TransformComponent.class);
-        transform.Initialize(x, y, xScale, yScale, rotation);
+        transform.Initialize(x, y, xScale, yScale);
         entity.add(transform);
         return entity;
     }
 
     private Entity makeEntity(float x, float y) {
-        return makeEntity(x, y, 1f, 1f, 0f);
+        return makeEntity(x, y, 1f, 1f);
     }
 
-    private Entity makeVisibleEntity(float x, float y, float xScale, float yScale, float rotation, Texture texture) {
-        Entity entity = makeEntity(x, y, xScale, yScale, rotation);
+    private Entity makeVisibleEntity(float x, float y, float xScale, float yScale, Texture texture) {
+        Entity entity = makeEntity(x, y, xScale, yScale);
         SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
         sprite.texture = texture;
         entity.add(sprite);
@@ -71,7 +61,7 @@ public class EntityMaker {
     }
 
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
-        return makeVisibleEntity(x, y, 1f, 1f, 0f, assetLoader.get(textureId, Texture.class));
+        return makeVisibleEntity(x, y, 1f, 1f, assetLoader.get(textureId, Texture.class));
     }
 
     // Adds a box collider to an entity
@@ -191,6 +181,11 @@ public class EntityMaker {
         anim.currentState = PlayerComponent.PlayerState.IDLE_DOWN;
 
         entity.add(anim);
+
+        // Make the player listen for sounds
+        var audioListener = new AudioListenerComponent();
+        audioListener.offset.set(0f, 1f);
+        entity.add(audioListener);
 
         return entity;
     }
@@ -346,6 +341,8 @@ public class EntityMaker {
         // Interactable
         InteractableComponent interact = engine.createComponent(InteractableComponent.class);
         interact.activationMessage = new GooseBiteMessage();
+        interact.additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
+            1f));
         interact.disappearOnInteract = false;
         interact.interactionEnabled = true;
         entity.add(interact);

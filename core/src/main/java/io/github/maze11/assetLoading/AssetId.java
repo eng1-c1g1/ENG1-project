@@ -10,7 +10,10 @@ public enum AssetId {
     EXIT,
     CHECK_IN,
 
-    GOOSE_SHEET,
+    // Sounds
+    TEST_SOUND,
 
+    // Sprite sheets
+    GOOSE_SHEET,
     PLAYER_SHEET
 }

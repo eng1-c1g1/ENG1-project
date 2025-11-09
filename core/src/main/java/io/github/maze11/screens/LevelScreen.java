@@ -28,11 +28,7 @@ import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.ToastMessage;
-import io.github.maze11.systems.GooseSystem;
-import io.github.maze11.systems.InteractableSystem;
-import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.TimerSystem;
+import io.github.maze11.systems.*;
 import io.github.maze11.systems.gameState.GameStateSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
@@ -77,6 +73,7 @@ public class LevelScreen implements Screen {
                 new PhysicsSyncSystem(fixedStepper),
                 new PhysicsSystem(fixedStepper, messagePublisher),
                 new PhysicsToTransformSystem(fixedStepper),
+                new AudioSystem(engine, messagePublisher),
                 new WorldCameraSystem(camera, game.getBatch()),
                 new TimerSystem(messagePublisher),
                 renderingSystem);
