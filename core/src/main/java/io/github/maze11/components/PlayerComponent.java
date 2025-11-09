@@ -50,4 +50,9 @@ public class PlayerComponent implements Component {
      * Excludes knockback
      */
     public Vector2 naturalVelocity = new Vector2();
+
+    /** The time elapsed since the last footstep sound was played */
+    public float timeSinceLastFootstep;
+    /** The time between two footstep sounds playing */
+    public float timeBetweenFootsteps = 0.3f;
 }

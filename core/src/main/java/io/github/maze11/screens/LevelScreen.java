@@ -76,7 +76,7 @@ public class LevelScreen implements Screen {
                 new GameStateSystem(messagePublisher, game, engine),
                 new InteractableSystem(messagePublisher, engine, entityMaker),
                 gooseSystem,
-                new PlayerSystem(fixedStepper, messagePublisher),
+                new PlayerSystem(fixedStepper, messagePublisher, game),
                 new HiddenWallSystem(fixedStepper, messagePublisher),
                 new PhysicsSyncSystem(fixedStepper),
                 new PhysicsSystem(fixedStepper, messagePublisher),
