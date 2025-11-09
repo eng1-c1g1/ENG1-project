@@ -27,7 +27,7 @@ public class AssetPaths {
         entry(AssetId.COFFEE_SLURP, "audio/CoffeeSlurlp.mp3"),
         entry(AssetId.COLLECTABLE_SOUND, "audio/CollectableSound.mp3"),
         entry(AssetId.GOOSE_HONK, "audio/GooseHonk.mp3"),
-        entry(AssetId.GOOSE_HONK_SEVERAL, "audio/GooseHonkMany.mp3"),
+        entry(AssetId.GOOSE_HONK_SEVERAL, "audio/GooseHonkingMany.mp3"),
         entry(AssetId.HIDDEN_ROOM_SOUND, "audio/HiddenRoomSound.mp3"),
         entry(AssetId.PLAYER_WALKING, "audio/PlayerWalking.mp3"),
         entry(AssetId.PRESSURE_PLATE_SOUND, "audio/PressurePlateSound.mp3"),
