@@ -50,8 +50,7 @@ public class GameOverScreen extends BaseMenuScreen {
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LevelScreen(game)); // new LevelScreen i.e. fresh ECS World
-                dispose(); // clean up game over screen resources
+                game.switchScreen(new LevelScreen(game)); // new LevelScreen i.e. fresh ECS World
             }
         });
 
@@ -59,8 +58,7 @@ public class GameOverScreen extends BaseMenuScreen {
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(game));
-                dispose();
+                game.switchScreen(new MenuScreen(game));
             }
         });
         // vertical stack layout again between elements

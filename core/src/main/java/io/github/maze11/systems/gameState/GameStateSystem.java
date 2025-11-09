@@ -52,12 +52,12 @@ public class GameStateSystem extends EntitySystem {
                 case TIMER_EXPIRED -> {
                     System.out.println("Timer Expired! Switching to Game Over Screen...");
                     int totalScore = eventCounter.makeScoreCard(true, 0).totalScore();
-                    game.setScreen(new GameOverScreen(game, totalScore));
+                    game.switchScreen(new GameOverScreen(game, totalScore));
                 }
                 case EXIT_MAZE -> {
                     System.out.println("Maze exit reached! Switching to Win Screen...");
                     var scoreCard = eventCounter.makeScoreCard(true, (int) getSecondsRemaining());
-                    game.setScreen(new WinScreen(game, scoreCard));
+                    game.switchScreen(new WinScreen(game, scoreCard));
                 }
                 default -> {}
             }

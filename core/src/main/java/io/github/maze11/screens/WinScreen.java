@@ -59,8 +59,7 @@ public class WinScreen extends BaseMenuScreen {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LevelScreen(game));
-                dispose();
+                game.switchScreen(new LevelScreen(game));
             }
         });
 
@@ -68,8 +67,7 @@ public class WinScreen extends BaseMenuScreen {
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(game));
-                dispose();
+                game.switchScreen(new MenuScreen(game));
             }
         });
 

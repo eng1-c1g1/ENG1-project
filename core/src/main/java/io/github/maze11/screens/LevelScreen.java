@@ -1,5 +1,6 @@
 package io.github.maze11.screens;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -258,6 +259,7 @@ public class LevelScreen implements Screen {
 
     @Override
     public void dispose() {
+        engine.removeAllEntities(); // Clean up entities first to trigger physics body removal
         var phys = engine.getSystem(PhysicsSystem.class);
 
         if (phys != null) {
@@ -265,6 +267,7 @@ public class LevelScreen implements Screen {
         }
 
         engine.removeAllEntities();
+        System.out.println("Level screen disposed");
     }
 
     private void registerPhysicsCleanupListener() {
