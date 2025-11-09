@@ -36,7 +36,8 @@ public class AssetPaths {
         entry(AssetId.FOOTSTEP, "audio/SingleFootstep.mp3"),
         entry(AssetId.PRESSURE_PLATE_SOUND, "audio/PressurePlateSound.mp3"),
         entry(AssetId.SCREEN_BUTTON, "audio/ScreenButtons.mp3"),
-        entry(AssetId.WIN_SOUND, "audio/WinSound.mp3")
+        entry(AssetId.WIN_SOUND, "audio/WinSound.mp3"),
+        entry(AssetId.GAME_MUSIC, "audio/GameMusic.mp3")
     );
 
     // This map can be used to declare paths to loaded files of any type
