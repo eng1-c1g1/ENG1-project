@@ -12,6 +12,16 @@ public enum AssetId {
 
     // Sounds
     TEST_SOUND,
+    COFFEE_SLURP,
+    COLLECTABLE_SOUND,
+    GOOSE_HONK,
+    GOOSE_HONK_SEVERAL,
+    HIDDEN_ROOM_SOUND, 
+    PLAYER_WALKING,
+    PRESSURE_PLATE_SOUND,
+    SCREEN_BUTTON,
+    WIN_SOUND,
+
 
     // Sprite sheets
     GOOSE_SHEET,

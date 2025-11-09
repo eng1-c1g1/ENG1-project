@@ -23,7 +23,16 @@ public class AssetPaths {
     );
 
     static Map<AssetId, String> soundPaths = Map.ofEntries(
-        entry(AssetId.TEST_SOUND, "audio/test_sound.mp3")
+        entry(AssetId.TEST_SOUND, "audio/test_sound.mp3"),
+        entry(AssetId.COFFEE_SLURP, "audio/CoffeeSlurlp.mp3"),
+        entry(AssetId.COLLECTABLE_SOUND, "audio/CollectableSound.mp3"),
+        entry(AssetId.GOOSE_HONK, "audio/GooseHonk.mp3"),
+        entry(AssetId.GOOSE_HONK_SEVERAL, "audio/GooseHonkMany.mp3"),
+        entry(AssetId.HIDDEN_ROOM_SOUND, "audio/HiddenRoomSound.mp3"),
+        entry(AssetId.PLAYER_WALKING, "audio/PlayerWalking.mp3"),
+        entry(AssetId.PRESSURE_PLATE_SOUND, "audio/PressurePlateSound.mp3"),
+        entry(AssetId.SCREEN_BUTTON, "audio/ScreenButtons.mp3"),
+        entry(AssetId.WIN_SOUND, "audio/WinSound.mp3")
     );
 
     // This map can be used to declare paths to loaded files of any type
