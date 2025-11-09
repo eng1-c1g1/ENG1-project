@@ -197,14 +197,22 @@ public class EntityMaker {
     }
 
     public Entity makeCoffee(float x, float y) {
-        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, null);
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COFFEE_SLURP, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Coffee Consumed", 2f));
+
+        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
     public Entity makeCheckInCode(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Check-in code collected", 2f));
+
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
-                AssetId.CHECK_IN, null);
+                AssetId.CHECK_IN, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
@@ -220,7 +228,7 @@ public class EntityMaker {
         Entity entity = makeEmptyEntity();
 
         List<Message> messages = new ArrayList<>();
-        messages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
+        messages.add(new SoundMessage(assetLoader.get(AssetId.GOOSE_HONK, Sound.class),
             1f));
 
         cMaker.addTransform(entity, x, y);

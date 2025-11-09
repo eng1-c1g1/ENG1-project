@@ -226,7 +226,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         // If it is time for another footstep, take it
         if (player.timeSinceLastFootstep > player.timeBetweenFootsteps){
             player.timeSinceLastFootstep = 0f;
-            messageListener.publisher.publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 1f, 0.6f));
+            messageListener.publisher.publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 0.5f, 0.6f));
         }
     }
 }

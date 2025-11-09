@@ -114,9 +114,9 @@ public class LevelScreen implements Screen {
 
     private void welcomeToasts(MessagePublisher messagePublisher) {
         ToastMessage[] toasts = {
-                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move..", 10f),
-                new ToastMessage("Escape the maze as fast as possible\nand avoid the geese. They don't negotiate.", 10f),
-                new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 10f),
+                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move.", 10f),
+                new ToastMessage("Escape the maze as fast as possible\nand avoid the geese.", 10f),
+                new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 5f),
         };
 
         float startDelay = 2f;
