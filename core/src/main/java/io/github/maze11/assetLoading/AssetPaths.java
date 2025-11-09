@@ -18,8 +18,8 @@ public class AssetPaths {
 
         entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
         entry(AssetId.COFFEE, "items/coffee.png"),
-        entry(AssetId.EXIT, "debug.png"),
-        entry(AssetId.CHECK_IN, "debug.png"),
+        entry(AssetId.EXIT, "sprites/exit.png"),
+        entry(AssetId.CHECK_IN, "items/check-in.png"),
 
         entry(AssetId.FALSE_WALL, "sprites/false-wall.png"),
         entry(AssetId.PRESSURE_PLATE, "debug.png")
