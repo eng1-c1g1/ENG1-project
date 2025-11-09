@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
-import io.github.maze11.EntityMaker;
+import factory.EntityMaker;
 import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.*;
