@@ -17,8 +17,23 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
-import io.github.maze11.components.*;
-import io.github.maze11.messages.*;
+import io.github.maze11.components.AnimationComponent;
+import io.github.maze11.components.AudioListenerComponent;
+import io.github.maze11.components.CameraFollowComponent;
+import io.github.maze11.components.GooseComponent;
+import io.github.maze11.components.HiddenWallComponent;
+import io.github.maze11.components.InteractableComponent;
+import io.github.maze11.components.PhysicsComponent;
+import io.github.maze11.components.PlayerComponent;
+import io.github.maze11.components.SpriteComponent;
+import io.github.maze11.components.TimerComponent;
+import io.github.maze11.components.TransformComponent;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.InteractableMessage;
+import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.PressurePlateTriggerMessage;
+import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.systems.physics.PhysicsSystem;
 
 /**
@@ -62,6 +77,29 @@ public class EntityMaker {
 
     private Entity makeVisibleEntity(float x, float y, AssetId textureId) {
         return makeVisibleEntity(x, y, 1f, 1f, assetLoader.get(textureId, Texture.class));
+    }
+
+    public Entity makeFalseWall(float x, float y, float width, float height, String triggeredBy) {
+        Entity entity = makeVisibleEntity(x + width / 2, y + height / 2, width, height,
+                assetLoader.get(AssetId.FALSE_WALL, Texture.class));
+        addBoxCollider(entity, x, y, width, height, BodyDef.BodyType.StaticBody, false);
+
+        HiddenWallComponent hiddenWall = engine.createComponent(HiddenWallComponent.class);
+        hiddenWall.triggeredBy = triggeredBy;
+        entity.add(hiddenWall);
+
+        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
+        if (sprite != null) {
+            sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
+        }
+
+        return entity;
+    }
+
+    public Entity makePressurePlate(float x, float y, String triggers) {
+        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE);
+        addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
     }
 
     // Adds a box collider to an entity
@@ -342,7 +380,7 @@ public class EntityMaker {
         InteractableComponent interact = engine.createComponent(InteractableComponent.class);
         interact.activationMessage = new GooseBiteMessage();
         interact.additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
-            1f));
+                1f));
         interact.disappearOnInteract = false;
         interact.interactionEnabled = true;
         entity.add(interact);

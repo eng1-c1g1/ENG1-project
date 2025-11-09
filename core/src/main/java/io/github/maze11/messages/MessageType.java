@@ -12,5 +12,6 @@ public enum MessageType {
     EXIT_MAZE,
     CHECK_IN_CODE_COLLECT,
     SOUND_EFFECT,
-    TOAST_SHOW
+    TOAST_SHOW,
+    PRESSURE_PLATE_TRIGGER
 }
