@@ -1,5 +1,6 @@
 package io.github.maze11.screens;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -241,6 +242,7 @@ public class LevelScreen implements Screen {
         }
 
         engine.removeAllEntities();
+        System.out.println("Level screen disposed");
     }
 
     private void registerPhysicsCleanupListener() {
