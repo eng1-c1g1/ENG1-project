@@ -1,4 +1,4 @@
-package factory;
+package io.github.maze11.factory;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -13,14 +13,10 @@ import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AnimationComponent;
-import io.github.maze11.components.AudioListenerComponent;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
-import io.github.maze11.components.HiddenWallComponent;
-import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.components.TimerComponent;
 import io.github.maze11.messages.*;
 
 import java.util.ArrayList;
