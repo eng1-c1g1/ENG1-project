@@ -75,7 +75,7 @@ public class EntityMaker {
         Entity entity = makeEmptyEntity();
 
         cMaker.addTransform(entity, x, y);
-        cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.5f);
+        cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.05f);
         entity.add(engine.createComponent(PlayerComponent.class));
 
         // Camera follows the player
