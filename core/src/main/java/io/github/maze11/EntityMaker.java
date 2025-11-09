@@ -432,8 +432,15 @@ public class EntityMaker {
 
     public Entity makeExit(float x, float y) {
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT);
-        addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
+        addBoxCollider(entity, x, y, 1.6f, 2.2f, 0f, 0.5f,
                 BodyDef.BodyType.StaticBody, true);
+
+        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
+        if (sprite != null) {
+            sprite.size.set(3f, 3f);
+            sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
+        }
+
         return entity;
     }
 }

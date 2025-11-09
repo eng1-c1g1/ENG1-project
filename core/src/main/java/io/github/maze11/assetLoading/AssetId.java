@@ -25,7 +25,6 @@ public enum AssetId {
     SCREEN_BUTTON,
     WIN_SOUND,
 
-
     // Sprite sheets
     GOOSE_SHEET,
     PLAYER_SHEET
