@@ -1,5 +1,8 @@
 package io.github.maze11.factory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.audio.Sound;
@@ -17,10 +20,13 @@ import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.InteractableMessage;
+import io.github.maze11.messages.Message;
+import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.PressurePlateTriggerMessage;
+import io.github.maze11.messages.SoundMessage;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -45,9 +51,9 @@ public class EntityMaker {
     public Entity makeFalseWall(float x, float y, float width, float height, String triggeredBy) {
         Entity entity = makeEmptyEntity();
 
-        cMaker.addTransform(entity, x, y, width, height);
+        cMaker.addTransform(entity, x + width / 2, y + height / 2, width, height);
         cMaker.addSprite(entity, AssetId.FALSE_WALL);
-        cMaker.addBoxCollider(entity, x, y, width, height, 0f, 0f, BodyDef.BodyType.StaticBody, false);
+        cMaker.addBoxCollider(entity, x + width / 2, y + height / 2, width, height, 0f, 0f, BodyDef.BodyType.StaticBody, false);
         cMaker.addHiddenWall(entity,  triggeredBy);
 
         SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
@@ -211,8 +217,15 @@ public class EntityMaker {
 
     public Entity makeExit(float x, float y) {
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT, null);
-        cMaker.addBoxCollider(entity, x, y, 1f, 1f, 0f, 0.5f,
-            BodyDef.BodyType.StaticBody, true);
+        cMaker.addBoxCollider(entity, x, y, 1.6f, 2.2f, 0f, 0.5f,
+                BodyDef.BodyType.StaticBody, true);
+
+        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
+        if (sprite != null) {
+            sprite.size.set(3f, 3f);
+            sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
+        }
+        
         return entity;
     }
 
