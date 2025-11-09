@@ -1,6 +1,7 @@
 package io.github.maze11.systems;
 
 import com.badlogic.ashley.core.*;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.components.AudioListenerComponent;
 import io.github.maze11.components.TransformComponent;
@@ -15,6 +16,7 @@ public class AudioSystem extends EntitySystem {
     private final MessageListener messageListener;
     private final ComponentMapper<AudioListenerComponent> listenerMapper = ComponentMapper.getFor(AudioListenerComponent.class);
     private final ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
+    private final RandomXS128 random = new RandomXS128();
 
     public AudioSystem(Engine engine, MessagePublisher messagePublisher) {
         this.engine = engine;
@@ -48,7 +50,22 @@ public class AudioSystem extends EntitySystem {
     private void playSound(SoundMessage message, Vector2 listenerPosition){
 
         float volume = message.getEffectiveVolume(listenerPosition);
-        message.sound.play(volume);
+        float resultantPitch;
+
+        // Pick a random pitch for the sound
+        float pitchRandomness = message.pitchRandomness;
+        if (pitchRandomness == 0f) {
+            resultantPitch = 1f;
+        }
+        else {
+            // Get even pitch distribution for higher and lower pitch
+            float randVal = random.nextFloat() * 2 - 1;
+            randVal *= pitchRandomness;
+            resultantPitch = (float)Math.pow(2f, randVal);
+        }
+
+
+        message.sound.play(volume, resultantPitch, 0f);
     }
 
 }
