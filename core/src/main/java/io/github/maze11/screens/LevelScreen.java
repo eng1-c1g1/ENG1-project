@@ -81,7 +81,7 @@ public class LevelScreen implements Screen {
                 new PhysicsSyncSystem(fixedStepper),
                 new PhysicsSystem(fixedStepper, messagePublisher),
                 new PhysicsToTransformSystem(fixedStepper),
-                new AudioSystem(engine, messagePublisher),
+                new AudioSystem(engine, messagePublisher, game),
                 new WorldCameraSystem(camera, game.getBatch()),
                 new TimerSystem(messagePublisher),
                 renderingSystem);
@@ -261,9 +261,13 @@ public class LevelScreen implements Screen {
     public void dispose() {
         engine.removeAllEntities(); // Clean up entities first to trigger physics body removal
         var phys = engine.getSystem(PhysicsSystem.class);
+        var audio = engine.getSystem(AudioSystem.class);
 
         if (phys != null) {
             engine.removeSystem(phys);
+        }
+        if (audio != null) {
+            audio.dispose();
         }
 
         engine.removeAllEntities();
