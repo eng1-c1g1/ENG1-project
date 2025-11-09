@@ -1,13 +1,13 @@
 package io.github.maze11.assetLoading;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
-import java.util.HashMap;
 
 /**
  * Manages all assets using symbolic identifiers instead of hard-coding addresses.
@@ -27,7 +27,8 @@ public class AssetLoader {
         for (var entry : AssetPaths.texturePaths.entrySet()) {
             assetMap.put(new AssetKey<>(entry.getKey(), Texture.class), entry.getValue());
         }
-        // Puts all the texture paths into the map
+
+        // Add audio to our assets
         for (var entry : AssetPaths.soundPaths.entrySet()) {
             assetMap.put(new AssetKey<>(entry.getKey(), Sound.class), entry.getValue());
         }
