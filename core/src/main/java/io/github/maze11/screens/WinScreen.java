@@ -1,15 +1,18 @@
 package io.github.maze11.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import io.github.maze11.MazeGame;
 import io.github.maze11.systems.gameState.ScoreCard;
 import io.github.maze11.ui.FontGenerator;
-
-import java.util.ArrayList;
 
 /**
  * Win screen shown when player completes the game.
@@ -34,13 +37,16 @@ public class WinScreen extends BaseMenuScreen {
 
         // Title with Roboto
         Label.LabelStyle titleStyle = new Label.LabelStyle(titleFont, Color.WHITE);
-        Label title = new Label("You Win!", titleStyle);
+        Label title = new Label("You Have Escaped University!", titleStyle);
+
+        // Subtitle with Roboto
+        Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
+        Label subtitle = new Label("The Dean Has Returned To Lurking The Halls.", subtitleStyle);
 
         // Score labels with Roboto
         Label.LabelStyle bodyStyle = new Label.LabelStyle(bodyFont, Color.WHITE);
         Label scoreLabel = new Label("Score: " + scoreCard.totalScore(), bodyStyle);
 
-        Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
         Label summaryTitle = new Label("Score Breakdown:", subtitleStyle);
 
         Label.LabelStyle detailStyle = new Label.LabelStyle(bodyFont, Color.CYAN);
