@@ -33,6 +33,7 @@ public class AssetPaths {
         entry(AssetId.GOOSE_HONK_SEVERAL, "audio/GooseHonkingMany.mp3"),
         entry(AssetId.HIDDEN_ROOM_SOUND, "audio/HiddenRoomSound.mp3"),
         entry(AssetId.PLAYER_WALKING, "audio/PlayerWalking.mp3"),
+        entry(AssetId.FOOTSTEP, "audio/SingleFootstep.mp3"),
         entry(AssetId.PRESSURE_PLATE_SOUND, "audio/PressurePlateSound.mp3"),
         entry(AssetId.SCREEN_BUTTON, "audio/ScreenButtons.mp3"),
         entry(AssetId.WIN_SOUND, "audio/WinSound.mp3")
