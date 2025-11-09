@@ -132,7 +132,7 @@ public class EntityMaker {
         // Sprite (used only for size + offset)
         SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
         sprite.size.set(1f, 2f);
-        sprite.textureOffset.set(0f, 0f);
+        sprite.textureOffset.set(0f, 0.05f);
         sprite.texture = null; // The animation will provide the frame each render
         entity.add(sprite);
 
@@ -333,7 +333,7 @@ public class EntityMaker {
         // Sprite
         SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
         sprite.size.set(2f, 2f);
-        sprite.textureOffset.set(0f, 0f);
+        sprite.textureOffset.set(0f, -0.3f);
         sprite.texture = null;
         entity.add(sprite);
 

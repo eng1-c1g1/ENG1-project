@@ -11,19 +11,15 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.github.maze11.EntityMaker;
@@ -32,10 +28,10 @@ import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.systems.GooseSystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
-import io.github.maze11.systems.TimerRendererSystem;
 import io.github.maze11.systems.TimerSystem;
 import io.github.maze11.systems.gameState.GameStateSystem;
 import io.github.maze11.systems.physics.PhysicsSyncSystem;
@@ -46,288 +42,223 @@ import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 
 public class LevelScreen implements Screen {
-    private final MazeGame game;
     private final PooledEngine engine;
-    private final TiledMap map;
-    private OrthogonalTiledMapRenderer mapRenderer;
-    private final FitViewport viewport;
-    private final BitmapFont defaultFont;
 
-    // box2d debug renderer
-    private final Box2DDebugRenderer debugRenderer;
-    private final boolean debugMode = false;
+    private final TiledMap map;
+    private final FitViewport viewport;
+    private final OrthographicCamera camera;
 
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
 
-    private static final ComponentMapper<PhysicsComponent> physicsMapper =
-        ComponentMapper.getFor(PhysicsComponent.class);
-
-    private final Entity timerEntity; // entity that holds the timer
-    private final TimerRendererSystem timerRendererSystem; // system to render the time
+    private final boolean isDebugging = true;
 
     public LevelScreen(MazeGame game) {
-        this.game = game;
-
-        // Create rendering singletons
-        OrthographicCamera camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
-        map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class); // Load the map using AssetManager
 
-        // create the font
-        defaultFont = new BitmapFont();
-        defaultFont.setUseIntegerPositions(false);
-        // scale the font to the viewport
-        defaultFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+        map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class);
 
-        // create the engine
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
-
         messagePublisher = new MessagePublisher();
+
         EntityMaker entityMaker = new EntityMaker(engine, game);
 
-        // Systems that need to be referenced later
-        final GooseSystem gooseSystem = new GooseSystem(fixedStepper, messagePublisher);
-        timerRendererSystem = new TimerRendererSystem(game);
+        GooseSystem gooseSystem = new GooseSystem(fixedStepper, messagePublisher);
+        RenderingSystem renderingSystem = new RenderingSystem(game, camera, map, messagePublisher);
 
-        final RenderingSystem renderingSystem = new RenderingSystem(game);
-        if (debugMode) {
-            renderingSystem.startDebugView();
-        }
-
-        // input -> sync -> physics -> render (for no input delay)
+        // Game conditions (win/lose) -> Input -> Sync & Physics -> render (for no input delay)
         List<EntitySystem> systems = List.of(
-            new GameStateSystem(messagePublisher, game, engine),
-            new InteractableSystem(messagePublisher, engine, entityMaker),
-            gooseSystem,
-            new PlayerSystem(fixedStepper, messagePublisher),
-            new PhysicsSyncSystem(fixedStepper),
-            new PhysicsSystem(fixedStepper, messagePublisher),
-            new PhysicsToTransformSystem(fixedStepper),
-            new WorldCameraSystem(camera, game.getBatch()),
-            renderingSystem,
-            new TimerSystem(messagePublisher),
-            timerRendererSystem
-        );
+                new GameStateSystem(messagePublisher, game, engine),
+                new InteractableSystem(messagePublisher, engine, entityMaker),
+                gooseSystem,
+                new PlayerSystem(fixedStepper, messagePublisher),
+                new PhysicsSyncSystem(fixedStepper),
+                new PhysicsSystem(fixedStepper, messagePublisher),
+                new PhysicsToTransformSystem(fixedStepper),
+                new WorldCameraSystem(camera, game.getBatch()),
+                new TimerSystem(messagePublisher),
+                renderingSystem);
 
-        // Add them to the engine in order
         for (EntitySystem system : systems) {
             engine.addSystem(system);
         }
 
-        registerPhysicsCleanupListener(); // register listener to destroy physics bodies on entity removal
+        PhysicsSystem physicsSystem = engine.getSystem(PhysicsSystem.class);
+        if (isDebugging) {
+            World debugWorld = physicsSystem.getWorld();
+            renderingSystem.enableDebugging(debugWorld);
+        }
 
-        // Populate the world with objects
-        // create walls and entities from tiled layer
+        registerPhysicsCleanupListener();
+
         Map<String, List<Entity>> entities = extractEntities(entityMaker);
 
         // Extract player
-        List<Entity> players = entities.get("player");
-        Entity player;
-        if (players == null || players.isEmpty()) {
-            player = null;
-        } else {
-            player = players.get(0);
-        }
-
-        // Create 5-minute timer
-        timerEntity = entityMaker.makeTimer(300f); // 5-minute timer
-        // Give geese a reference to the player, now that the player has been created
+        Entity player = entities.getOrDefault("player", List.of()).stream().findFirst().orElse(null);
         gooseSystem.setTarget(player);
 
-        debugRenderer = new Box2DDebugRenderer();
+        // Create timer (5 minutes = 300 seconds)
+        entityMaker.makeTimer(300f);
 
-        System.out.println("Level Screen created - game started!");
+        this.welcomeToasts(messagePublisher);
+
+        System.out.println("Level Screen created.");
     }
 
-    /**
-     * Creates wall entities from the Tiled "Collisions" object layer and other
-     * entities from the "Entities" layer.
-     * Each wall is now a proper entity in the ECS instead of just a Box2D body.
-     */
+    private void welcomeToasts(MessagePublisher messagePublisher) {
+        ToastMessage[] toasts = {
+                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move..", 10f),
+                new ToastMessage("Escape the maze as fast as possible\nand avoid the geese. They don't negotiate.", 10f),
+                new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 10f),
+        };
+
+        float startDelay = 2f;
+        float gap = 4f;
+
+        for (int i = 0; i < toasts.length; i++) {
+            final ToastMessage msg = toasts[i];
+            float delay = startDelay + i * gap;
+
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    messagePublisher.publish(msg);
+                }
+            }, delay);
+        }
+    }
+
     private Map<String, List<Entity>> extractEntities(EntityMaker entityMaker) {
         int pixelsToUnit = MazeGame.PIXELS_TO_UNIT;
 
-        Map<String, List<Entity>> entityGroups = new HashMap<>();
+        Map<String, List<Entity>> groups = new HashMap<>();
 
-        // "Collisions" Layer (identifies every object in the "Collisions" layer)
+        // Walls (Collisions layer)
         var wallsLayer = map.getLayers().get("Collisions");
         if (wallsLayer != null) {
-            System.out.println("Found 'Collisions' object layer, creating wall entities");
+            for (MapObject obj : wallsLayer.getObjects()) {
+                if (obj instanceof RectangleMapObject rectObj) {
+                    var rect = rectObj.getRectangle();
 
-            for (MapObject object : wallsLayer.getObjects()) {
-                if (object instanceof RectangleMapObject rectangleMapObject) {
-                    Rectangle rect = rectangleMapObject.getRectangle();
                     float x = rect.x / pixelsToUnit;
                     float y = rect.y / pixelsToUnit;
-                    float width = rect.width / pixelsToUnit;
-                    float height = rect.height / pixelsToUnit;
+                    float w = rect.width / pixelsToUnit;
+                    float h = rect.height / pixelsToUnit;
 
-                    Entity wall = entityMaker.makeWall(x, y, width, height);
-                    entityGroups.computeIfAbsent("wall", k -> new ArrayList<>()).add(wall);
+                    Entity wall = entityMaker.makeWall(x, y, w, h);
+                    groups.computeIfAbsent("wall", k -> new ArrayList<>()).add(wall);
                 }
             }
-        } else {
-            System.out.println("Warning: No 'Collisions' object layer found in map!");
         }
 
-        // "Entities" Layer (identifies entities from 'class' in the Tiled map)
+        // Game Entities (Entities layer)
         var entitiesLayer = map.getLayers().get("Entities");
         if (entitiesLayer != null) {
-            System.out.println("Found 'Entities' object layer, creating game entities");
-
-            for (MapObject object : entitiesLayer.getObjects()) {
-                if (!(object instanceof RectangleMapObject rectObj))
+            for (MapObject obj : entitiesLayer.getObjects()) {
+                if (!(obj instanceof RectangleMapObject rectObj))
                     continue;
 
-                Rectangle rect = rectObj.getRectangle();
+                var rect = rectObj.getRectangle();
                 float x = rect.x / pixelsToUnit;
                 float y = rect.y / pixelsToUnit;
 
-                MapProperties properties = object.getProperties();
-
-                String className = properties.get("type", String.class);
-                if (className == null || className.isEmpty()) {
-                    System.out.println("Skipping unnamed object in 'Entities' layer");
+                String type = obj.getProperties().get("type", String.class);
+                if (type == null)
                     continue;
-                }
 
-                Entity entity = null;
-                switch (className.toLowerCase()) {
-                    case "player" -> entity = entityMaker.makePlayer(x, y);
-                    case "goose" -> entity = entityMaker.makeGoose(x, y);
-                    case "coffee" -> entity = entityMaker.makeCoffee(x, y);
-                    case "check-in" -> entity = entityMaker.makeCheckInCode(x, y);
+                Entity e = switch (type.toLowerCase()) {
+                    case "player" -> entityMaker.makePlayer(x, y);
+                    case "goose" -> entityMaker.makeGoose(x, y);
+                    case "coffee" -> entityMaker.makeCoffee(x, y);
+                    case "check-in" -> entityMaker.makeCheckInCode(x, y);
+                    case "exit" -> entityMaker.makeExit(x, y);
                     case "wall" -> {
-                        float width = rect.width / pixelsToUnit;
-                        float height = rect.height / pixelsToUnit;
-                        entity = entityMaker.makeWall(x, y, width, height);
+                        float w = rect.width / pixelsToUnit;
+                        float h = rect.height / pixelsToUnit;
+                        yield entityMaker.makeWall(x, y, w, h);
                     }
-                    case "exit" -> entity = entityMaker.makeExit(x, y);
-                    default -> System.out.println("Unknown entity class: " + className);
-                }
+                    default -> null;
+                };
 
-                if (entity != null) {
-                    entityGroups.computeIfAbsent(className.toLowerCase(), k -> new ArrayList<>()).add(entity);
+                if (e != null) {
+                    groups.computeIfAbsent(type, k -> new ArrayList<>()).add(e);
                 }
             }
-        } else {
-            System.out.println("Warning: No 'Entities' object layer found in map!");
         }
 
-        return entityGroups;
-    }
-
-    @Override
-    public void show() {
-        float unitScale = 1f / 32f;
-        mapRenderer = new OrthogonalTiledMapRenderer(map, unitScale);
-        System.out.println("Level screen began displaying");
+        return groups;
     }
 
     @Override
     public void render(float deltaTime) {
-
-        viewport.apply();
-
-        // Render the Tiled map
-        mapRenderer.setView((OrthographicCamera) viewport.getCamera());
-
-        var batch = game.getBatch();
-
-        batch.begin();
-        // ######### START RENDER #############
         ScreenUtils.clear(Color.BLACK);
 
-        mapRenderer.render(new int[] { 0 });
-        fixedStepper.advanceSimulation(deltaTime);
-        engine.update(deltaTime);
-
-        // ######## END RENDER ###############
-        batch.end();
-
-        mapRenderer.render(new int[] { 1 });
-
-        // render timer UI after main batch
-        timerRendererSystem.renderTimer();
-
         viewport.apply();
 
-        // render Box2D debug outlines
-        if (debugMode) {
-            var physicsSystem = engine.getSystem(PhysicsSystem.class);
-            if (physicsSystem != null) {
-                debugRenderer.render(physicsSystem.getWorld(), viewport.getCamera().combined);
-            }
-        }
+        fixedStepper.advanceSimulation(deltaTime);
+        engine.update(deltaTime);
     }
 
     @Override
     public void resize(int width, int height) {
-        // if size is 0, it is minimised, no need to resize
-        if (width <= 0 || height <= 0)
+        if (width == 0 || height == 0)
             return;
 
         viewport.update(width, height, true);
-        timerRendererSystem.resize(width, height);
 
+        RenderingSystem renderSys = engine.getSystem(RenderingSystem.class);
+        if (renderSys != null) {
+            renderSys.resize(width, height);
+        }
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
+    public void show() {
     }
 
     @Override
     public void hide() {
+    }
 
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
     }
 
     @Override
     public void dispose() {
-        if (mapRenderer != null) mapRenderer.dispose();
-        defaultFont.dispose();
+        var phys = engine.getSystem(PhysicsSystem.class);
 
-        // dispose debug renderer and physics world
-        var physicsSystem = engine.getSystem(PhysicsSystem.class);
-        if (physicsSystem != null) {
-            engine.removeSystem(physicsSystem); // triggers removedFromEngine which drains SafeBodyDestroy
-        }
-
-        if (debugRenderer != null) {
-            debugRenderer.dispose();
+        if (phys != null) {
+            engine.removeSystem(phys);
         }
 
         engine.removeAllEntities();
-        System.out.println("Level Screen disposed - all entities cleaned up");
     }
 
-    /**
-     * Registers a listener that queues Box2d bodies for destruction
-     * when their associated entities are removed from the engine.
-     */
     private void registerPhysicsCleanupListener() {
-        engine.addEntityListener(Family.all(PhysicsComponent.class).get(),
-        new EntityListener() {
-            @Override
-            public void entityAdded(Entity entity){
-                // No action needed on addition
-            }
+        ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
 
-            @Override
-            public void entityRemoved(Entity entity){
-                PhysicsComponent physicsComp = physicsMapper.get(entity);
-                if (physicsComp != null && physicsComp.body != null){
-                    SafeBodyDestroy.request(physicsComp.body); // Queue body for destruction
-                    physicsComp.body = null; // Clear reference in component
-                }
-            }
-        });
+        engine.addEntityListener(
+                Family.all(PhysicsComponent.class).get(),
+                new EntityListener() {
+                    @Override
+                    public void entityAdded(Entity e) {
+                    }
+
+                    @Override
+                    public void entityRemoved(Entity e) {
+                        PhysicsComponent phys = physicsMapper.get(e);
+                        if (phys != null && phys.body != null) {
+                            SafeBodyDestroy.request(phys.body);
+                            phys.body = null;
+                        }
+                    }
+                });
     }
 }
