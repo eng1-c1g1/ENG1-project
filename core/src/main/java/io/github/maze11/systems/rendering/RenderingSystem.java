@@ -32,6 +32,11 @@ import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.MessageType;
 import io.github.maze11.messages.ToastMessage;
 
+/**
+ * Responsible for rendering everything in the game world onto the screen.
+ * This includes both the tilemap and the entities.
+ * Entities are sorted via their sorting order before they are rendered.
+ */
 public class RenderingSystem extends SortedIteratingSystem {
 
     private final MazeGame game;
@@ -95,6 +100,10 @@ public class RenderingSystem extends SortedIteratingSystem {
         this.messageListener = new MessageListener(publisher);
     }
 
+    /** When this is enabled, displays additional visuals to help with debugging.
+     * This shows where the origins of each visible objects are and shows colliders for physics entities
+     * @param debugWorld The physics world to display colliders for
+     */
     public void enableDebugging(World debugWorld) {
         this.isDebugging = true;
         this.debugRenderer = new Box2DDebugRenderer();
@@ -132,6 +141,9 @@ public class RenderingSystem extends SortedIteratingSystem {
         renderUI();
     }
 
+    /**
+     * Process all the new messages it receives
+     */
     private void consumeMessages(float deltaTime) {
         while (messageListener.hasNext()) {
             Message m = messageListener.next();
@@ -183,6 +195,10 @@ public class RenderingSystem extends SortedIteratingSystem {
         if (isDebugging) worldBatch.draw(originTexture, transform.position.x - 0.5f, transform.position.y - 0.5f, 1f, 1f);
     }
 
+    /**
+     * UI refers to the overlay of anything that does not exist in the game world but should be rendered.
+     * Renders the timer and toasts.
+     */
     private void renderUI() {
         uiViewport.apply();
         shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
@@ -246,6 +262,10 @@ public class RenderingSystem extends SortedIteratingSystem {
     }
 
     // ---------- Toast helpers ----------
+
+    /**
+     * Draws a panel to go behind any toasts
+     */
     private void drawToastBackground() {
         if (toastTimeRemaining <= 0f || toastText == null)
             return;
@@ -304,6 +324,9 @@ public class RenderingSystem extends SortedIteratingSystem {
         shapeRenderer.end();
     }
 
+    /**
+     * Displays the text of the "toast", displaying information about the state of the game to the player
+     */
     private void drawToastText() {
         if (toastTimeRemaining <= 0f || toastText == null)
             return;

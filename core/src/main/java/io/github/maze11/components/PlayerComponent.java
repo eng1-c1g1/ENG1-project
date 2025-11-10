@@ -10,6 +10,9 @@ import com.badlogic.gdx.math.Vector2;
  * Represents a player character
  */
 public class PlayerComponent implements Component {
+    /**
+     * Contains the names of the various animations the player can take
+     */
     public enum PlayerState {
         IDLE_UP,
         IDLE_DOWN,
@@ -21,14 +24,20 @@ public class PlayerComponent implements Component {
         WALK_RIGHT
     }
 
+    /**
+     * The current animation of the player
+     */
     public PlayerState currentState = PlayerState.IDLE_DOWN;
 
-    /* The default maximum speed of the player */
+    /** The default maximum speed of the player */
     public final float maxSpeed = 10f;
 
-    /* Accumulator for any bonuses to speed collected */
+    /** Accumulator for any bonuses to speed collected */
     public List<SpeedBonus> speedBonuses = new ArrayList<>();
 
+    /**
+     * Represents a bonus to speed the player received such as the coffee power-up
+     */
     public static class SpeedBonus {
         public float amount;
         public float timeRemaining;

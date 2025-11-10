@@ -21,9 +21,18 @@ public class MessageListener {
     void receive(Message message){
         queue.add(message);
     }
+
+    /**
+     * Whether the object has any unread messages
+     */
     public boolean hasNext(){
         return !queue.isEmpty();
     }
+
+    /**
+     * Returns and consumes the next unread message
+     * @return The next unread message
+     */
     public Message next(){
         return queue.poll();
     }

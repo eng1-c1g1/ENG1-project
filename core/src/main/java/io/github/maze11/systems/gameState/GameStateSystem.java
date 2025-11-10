@@ -13,11 +13,10 @@ import io.github.maze11.screens.GameOverScreen;
 import io.github.maze11.screens.WinScreen;
 
 /**
- * systemm responsive for managing game state transitions betwween screens.
- * listens for game events (timer's expiry, win condition..) and tells MazeGame to switchs screen when needed
- *
- * this system runs in levelScreen's ECS and monitors messages from other systems/
- * when a game-ending condition occurs, it instructs MazeGame to switch to appropriate screen.
+ * system responsive for managing game state transitions between screens.
+ * listens for game events (timer's expiry, win condition.) and tells MazeGame to switches screen when needed.
+ * When a game-ending condition occurs, it instructs MazeGame to switch to appropriate screen.
+ * Keeps track of any events the numbers of which need to be recorded.
  */
 public class GameStateSystem extends EntitySystem {
     private final MessageListener messageListener;
@@ -25,21 +24,13 @@ public class GameStateSystem extends EntitySystem {
     private final EventCounter eventCounter;
     private final Engine engine;
 
-    // creates a new game state system.
     public GameStateSystem(MessagePublisher messagePublisher, MazeGame game, Engine engine) {
         this.messageListener = new MessageListener(messagePublisher);
         this.game = game;
         this.eventCounter = new EventCounter();
         this.engine = engine;
     }
-    /**
-     * updates systems by processing incoming messages.
-     * called every frame by the engine.
-     * <p>
-     * checks for:
-     * - TIMER_EXPIRED: 5-min timer ran out -> switch to gameOverScreen
-     * - WIN: player reached exit -> switch to WinScreen
-     */
+
       @Override
       public void update(float deltaTime) {
         // process all messages received since last update

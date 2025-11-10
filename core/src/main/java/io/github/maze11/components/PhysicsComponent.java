@@ -51,7 +51,9 @@ public class PhysicsComponent implements Component {
         return colliderOffset;
     }
 
-     // Configures this component as a box collider
+     /**
+      * Configures this component to act as a box collider
+      */
     public PhysicsComponent setBox(float width, float height) {
         this.colliderType = ColliderType.BOX;
         this.colliderWidth = width;
@@ -60,7 +62,9 @@ public class PhysicsComponent implements Component {
         return this;
     }
 
-    // Configures this component as a box collider with offset
+    /**
+     * Configures this component to act as a box collider with offset
+     */
     public PhysicsComponent setBox(float width, float height, float offsetX, float offsetY) {
         this.colliderType = ColliderType.BOX;
         this.colliderWidth = width;
@@ -69,7 +73,9 @@ public class PhysicsComponent implements Component {
         return this;
     }
 
-    // Configures this component as a circle collider
+    /**
+    * Configures this component to act as a circle collider
+    */
     public PhysicsComponent setCircle(float radius) {
         this.colliderType = ColliderType.CIRCLE;
         this.colliderRadius = radius;
@@ -77,7 +83,9 @@ public class PhysicsComponent implements Component {
         return this;
     }
 
-    // Configures this component as a circle collider with offset
+    /**
+     * Configures this component to act as a circle collider with an offset
+     */
     public PhysicsComponent setCircle(float radius, float offsetX, float offsetY) {
         this.colliderType = ColliderType.CIRCLE;
         this.colliderRadius = radius;

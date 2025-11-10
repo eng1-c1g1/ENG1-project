@@ -7,7 +7,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 /**
- * Static storage for all the file paths of the assets loaded in the project
+ * Static storage for all the file paths of the assets loaded in the project.
+ * These paths are used by the AssetLoader as the resources it loads.
  */
 public class AssetPaths {
 

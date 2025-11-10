@@ -24,6 +24,7 @@ public class EventCounter {
     private final int scorePerLeftoverSecond = 1;
     private final int completionBonus = 100;
 
+    /** Records that a new instance of this message was registered in the EventCounter */
     public void receiveMessage(MessageType messageType) {
         // Check if this is a message this class is supposed to track
         if (messageMappings.containsKey(messageType)) {
@@ -37,6 +38,12 @@ public class EventCounter {
         }
     }
 
+    /**
+     * Generates the player score and a breakdown of how it was obtained
+     * @param mazeExited Whether or not the player has reached the exit
+     * @param secondsRemaining The seconds remaining on the timer at this point
+     * @return A ScoreCard which contains the score and a breakdown of it
+     */
     public ScoreCard makeScoreCard(boolean mazeExited, int secondsRemaining) {
         List<String> breakdown = new ArrayList<>();
         int totalScore = 0;

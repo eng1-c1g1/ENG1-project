@@ -8,7 +8,8 @@ import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.MessageType;
 
 /**
- * updates countdown timers and handles expiration
+ * Updates countdown timers.
+ * Sends a message when a timer expires.
  */
 public class TimerSystem extends IteratingSystem {
     private final ComponentMapper<TimerComponent> timerM = ComponentMapper.getFor(TimerComponent.class);

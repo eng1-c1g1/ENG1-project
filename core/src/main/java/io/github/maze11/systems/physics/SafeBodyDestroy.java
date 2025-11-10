@@ -23,7 +23,10 @@ public final class SafeBodyDestroy{
         // Prevent instantiation
     }
 
-
+    /**
+     * If the body exists, enqueues it for destruction
+     * @param body A physics body to destroy
+     */
     public static void request(Body body){
         if (body == null) return;
         if (SET.add(body)){
@@ -31,6 +34,10 @@ public final class SafeBodyDestroy{
         }
     }
 
+    /**
+     * Destroy all the entities added for destruction
+     * @param defaultWorld In the error state that the body does not know its world, checks defaultWorld instead
+     */
     public static void drain(World defaultWorld){
         Body body;
         while ((body = QUEUE.poll()) != null){
@@ -42,7 +49,7 @@ public final class SafeBodyDestroy{
                     body.setUserData(null); // Clear user data to prevent dangling references
                     world.destroyBody(body);
                 }
-                
+
             } catch (Exception e) {
                 // Log the exception without crashing the game
                 System.err.println("[SafeBodyDestroy] Failed to destroy body: " + e.getMessage());

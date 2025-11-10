@@ -57,6 +57,9 @@ public class WorldCameraSystem extends IteratingSystem {
         }
     }
 
+    /**
+     * Determine the camera position based on the targets it follows
+     */
     private void calculateCameraPosition() {
         Vector2 position = new Vector2();
         if (targetPositions.isEmpty()) {

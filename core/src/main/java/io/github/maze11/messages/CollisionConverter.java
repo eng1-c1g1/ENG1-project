@@ -7,8 +7,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 /**
- * Converts collision callbacks into messages which it sends via a publisher. This allows other systems to easily
- * access collision data
+ * Converts collision callbacks into messages which it sends via a publisher.
+ * This allows other systems to easily access collision data
  */
 public class CollisionConverter implements ContactListener {
 

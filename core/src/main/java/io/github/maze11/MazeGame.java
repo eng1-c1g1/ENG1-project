@@ -10,20 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * main game class that manages screen switching and shared resources.
+ * Main game class that manages screen switching and shared resources.
  * Extends LibGDX Game class which provides screen management via setScreen().
  *
- * Each Screen is indepedent and owns its own resources (fonts, UI, ECS)
+ * Each Screen is independent and owns its own resources (fonts, UI, ECS)
  */
 public class MazeGame extends Game {
     private SpriteBatch batch;
     private AssetLoader assetLoader;
     public static final int PIXELS_TO_UNIT = 32;
 
+    /** Returns the spriteBatch to be used for rendering the game */
     public SpriteBatch getBatch() {
         return batch;
     }
 
+    /** Returns a reference to the AssetLoader which can be used to access all assets */
     public AssetLoader getAssetLoader() { return assetLoader; }
 
     /** The screens queued for disposal */

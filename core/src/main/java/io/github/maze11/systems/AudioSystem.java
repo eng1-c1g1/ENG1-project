@@ -54,7 +54,7 @@ public class AudioSystem extends EntitySystem {
     }
 
     /**
-     * Plays the sound in the message specified at the appropriate volume
+     * Reads SoundMessages sent to it, plays sounds corresponding to them
      */
     private void playSound(SoundMessage message, Vector2 listenerPosition){
 

@@ -8,9 +8,12 @@ import com.badlogic.gdx.math.Vector2;
  * should expect to include this component.
  */
 public class TransformComponent implements Component {
+    /** The position of the object in the world */
     public Vector2 position = new Vector2();
+    /** The scale factor this object should be scaled by */
     public Vector2 scale = new Vector2(1f,1f);
 
+    /** Sets all values in one go */
     public void Initialize(float x, float y, float xScale, float yScale)
     {
         position.x = x;

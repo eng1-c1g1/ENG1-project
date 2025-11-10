@@ -21,6 +21,9 @@ class RenderOrderComparator implements Comparator<Entity> {
         spriteM = ComponentMapper.getFor(SpriteComponent.class);
     }
 
+    /**
+     * Determines which of the entities should be rendered in front of the other. Namely, if they should swap places
+     */
     @Override
     public int compare(Entity e1, Entity e2) {
         //gets the layers as ints so that they can be compared by magnitude

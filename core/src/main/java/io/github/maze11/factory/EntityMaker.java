@@ -30,7 +30,9 @@ import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 
 /**
- * Used to create entities within a scene, within an engine
+ * Used to create entities. Has methods for all the entity instances that need to be created.
+ * Constructs an entity by adding components in sequence.
+ * Delegates much of component creation to ComponentMaker.
  */
 public class EntityMaker {
     private final PooledEngine engine;

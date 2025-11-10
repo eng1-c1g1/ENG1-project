@@ -43,6 +43,10 @@ import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
 
+/**
+ * The screen displayed when the game is running.
+ * This is where the world and player can be seen, and most the time is spent by the player.
+ */
 public class LevelScreen implements Screen {
     private final PooledEngine engine;
 
