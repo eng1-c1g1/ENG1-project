@@ -1,11 +1,13 @@
 package io.github.maze11.screens;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.maze11.MazeGame;
+import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.systems.gameState.ScoreCard;
 import io.github.maze11.ui.FontGenerator;
 
@@ -25,6 +27,8 @@ public class WinScreen extends BaseMenuScreen {
         this.scoreCard = scoreCard;
         System.out.println("Win screen launched - Total Score: " + scoreCard.totalScore());
         buildUI();
+
+        game.getAssetLoader().get(AssetId.WIN_SOUND,  Sound.class).play(0.6f);
     }
 
     @Override
@@ -60,6 +64,7 @@ public class WinScreen extends BaseMenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.switchScreen(new LevelScreen(game));
+                playMenuClick();
             }
         });
 
@@ -68,6 +73,7 @@ public class WinScreen extends BaseMenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.switchScreen(new MenuScreen(game));
+                playMenuClick();
             }
         });
 

@@ -2,6 +2,7 @@ package io.github.maze11.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.maze11.MazeGame;
+import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.ui.FontGenerator;
 
 /**
@@ -94,5 +96,9 @@ public abstract class BaseMenuScreen implements Screen {
         if (titleFont != null) titleFont.dispose();
         if (bodyFont != null) bodyFont.dispose();
         System.out.println(this.getClass().getSimpleName() + " disposed");
+    }
+
+    protected void playMenuClick(){
+        game.getAssetLoader().get(AssetId.SCREEN_BUTTON, Sound.class).play();
     }
 }

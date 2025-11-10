@@ -57,7 +57,11 @@ public class EntityMaker {
     }
 
     public Entity makePressurePlate(float x, float y, String triggers) {
-        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, null);
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.PRESSURE_PLATE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Secret door opened", 2f));
+
+        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
