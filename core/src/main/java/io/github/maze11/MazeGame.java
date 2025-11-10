@@ -20,10 +20,12 @@ public class MazeGame extends Game {
     private AssetLoader assetLoader;
     public static final int PIXELS_TO_UNIT = 32;
 
+    /** Returns the spriteBatch to be used for rendering the game */
     public SpriteBatch getBatch() {
         return batch;
     }
 
+    /** Returns a reference to the AssetLoader which can be used to access all assets */
     public AssetLoader getAssetLoader() { return assetLoader; }
 
     /** The screens queued for disposal */
