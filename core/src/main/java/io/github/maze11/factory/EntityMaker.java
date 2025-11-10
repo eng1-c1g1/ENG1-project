@@ -20,7 +20,14 @@ import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.InteractableMessage;
+import io.github.maze11.messages.Message;
+import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.PressurePlateTriggerMessage;
+import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.ToastMessage;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -59,7 +66,7 @@ public class EntityMaker {
     public Entity makePressurePlate(float x, float y, String triggers) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.PRESSURE_PLATE_SOUND, Sound.class), 1f));
-        additionalMessages.add(new ToastMessage("Secret door opened", 2f));
+        additionalMessages.add(new ToastMessage("You hear a click... A secret door has opened!", 2.5f));
 
         Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
@@ -203,7 +210,7 @@ public class EntityMaker {
     public Entity makeCoffee(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COFFEE_SLURP, Sound.class), 1f));
-        additionalMessages.add(new ToastMessage("Coffee Consumed", 2f));
+        additionalMessages.add(new ToastMessage("Coffee drank! +Speed", 2f));
 
         Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
@@ -213,7 +220,7 @@ public class EntityMaker {
     public Entity makeCheckInCode(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
-        additionalMessages.add(new ToastMessage("Check-in code collected", 2f));
+        additionalMessages.add(new ToastMessage("Check-in code collected! +20 Points", 2f));
 
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
                 AssetId.CHECK_IN, additionalMessages);
