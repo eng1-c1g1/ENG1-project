@@ -20,13 +20,7 @@ import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.InteractableMessage;
-import io.github.maze11.messages.Message;
-import io.github.maze11.messages.MessageType;
-import io.github.maze11.messages.PressurePlateTriggerMessage;
-import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -237,7 +231,7 @@ public class EntityMaker {
             sprite.size.set(3f, 3f);
             sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
         }
-        
+
         return entity;
     }
 
