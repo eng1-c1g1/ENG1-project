@@ -96,6 +96,12 @@ public class GooseSystem extends IteratingFixedStepSystem {
         goose.animState = newAnimState;
     }
 
+    /**
+     * Determines which animation the goose should play according to its velocity
+     * @param vel The current velocity the goose is moving at
+     * @param last The last animation: used as a default if the goose is not moving
+     * @return
+     */
     private GooseAnimState resolveAnimation(Vector2 vel, GooseAnimState last) {
         if (vel.len2() < 0.01f) {
             // Idle version of last direction
@@ -115,6 +121,10 @@ public class GooseSystem extends IteratingFixedStepSystem {
         }
     }
 
+    /**
+     * Consumes any new messages it received and reacts.
+     * If the goose has bitten a player, it turns to flee.
+     */
     private void handleMessages() {
         while (messageListener.hasNext()) {
             var message = messageListener.next();
@@ -127,6 +137,9 @@ public class GooseSystem extends IteratingFixedStepSystem {
         }
     }
 
+    /**
+     * Perform fixed update processing for a goose in the wander state
+     */
     private void processWander(ProcessData data) {
         if (magnitudeIsWithin(data.displacementFromTarget, data.goose.detectionRadius)) {
             enterChase(data.goose);
@@ -153,6 +166,9 @@ public class GooseSystem extends IteratingFixedStepSystem {
         data.physics.body.setLinearVelocity(direction.scl(goose.wanderSpeed));
     }
 
+    /**
+     * Perform fixed update processing for a goose in the chase state
+     */
     private void processChase(ProcessData data) {
         if (!magnitudeIsWithin(data.displacementFromTarget, data.goose.forgetRadius)) {
             enterWander(data.goose);
@@ -166,6 +182,9 @@ public class GooseSystem extends IteratingFixedStepSystem {
         data.physics.body.setLinearVelocity(velocity);
     }
 
+    /**
+     * Perform fixed update processing for a goose in the retreat state
+     */
     private void processRetreat(ProcessData data) {
 
         data.goose.retreatTimeElapsed += data.deltaTime;
@@ -182,14 +201,23 @@ public class GooseSystem extends IteratingFixedStepSystem {
         data.physics.body.setLinearVelocity(velocity);
     }
 
+    /**
+     * Switches the goose provided to the wander state from whichever state it is currently in
+     */
     private void enterWander(GooseComponent goose) {
         goose.state = GooseComponent.GooseState.WANDER;
     }
 
+    /**
+     * Switches the goose provided to the chase state from whichever state it is currently in
+     */
     private void enterChase(GooseComponent goose) {
         goose.state = GooseComponent.GooseState.CHASE;
     }
 
+    /**
+     * Switches the goose provided to the retreat state from whichever state it is currently in
+     */
     private void enterRetreat(GooseComponent goose) {
         goose.retreatTimeElapsed = 0f;
         goose.state = GooseComponent.GooseState.RETREAT;
@@ -199,6 +227,10 @@ public class GooseSystem extends IteratingFixedStepSystem {
         return v.len2() <= limit * limit;
     }
 
+    /**
+     * Picks a new waypoint for this goose to walk towards
+     * @param goose The goose in need of a waypoint
+     */
     private void randomiseWaypoint(GooseComponent goose) {
         float dist = (float) Math.sqrt(MathUtils.random()) * goose.wanderRadius;
 

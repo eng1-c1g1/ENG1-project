@@ -10,7 +10,9 @@ import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.*;
 
 /**
- * Manages interactable objects, making them publish messages on collision with a player
+ * Manages interactable objects, making them publish messages on collision with a player.
+ * Interactable objects are objects that cause an effect when they come into contact with the player.
+ * For example, collectables and geese.
  */
 public class InteractableSystem extends EntitySystem {
     ComponentMapper<InteractableComponent> interactableMapper = ComponentMapper.getFor(InteractableComponent.class);

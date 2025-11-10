@@ -20,6 +20,10 @@ import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 import io.github.maze11.messages.*;
 
+/**
+ * Handles input, player movement and other player logic.
+ * This includes sending footsteps when the player moves.
+ */
 public class PlayerSystem extends IteratingFixedStepSystem {
 
     private final ComponentMapper<PlayerComponent> playerMapper;
@@ -47,6 +51,9 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         this.assetLoader = game.getAssetLoader();
     }
 
+    /**
+     * Calculate a direction vector from movement input
+     */
     private Vector2 getDirectionalInput() {
         Vector2 direction = new Vector2();
 

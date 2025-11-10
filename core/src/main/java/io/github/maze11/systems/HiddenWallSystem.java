@@ -12,6 +12,9 @@ import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.MessageType;
 import io.github.maze11.messages.PressurePlateTriggerMessage;
 
+/**
+ * Listens for pressure plates that are pressed, removes hidden walls when a corresponding pressure plate is pressed
+ */
 public class HiddenWallSystem extends IteratingFixedStepSystem {
 
     private final ComponentMapper<HiddenWallComponent> wallMapper = ComponentMapper.getFor(HiddenWallComponent.class);
