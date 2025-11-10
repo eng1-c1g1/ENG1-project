@@ -20,13 +20,7 @@ import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.InteractableMessage;
-import io.github.maze11.messages.Message;
-import io.github.maze11.messages.MessageType;
-import io.github.maze11.messages.PressurePlateTriggerMessage;
-import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Used to create entities within a scene, within an engine
@@ -63,7 +57,11 @@ public class EntityMaker {
     }
 
     public Entity makePressurePlate(float x, float y, String triggers) {
-        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, null);
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.PRESSURE_PLATE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Secret door opened", 2f));
+
+        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
@@ -203,14 +201,22 @@ public class EntityMaker {
     }
 
     public Entity makeCoffee(float x, float y) {
-        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, null);
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COFFEE_SLURP, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Coffee Consumed", 2f));
+
+        Entity entity = makeInteractable(x, y, new CoffeeCollectMessage(), true, AssetId.COFFEE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
     public Entity makeCheckInCode(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Check-in code collected", 2f));
+
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
-                AssetId.CHECK_IN, null);
+                AssetId.CHECK_IN, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
@@ -225,7 +231,7 @@ public class EntityMaker {
             sprite.size.set(3f, 3f);
             sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
         }
-        
+
         return entity;
     }
 
@@ -233,7 +239,7 @@ public class EntityMaker {
         Entity entity = makeEmptyEntity();
 
         List<Message> messages = new ArrayList<>();
-        messages.add(new SoundMessage(assetLoader.get(AssetId.TEST_SOUND, Sound.class),
+        messages.add(new SoundMessage(assetLoader.get(AssetId.GOOSE_HONK, Sound.class),
             1f));
 
         cMaker.addTransform(entity, x, y);

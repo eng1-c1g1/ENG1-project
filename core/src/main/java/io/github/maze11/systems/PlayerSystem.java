@@ -5,8 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.maze11.MazeGame;
+import io.github.maze11.assetLoading.AssetId;
+import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AnimationComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
@@ -14,23 +18,21 @@ import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.MessageListener;
-import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.*;
 
 public class PlayerSystem extends IteratingFixedStepSystem {
 
-    ComponentMapper<PlayerComponent> playerMapper;
-    ComponentMapper<TransformComponent> transformMapper;
-    ComponentMapper<PhysicsComponent> physicsMapper;
+    private final ComponentMapper<PlayerComponent> playerMapper;
+    private final ComponentMapper<TransformComponent> transformMapper;
+    private final ComponentMapper<PhysicsComponent> physicsMapper;
 
     // Generic animation component for PlayerState
-    ComponentMapper<AnimationComponent> animMapper;
+    private final ComponentMapper<AnimationComponent> animMapper;
 
-    MessageListener messageListener;
+    private final MessageListener messageListener;
+    private final AssetLoader assetLoader;
 
-    public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher) {
+    public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher, MazeGame game) {
         super(fixedStepper,
                 Family.all(PlayerComponent.class, TransformComponent.class, PhysicsComponent.class).get());
 
@@ -42,6 +44,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         animMapper = ComponentMapper.getFor(AnimationComponent.class); // ComponentMapper<AnimationComponent>>
 
         this.messageListener = new MessageListener(messagePublisher);
+        this.assetLoader = game.getAssetLoader();
     }
 
     private Vector2 getDirectionalInput() {
@@ -194,5 +197,36 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         if (current.len() > maxMag)
             current.nor().scl(maxMag);
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime){
+        PlayerComponent player = playerMapper.get(entity);
+
+        // Only play footsteps while the player is moving
+        if (player.naturalVelocity.len2() > 0) {
+            accumulateFootstep(player, deltaTime);
+        }
+    }
+
+    /**
+     * Advances the footstep time and play a footstep if it is due
+     */
+    private void accumulateFootstep(PlayerComponent player, float deltaTime){
+
+        // Footsteps happen faster while boosted
+        float timeMultiplier = 1f;
+        if (!player.speedBonuses.isEmpty()) {
+            timeMultiplier = player.boostFootstepMultiplier;
+        }
+
+        // Accumulate the time
+        player.timeSinceLastFootstep += deltaTime *  timeMultiplier;
+
+        // If it is time for another footstep, take it
+        if (player.timeSinceLastFootstep > player.timeBetweenFootsteps){
+            player.timeSinceLastFootstep = 0f;
+            messageListener.publisher.publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 0.5f, 0.6f));
+        }
     }
 }

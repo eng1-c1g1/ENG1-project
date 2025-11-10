@@ -75,12 +75,12 @@ public class LevelScreen implements Screen {
                 new GameStateSystem(messagePublisher, game, engine),
                 new InteractableSystem(messagePublisher, engine, entityMaker),
                 gooseSystem,
-                new PlayerSystem(fixedStepper, messagePublisher),
+                new PlayerSystem(fixedStepper, messagePublisher, game),
                 new HiddenWallSystem(fixedStepper, messagePublisher),
                 new PhysicsSyncSystem(fixedStepper),
                 new PhysicsSystem(fixedStepper, messagePublisher),
                 new PhysicsToTransformSystem(fixedStepper),
-                new AudioSystem(engine, messagePublisher),
+                new AudioSystem(engine, messagePublisher, game),
                 new WorldCameraSystem(camera, game.getBatch()),
                 new TimerSystem(messagePublisher),
                 renderingSystem);
@@ -113,9 +113,9 @@ public class LevelScreen implements Screen {
 
     private void welcomeToasts(MessagePublisher messagePublisher) {
         ToastMessage[] toasts = {
-                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move..", 10f),
-                new ToastMessage("Escape the maze as fast as possible\nand avoid the geese. They don't negotiate.", 10f),
-                new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 10f),
+                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move.", 10f),
+                new ToastMessage("Escape the maze as fast as possible\nand avoid the geese.", 10f),
+                new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 5f),
         };
 
         float startDelay = 2f;
@@ -260,9 +260,13 @@ public class LevelScreen implements Screen {
     public void dispose() {
         engine.removeAllEntities(); // Clean up entities first to trigger physics body removal
         var phys = engine.getSystem(PhysicsSystem.class);
+        var audio = engine.getSystem(AudioSystem.class);
 
         if (phys != null) {
             engine.removeSystem(phys);
+        }
+        if (audio != null) {
+            audio.dispose();
         }
 
         engine.removeAllEntities();

@@ -40,6 +40,7 @@ public class MenuScreen extends BaseMenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.switchScreen(new LevelScreen(game));
+                playMenuClick();
             }
         });
 

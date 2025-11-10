@@ -3,6 +3,7 @@ package io.github.maze11.assetLoading;
 import java.util.Map;
 import static java.util.Map.entry;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 /**
@@ -33,15 +34,16 @@ public class AssetPaths {
         entry(AssetId.GOOSE_HONK_SEVERAL, "audio/GooseHonkingMany.mp3"),
         entry(AssetId.HIDDEN_ROOM_SOUND, "audio/HiddenRoomSound.mp3"),
         entry(AssetId.PLAYER_WALKING, "audio/PlayerWalking.mp3"),
+        entry(AssetId.FOOTSTEP, "audio/SingleFootstep.mp3"),
         entry(AssetId.PRESSURE_PLATE_SOUND, "audio/PressurePlateSound.mp3"),
         entry(AssetId.SCREEN_BUTTON, "audio/ScreenButtons.mp3"),
-        entry(AssetId.WIN_SOUND, "audio/WinSound.mp3"),
-        entry(AssetId.GAME_MUSIC, "audio/GameMusic.mp3")
+        entry(AssetId.WIN_SOUND, "audio/WinSound.mp3")
     );
 
     // This map can be used to declare paths to loaded files of any type
     static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
-        entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx")
+        entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx"),
+        entry(new AssetKey<>(AssetId.GAME_MUSIC, Music.class), "audio/GameMusic.mp3")
 
     );
 }

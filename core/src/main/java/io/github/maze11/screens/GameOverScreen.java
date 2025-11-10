@@ -54,6 +54,7 @@ public class GameOverScreen extends BaseMenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.switchScreen(new LevelScreen(game)); // new LevelScreen i.e. fresh ECS World
+                playMenuClick();
             }
         });
 
@@ -62,6 +63,7 @@ public class GameOverScreen extends BaseMenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.switchScreen(new MenuScreen(game));
+                playMenuClick();
             }
         });
         // vertical stack layout again between elements
