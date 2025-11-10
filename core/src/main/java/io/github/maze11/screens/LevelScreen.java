@@ -1,6 +1,5 @@
 package io.github.maze11.screens;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +22,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import io.github.maze11.factory.EntityMaker;
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.components.PhysicsComponent;
+import io.github.maze11.factory.EntityMaker;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.ToastMessage;
@@ -54,7 +53,7 @@ public class LevelScreen implements Screen {
     private final FixedStepper fixedStepper;
     private final MessagePublisher messagePublisher;
 
-    private final boolean isDebugging = true;
+    private final boolean isDebugging = false;
 
     public LevelScreen(MazeGame game) {
         camera = new OrthographicCamera();
