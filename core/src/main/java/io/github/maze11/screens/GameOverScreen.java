@@ -3,8 +3,11 @@ package io.github.maze11.screens;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import io.github.maze11.MazeGame;
 import io.github.maze11.ui.FontGenerator;
 
@@ -32,11 +35,11 @@ public class GameOverScreen extends BaseMenuScreen {
 
         // Title
         Label.LabelStyle titleStyle = new Label.LabelStyle(titleFont, Color.WHITE);
-        Label title = new Label("Game Over!", titleStyle);
+        Label title = new Label("The Dean has arrived!", titleStyle);
 
         // Subtitle
         Label.LabelStyle bodyStyle = new Label.LabelStyle(bodyFont, Color.WHITE);
-        Label subtitle = new Label("Time's up!", bodyStyle);
+        Label subtitle = new Label("You have failed to escape in time...", bodyStyle);
 
         // Score
         Label.LabelStyle scoreStyle = new Label.LabelStyle(bodyFont, Color.YELLOW);
@@ -46,7 +49,7 @@ public class GameOverScreen extends BaseMenuScreen {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
         buttonStyle.font = buttonFont;
 
-        TextButton restartButton = new TextButton("Restart", buttonStyle);
+        TextButton restartButton = new TextButton("Try Again", buttonStyle);
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

@@ -27,7 +27,6 @@ public enum AssetId {
     WIN_SOUND,
     GAME_MUSIC,
 
-
     // Sprite sheets
     GOOSE_SHEET,
     PLAYER_SHEET
