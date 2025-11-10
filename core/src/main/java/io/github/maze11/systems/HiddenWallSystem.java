@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 
 import io.github.maze11.components.HiddenWallComponent;
+import io.github.maze11.fixedStep.FixedStepSystem;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 import io.github.maze11.messages.MessageListener;
@@ -27,17 +28,28 @@ public class HiddenWallSystem extends IteratingFixedStepSystem {
     }
 
     @Override
-    protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
-        HiddenWallComponent wall = wallMapper.get(entity);
+    public void fixedUpdate(float deltaTime){
         while (messageListener.hasNext()) {
             var message = messageListener.next();
 
+            // Only interested in pressure plate messages
             if (message.type == MessageType.PRESSURE_PLATE_TRIGGER) {
                 PressurePlateTriggerMessage pressureMessage = (PressurePlateTriggerMessage) message;
-                if (pressureMessage.triggers.equals(wall.triggeredBy)) {
-                    getEngine().removeEntity(entity);
+
+                // Looks through the walls, remove any wall that matches
+                for (Entity entity : getEntities()) {
+                    HiddenWallComponent wall = wallMapper.get(entity);
+
+                    if (pressureMessage.triggers.equals(wall.triggeredBy)) {
+                        getEngine().removeEntity(entity);
+                    }
                 }
             }
         }
+    }
+
+    @Override
+    protected void fixedStepProcessEntity(Entity entity, float deltaTime) {
+        // No actions need to be taken
     }
 }
