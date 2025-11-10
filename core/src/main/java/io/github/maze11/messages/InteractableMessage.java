@@ -8,26 +8,32 @@ import com.badlogic.ashley.core.Entity;
  */
 public class InteractableMessage extends Message implements Cloneable{
 
+    /** The player that interacted with the interactable */
     private Entity player;
+    /** The interactable that activated */
     private Entity interactable;
 
     public InteractableMessage(MessageType type) {
         super(type);
     }
 
+    /** Returns the player that interacted with the interactable */
     public Entity getPlayer() {
         return player;
     }
 
+    /** Returns the interactable that was activated */
     public Entity getInteractable() {
         return interactable;
     }
 
+    /** Sets the data of this message. Used when the interaction occurs to store data in the message */
     public void specifyInteraction(Entity player, Entity interactable){
         this.player = player;
         this.interactable = interactable;
     }
 
+    /** Shallow copies the object */
     public Object clone(){
         try {
             return (InteractableMessage) super.clone();

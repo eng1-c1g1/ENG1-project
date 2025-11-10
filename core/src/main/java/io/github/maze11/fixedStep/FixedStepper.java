@@ -3,7 +3,9 @@ package io.github.maze11.fixedStep;
 import java.util.ArrayList;
 
 /**
- * Steps the simulation forward when advanceSimulation is called
+ * Steps the simulation forward.
+ * Ensures that a fixedUpdate is fired at intervals of TIME_STEP,
+ * regardless of the frame rate the game is running at.
  */
 public class FixedStepper {
 
