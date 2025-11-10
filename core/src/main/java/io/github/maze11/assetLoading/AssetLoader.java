@@ -34,6 +34,9 @@ public class AssetLoader {
         }
     }
 
+    /**
+     * Loads all the assets into memory. This should be done before the AssetLoader is used
+     */
     public void load(){
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 
@@ -47,6 +50,9 @@ public class AssetLoader {
         return assetManager.get(assetMap.get(new AssetKey<>(id, type)), type);
     }
 
+    /**
+     * Unloads all assets
+     */
     public void dispose(){
         assetManager.dispose();
     }
