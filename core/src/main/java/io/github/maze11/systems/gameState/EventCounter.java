@@ -1,13 +1,12 @@
 package io.github.maze11.systems.gameState;
 
-import io.github.maze11.messages.MessageType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static java.util.Map.entry;
+
+import io.github.maze11.messages.MessageType;
 
 /**
  * Keeps count of the number of events and can output a score summary
@@ -16,6 +15,7 @@ public class EventCounter {
     /** Stores the event types this records, along with their effect on score and message to show in the win screen*/
     private final Map<MessageType, MessageData> messageMappings = Map.ofEntries(
         entry(MessageType.COLLECT_COFFEE, new MessageData("Coffees Collected", 10)),
+        entry(MessageType.PUDDLE_INTERACT, new MessageData("Slipped in puddle", -10)),
         entry(MessageType.CHECK_IN_CODE_COLLECT, new MessageData("Check-in codes collected", 20)),
         entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -1))
     );

@@ -9,7 +9,7 @@ public enum AssetId {
     COFFEE,
     EXIT,
     CHECK_IN,
-
+    PUDDLE,
     FALSE_WALL,
     PRESSURE_PLATE,
 

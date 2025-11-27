@@ -18,7 +18,12 @@ import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.MessageListener;
+import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.SoundMessage;
 
 /**
  * Handles input, player movement and other player logic.
@@ -80,6 +85,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
             switch (message.type) {
                 case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
+                case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 default -> {
                 }
@@ -92,6 +98,12 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private void processCoffeeCollect(CoffeeCollectMessage message) {
         PlayerComponent player = playerMapper.get(message.getPlayer());
         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+    }
+
+    private void processPuddleInteract(PuddleInteractMessage message) {
+         PlayerComponent player = playerMapper.get(message.getPlayer());
+          player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+
     }
 
     private void processGooseBite(GooseBiteMessage message) {
