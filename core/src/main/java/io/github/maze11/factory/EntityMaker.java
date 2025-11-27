@@ -224,7 +224,7 @@ public class EntityMaker {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new ToastMessage("Slipped in puddle! -Speed", 2f));
 
-        Entity entity = makeInteractable(x, y, new PuddleInteractMessage(), false, AssetId.PUDDLE, additionalMessages);
+        Entity entity = makeInteractable(x, y, new PuddleInteractMessage(), true, AssetId.PUDDLE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
