@@ -12,21 +12,15 @@ public class PauseSystem extends EntitySystem{
     static Screen pauseScreen;
     static Screen levelScreen;
 
-    public PauseSystem(MazeGame game, Screen levelScreen) {
-        pauseScreen = new PauseScreen(game);
-        this.levelScreen = levelScreen;
+    public PauseSystem(MazeGame game, Screen prevScreen) {
+        pauseScreen = new PauseScreen(game, prevScreen);
     }
 
     public static void pauseGame() {
-        pauseScreen.show();
-        levelScreen.hide();
-        gamePaused = true;
-        
+        gamePaused = true;        
     }
 
     public static void unpauseGame() {
-        pauseScreen.hide();
-        levelScreen.show();
         gamePaused = false;
     }
 }

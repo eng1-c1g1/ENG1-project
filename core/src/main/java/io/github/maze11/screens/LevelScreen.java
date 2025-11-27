@@ -16,22 +16,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
@@ -54,7 +45,6 @@ import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 import io.github.maze11.systems.physics.SafeBodyDestroy;
 import io.github.maze11.systems.rendering.RenderingSystem;
 import io.github.maze11.systems.rendering.WorldCameraSystem;
-import io.github.maze11.ui.FontGenerator;
 
 /**
  * The screen displayed when the game is running.
@@ -72,7 +62,7 @@ public class LevelScreen implements Screen {
 
     private final boolean isDebugging = false;
     private MazeGame game;
-    private Stage stage;
+    
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -80,9 +70,8 @@ public class LevelScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
 
-        this.stage = new Stage(viewport);
         map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class);
-
+        
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
         messagePublisher = new MessagePublisher();
@@ -117,7 +106,7 @@ public class LevelScreen implements Screen {
             World debugWorld = physicsSystem.getWorld();
             renderingSystem.enableDebugging(debugWorld);
         }
-
+        
         registerPhysicsCleanupListener();
 
         Map<String, List<Entity>> entities = extractEntities(entityMaker);
@@ -129,57 +118,14 @@ public class LevelScreen implements Screen {
         // Create timer (5 minutes = 300 seconds)
         entityMaker.makeTimer(300f);
         
-        buildPauseScreen(stage);
-
         this.welcomeToasts(messagePublisher);
 
         System.out.println("Level Screen created.");
     }
 
-    private void buildPauseScreen(Stage stage) {
-        
-        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-        // Generate scaled fonts
-        BitmapFont titleFont = FontGenerator.generateRobotoFont(72, Color.WHITE, skin);
-        BitmapFont bodyFont = FontGenerator.generateRobotoFont(28, Color.WHITE, skin);
-     
-        // Creating pause screen overlay
-        Table table = new Table();
-        table.setFillParent(true);
-
-        // Title with Roboto
-        Label.LabelStyle titleStyle = new Label.LabelStyle(titleFont, Color.WHITE);
-        Label title = new Label("You Have Escaped University!", titleStyle);
-
-        // Subtitle with Roboto
-        Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
-        Label subtitle = new Label("The Dean Has Returned To Lurking The Halls.", subtitleStyle);
-
-        BitmapFont buttonFont = FontGenerator.generateRobotoFont(24, Color.WHITE, skin);
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
-        buttonStyle.font = buttonFont;
-
-        TextButton menuButton = new TextButton("Quit Game", buttonStyle);
-        menuButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                
-                // TODO: Quit game
-            }
-        });
-        table.add(title).padBottom(30).row();
-        table.add(subtitle).padBottom(10).row();
-        table.padBottom(25).row();
-
-        table.add(menuButton).width(200).height(60);
-
-        stage.addActor(table);
-    }
-
     private void welcomeToasts(MessagePublisher messagePublisher) {
         ToastMessage[] toasts = {
-                new ToastMessage("Welcome to the maze!\nUse Arrow Keys or WASD to move.", 10f),
+                new ToastMessage("Welcome to the maze! Use Arrow Keys\nor WASD to move and ESC to pause.", 10f),
                 new ToastMessage("Escape the maze as fast as possible\nand avoid the geese.", 10f),
                 new ToastMessage("Collect coffee for extra speed and\ncheck-in codes for extra points, good luck!", 5f),
         };
@@ -293,12 +239,9 @@ public class LevelScreen implements Screen {
         // Checking if pause button has been pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (!PauseSystem.gamePaused) {
-                //game.switchScreen(new PauseScreen(game));
                 PauseSystem.pauseGame();
+                game.switchScreen(new PauseScreen(game, this));
                 System.out.println("Paused");
-            } else if (PauseSystem.gamePaused) {
-                PauseSystem.unpauseGame();
-                System.out.println("Unpaused");
             }
             
             

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.screens.MenuScreen;
+import io.github.maze11.systems.PauseSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,9 @@ public class MazeGame extends Game {
      * @param newScreen
      */
     public void switchScreen(Screen newScreen){
-        discontinuedScreens.add(screen);
+        if (!PauseSystem.gamePaused) {
+            discontinuedScreens.add(screen);
+        }
         this.setScreen(newScreen);
     }
 }
