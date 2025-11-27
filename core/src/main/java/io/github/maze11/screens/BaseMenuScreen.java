@@ -54,7 +54,7 @@ public abstract class BaseMenuScreen implements Screen {
     @Override
     public void render(float delta) {
         float[] bgColor = getBackgroundColor();
-        Gdx.gl.glClearColor(bgColor[0], bgColor[1], bgColor[2], 1f);
+        Gdx.gl.glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act(delta);

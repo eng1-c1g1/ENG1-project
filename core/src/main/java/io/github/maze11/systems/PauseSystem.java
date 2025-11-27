@@ -1,0 +1,32 @@
+package io.github.maze11.systems;
+
+import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Screen;
+
+import io.github.maze11.MazeGame;
+import io.github.maze11.screens.PauseScreen;
+
+public class PauseSystem extends EntitySystem{
+
+    public static Boolean gamePaused = false;
+    static Screen pauseScreen;
+    static Screen levelScreen;
+
+    public PauseSystem(MazeGame game, Screen levelScreen) {
+        pauseScreen = new PauseScreen(game);
+        this.levelScreen = levelScreen;
+    }
+
+    public static void pauseGame() {
+        pauseScreen.show();
+        levelScreen.hide();
+        gamePaused = true;
+        
+    }
+
+    public static void unpauseGame() {
+        pauseScreen.hide();
+        levelScreen.show();
+        gamePaused = false;
+    }
+}

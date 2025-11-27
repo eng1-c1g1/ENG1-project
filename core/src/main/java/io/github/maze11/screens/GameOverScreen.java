@@ -78,6 +78,6 @@ public class GameOverScreen extends BaseMenuScreen {
 
     @Override
     protected float[] getBackgroundColor() {
-        return new float[]{0.3f, 0.1f, 0.1f}; // Dark red
+        return new float[]{0.3f, 0.1f, 0.1f, 1f}; // Dark red
     }
 }

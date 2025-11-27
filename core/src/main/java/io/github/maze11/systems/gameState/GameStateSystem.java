@@ -11,6 +11,7 @@ import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.screens.GameOverScreen;
 import io.github.maze11.screens.WinScreen;
+import io.github.maze11.systems.PauseSystem;
 
 /**
  * system responsive for managing game state transitions between screens.
@@ -33,26 +34,30 @@ public class GameStateSystem extends EntitySystem {
 
       @Override
       public void update(float deltaTime) {
-        // process all messages received since last update
-        while (messageListener.hasNext()) {
-            Message msg = messageListener.next();
-            eventCounter.receiveMessage(msg.type);
+        // Check if game is paused
+        if (!PauseSystem.gamePaused) {
+            // process all messages received since last update
+            while (messageListener.hasNext()) {
+                Message msg = messageListener.next();
+                eventCounter.receiveMessage(msg.type);
 
-            switch (msg.type) {
-                // handle timer expiration
-                case TIMER_EXPIRED -> {
-                    System.out.println("Timer Expired! Switching to Game Over Screen...");
-                    int totalScore = eventCounter.makeScoreCard(true, 0).totalScore();
-                    game.switchScreen(new GameOverScreen(game, totalScore));
+                switch (msg.type) {
+                    // handle timer expiration
+                    case TIMER_EXPIRED -> {
+                        System.out.println("Timer Expired! Switching to Game Over Screen...");
+                        int totalScore = eventCounter.makeScoreCard(true, 0).totalScore();
+                        game.switchScreen(new GameOverScreen(game, totalScore));
+                    }
+                    case EXIT_MAZE -> {
+                        System.out.println("Maze exit reached! Switching to Win Screen...");
+                        var scoreCard = eventCounter.makeScoreCard(true, (int) getSecondsRemaining());
+                        game.switchScreen(new WinScreen(game, scoreCard));
+                    }
+                    default -> {}
                 }
-                case EXIT_MAZE -> {
-                    System.out.println("Maze exit reached! Switching to Win Screen...");
-                    var scoreCard = eventCounter.makeScoreCard(true, (int) getSecondsRemaining());
-                    game.switchScreen(new WinScreen(game, scoreCard));
-                }
-                default -> {}
             }
         }
+        
       }
     private float getSecondsRemaining(){
           var timers = engine.getEntitiesFor(Family.all(TimerComponent.class).get());

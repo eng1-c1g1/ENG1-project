@@ -24,8 +24,8 @@ public class TimerSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         TimerComponent timer = timerM.get(entity); // get the timer component for the entity
 
-        // if the timer is not running or has expired, do nothing
-        if (!timer.isRunning || timer.hasExpired) {
+        // if the timer is not running or has expired, or the game is paused do nothing
+        if (!timer.isRunning || timer.hasExpired || PauseSystem.gamePaused) {
             return;
         }
 

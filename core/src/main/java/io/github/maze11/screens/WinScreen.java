@@ -83,7 +83,7 @@ public class WinScreen extends BaseMenuScreen {
             }
         });
 
-        table.add(title).padBottom(30).row();
+        
         table.add(scoreLabel).padBottom(20).row();
         table.add(summaryTitle).padBottom(10).row();
 
@@ -101,6 +101,6 @@ public class WinScreen extends BaseMenuScreen {
 
     @Override
     protected float[] getBackgroundColor() {
-        return new float[]{0.1f, 0.3f, 0.1f}; // Dark green
+        return new float[]{0.1f, 0.3f, 0.1f, 1f}; // Dark green
     }
 }

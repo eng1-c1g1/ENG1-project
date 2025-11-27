@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 
 import io.github.maze11.components.HiddenWallComponent;
-import io.github.maze11.fixedStep.FixedStepSystem;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 import io.github.maze11.messages.MessageListener;

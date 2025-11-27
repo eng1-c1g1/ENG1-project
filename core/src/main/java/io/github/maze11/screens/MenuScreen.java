@@ -62,6 +62,6 @@ public class MenuScreen extends BaseMenuScreen {
 
     @Override
     protected float[] getBackgroundColor() {
-        return new float[]{0.1f, 0.1f, 0.2f}; // Dark blue
+        return new float[]{0.1f, 0.1f, 0.2f, 1f}; // Dark blue
     }
 }

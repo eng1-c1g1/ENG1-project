@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
-import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AudioListenerComponent;
 import io.github.maze11.components.TransformComponent;
 import io.github.maze11.messages.*;
@@ -40,17 +39,20 @@ public class AudioSystem extends EntitySystem {
         if (listeners.size() != 1) {
             throw new RuntimeException("There must be exactly one AudioListenerComponent");
         }
-        Entity listener = listeners.get(0);
-        Vector2 listenPosition = new Vector2(transformMapper.get(listener).position);
-        listenPosition.add(listenerMapper.get(listener).offset);
+        if (!PauseSystem.gamePaused) {
+            Entity listener = listeners.get(0);
+            Vector2 listenPosition = new Vector2(transformMapper.get(listener).position);
+            listenPosition.add(listenerMapper.get(listener).offset);
 
-        // Play all the newly arrived sound effects
-        while (messageListener.hasNext()){
-            Message message = messageListener.next();
-            if (message.type == MessageType.SOUND_EFFECT) {
-                playSound((SoundMessage)  message, listenPosition);
+            // Play all the newly arrived sound effects
+            while (messageListener.hasNext()){
+                Message message = messageListener.next();
+                if (message.type == MessageType.SOUND_EFFECT) {
+                    playSound((SoundMessage)  message, listenPosition);
+                }
             }
         }
+        
     }
 
     /**
