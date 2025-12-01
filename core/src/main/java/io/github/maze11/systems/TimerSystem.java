@@ -3,9 +3,7 @@ package io.github.maze11.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import io.github.maze11.components.TimerComponent;
-import io.github.maze11.messages.Message;
-import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.*;
 
 /**
  * Updates countdown timers.
@@ -14,9 +12,12 @@ import io.github.maze11.messages.MessageType;
 public class TimerSystem extends IteratingSystem {
     private final ComponentMapper<TimerComponent> timerM = ComponentMapper.getFor(TimerComponent.class);
     private final MessagePublisher messagePublisher;
+    private final MessageListener messageListener;
+
     // constructor to define the family of entities this system will process
     public TimerSystem(MessagePublisher messagePublisher) {
         super(Family.all(TimerComponent.class).get());
+        this.messageListener = new MessageListener(messagePublisher);
         this.messagePublisher = messagePublisher;
     }
 
@@ -27,6 +28,14 @@ public class TimerSystem extends IteratingSystem {
         // if the timer is not running or has expired, or the game is paused do nothing
         if (!timer.isRunning || timer.hasExpired || PauseSystem.gamePaused) {
             return;
+        }
+
+        while (messageListener.hasNext()) {
+            var message = messageListener.next();
+
+            if (message.type == MessageType.TIME_LOST) {
+                timer.timeRemaining -= 50f;
+            }
         }
 
         // decrease the remaining time by the delta time (time since last frame)

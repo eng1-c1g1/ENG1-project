@@ -62,16 +62,16 @@ public class LevelScreen implements Screen {
 
     private final boolean isDebugging = false;
     private MazeGame game;
-    
+
 
     public LevelScreen(MazeGame game) {
         this.game = game;
-        
+
         camera = new OrthographicCamera();
         viewport = new FitViewport(16, 12, camera);
 
         map = game.getAssetLoader().get(AssetId.TILEMAP, TiledMap.class);
-        
+
         engine = new PooledEngine();
         fixedStepper = new FixedStepper();
         messagePublisher = new MessagePublisher();
@@ -106,7 +106,7 @@ public class LevelScreen implements Screen {
             World debugWorld = physicsSystem.getWorld();
             renderingSystem.enableDebugging(debugWorld);
         }
-        
+
         registerPhysicsCleanupListener();
 
         Map<String, List<Entity>> entities = extractEntities(entityMaker);
@@ -117,7 +117,7 @@ public class LevelScreen implements Screen {
 
         // Create timer (5 minutes = 300 seconds)
         entityMaker.makeTimer(300f);
-        
+
         this.welcomeToasts(messagePublisher);
 
         System.out.println("Level Screen created.");
@@ -202,6 +202,7 @@ public class LevelScreen implements Screen {
                     case "coffee" -> entityMaker.makeCoffee(x, y);
                     case "puddle" -> entityMaker.makePuddle(x, y);
                     case "check-in" -> entityMaker.makeCheckInCode(x, y);
+                    case "time-lost" -> entityMaker.makeTimeLoss(x, y);
                     case "exit" -> entityMaker.makeExit(x, y);
                     case "pressure-plate" -> {
                         String triggers = obj.getProperties().get("triggers", String.class);
@@ -243,16 +244,16 @@ public class LevelScreen implements Screen {
                 game.switchScreen(new PauseScreen(game, this));
                 System.out.println("Paused");
             }
-            
-            
+
+
         }
         if (!PauseSystem.gamePaused) {
             fixedStepper.advanceSimulation(deltaTime);
         }
-        
+
         engine.update(deltaTime);
-        
-        
+
+
     }
 
     @Override

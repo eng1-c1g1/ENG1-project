@@ -17,7 +17,8 @@ public class EventCounter {
         entry(MessageType.COLLECT_COFFEE, new MessageData("Coffees Collected", 10)),
         entry(MessageType.PUDDLE_INTERACT, new MessageData("Slipped in puddle", -10)),
         entry(MessageType.CHECK_IN_CODE_COLLECT, new MessageData("Check-in codes collected", 20)),
-        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -1))
+        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -1)),
+        entry(MessageType.TIME_LOST, new MessageData("Homeboys Yapped With", -20))
     );
 
     private final Map<MessageType, Integer> recordedCounts = new HashMap<>();

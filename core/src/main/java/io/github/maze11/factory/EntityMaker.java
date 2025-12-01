@@ -20,15 +20,7 @@ import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.InteractableMessage;
-import io.github.maze11.messages.Message;
-import io.github.maze11.messages.MessageType;
-import io.github.maze11.messages.PressurePlateTriggerMessage;
-import io.github.maze11.messages.PuddleInteractMessage;
-import io.github.maze11.messages.SoundMessage;
-import io.github.maze11.messages.ToastMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Used to create entities. Has methods for all the entity instances that need to be created.
@@ -236,6 +228,16 @@ public class EntityMaker {
 
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
                 AssetId.CHECK_IN, additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makeTimeLoss(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Time loss! -20 Points", 2f));
+
+        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.COFFEE, additionalMessages );
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }

@@ -11,19 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
-import io.github.maze11.components.AnimationComponent;
-import io.github.maze11.components.PhysicsComponent;
-import io.github.maze11.components.PlayerComponent;
+import io.github.maze11.components.*;
 import io.github.maze11.components.PlayerComponent.PlayerState;
-import io.github.maze11.components.TransformComponent;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.MessageListener;
-import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.PuddleInteractMessage;
-import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Handles input, player movement and other player logic.
@@ -34,7 +26,6 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private final ComponentMapper<PlayerComponent> playerMapper;
     private final ComponentMapper<TransformComponent> transformMapper;
     private final ComponentMapper<PhysicsComponent> physicsMapper;
-
     // Generic animation component for PlayerState
     private final ComponentMapper<AnimationComponent> animMapper;
 
