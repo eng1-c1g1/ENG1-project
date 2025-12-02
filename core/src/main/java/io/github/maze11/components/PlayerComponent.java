@@ -48,6 +48,10 @@ public class PlayerComponent implements Component {
         }
     }
 
+    /** whether or not player is invulnerable **/
+
+    public boolean isInvulnerable = false;
+
     public final float acceleration = 80f;
     public final float deceleration = 50f;
     public final float knockbackRecovery = 25f;

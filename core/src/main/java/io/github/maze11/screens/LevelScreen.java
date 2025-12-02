@@ -201,6 +201,7 @@ public class LevelScreen implements Screen {
                     case "goose" -> entityMaker.makeGoose(x, y);
                     case "coffee" -> entityMaker.makeCoffee(x, y);
                     case "puddle" -> entityMaker.makePuddle(x, y);
+                    case "pellet" -> entityMaker.makePellet(x, y);
                     case "check-in" -> entityMaker.makeCheckInCode(x, y);
                     case "exit" -> entityMaker.makeExit(x, y);
                     case "pressure-plate" -> {

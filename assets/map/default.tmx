@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="473">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="478">
  <tileset firstgid="1" source="limezu-interior.tsx"/>
  <tileset firstgid="1425" source="limezu-room.tsx"/>
  <tileset firstgid="1816" source="limezu-office-walls.tsx"/>
@@ -940,6 +940,8 @@
   <object id="432" name="Goose 3" type="goose" x="1815.1" y="1147.3" width="32" height="32"/>
   <object id="434" name="Goose 4" type="goose" x="1781.97" y="1225.35" width="32" height="32"/>
   <object id="435" name="Goose 5" type="goose" x="1709.08" y="1152.46" width="32" height="32"/>
-  <object id="472" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
+  <object id="472" name="Pellet 1" type="pellet" x="1116" y="1086" width="32" height="32"/>
+  <object id="476" name="pellet 2" type="pellet" x="1441.34" y="1183.33" width="32" height="32"/>
+  <object id="477" name="Puddle 1" type="puddle" x="1546.67" y="1183.33" width="32" height="32"/>
  </objectgroup>
 </map>

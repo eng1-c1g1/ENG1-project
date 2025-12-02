@@ -23,6 +23,7 @@ import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.PelletInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 
 /**
@@ -86,6 +87,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
             switch (message.type) {
                 case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
                 case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
+                case PELLET_INTERACT -> processPelletInteract((PelletInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 default -> {
                 }
@@ -102,11 +104,20 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     private void processPuddleInteract(PuddleInteractMessage message) {
          PlayerComponent player = playerMapper.get(message.getPlayer());
-          player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+
+    }
+
+    private void processPelletInteract(PelletInteractMessage message) {
+         PlayerComponent player = playerMapper.get(message.getPlayer());
+         /* actual pellet effect: */
+         player.isInvulnerable = true;
+         
 
     }
 
     private void processGooseBite(GooseBiteMessage message) {
+        System.out.println("PlayerSystem.processGooseBite");
         Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
         Vector2 goosePos = transformMapper.get(message.getInteractable()).position;
 

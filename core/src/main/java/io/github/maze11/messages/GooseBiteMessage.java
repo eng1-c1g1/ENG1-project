@@ -7,5 +7,7 @@ public class GooseBiteMessage extends InteractableMessage{
     public final float knockbackSpeed = 15f;
     public GooseBiteMessage() {
         super(MessageType.GOOSE_BITE);
+        // debug //
+        System.out.println("GooseBiteMessage");
     }
 }

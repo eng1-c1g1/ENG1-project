@@ -27,6 +27,7 @@ import io.github.maze11.messages.Message;
 import io.github.maze11.messages.MessageType;
 import io.github.maze11.messages.PressurePlateTriggerMessage;
 import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.PelletInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 
@@ -225,6 +226,15 @@ public class EntityMaker {
         additionalMessages.add(new ToastMessage("Slipped in puddle! -Speed", 2f));
 
         Entity entity = makeInteractable(x, y, new PuddleInteractMessage(), true, AssetId.PUDDLE, additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makePellet(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new ToastMessage("Pellet eaten! Invulnerable for 15 seconds", 2f));
+        
+        Entity entity = makeInteractable(x, y, new PelletInteractMessage(), true, AssetId.PELLET, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
