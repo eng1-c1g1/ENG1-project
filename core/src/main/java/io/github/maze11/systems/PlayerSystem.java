@@ -15,7 +15,14 @@ import io.github.maze11.components.*;
 import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.*;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.MessageListener;
+import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.PiActivatedMessage;
+import io.github.maze11.messages.PiCollectMessage;
+import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.SoundMessage;
 
 /**
  * Handles input, player movement and other player logic.
@@ -30,6 +37,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private final ComponentMapper<AnimationComponent> animMapper;
 
     private final MessageListener messageListener;
+    private final MessagePublisher messagePublisher;
     private final AssetLoader assetLoader;
 
     public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher, MazeGame game) {
@@ -39,7 +47,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
         physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
-
+        this.messagePublisher = messagePublisher;
         // Ashley ignores generics at runtime, so this is correct:
         animMapper = ComponentMapper.getFor(AnimationComponent.class); // ComponentMapper<AnimationComponent>>
 
@@ -78,6 +86,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
                 case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
+                case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
                 default -> {
                 }
             }
@@ -95,6 +104,15 @@ public class PlayerSystem extends IteratingFixedStepSystem {
          PlayerComponent player = playerMapper.get(message.getPlayer());
           player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
 
+    }
+
+    private void processPiCollect(PiCollectMessage message) {
+        PiCollectMessage.numPis++;
+        if (PiCollectMessage.numPis == 3) {
+            //TODO: Add Cowsay
+
+            messagePublisher.publish(new PiActivatedMessage());
+        }
     }
 
     private void processGooseBite(GooseBiteMessage message) {

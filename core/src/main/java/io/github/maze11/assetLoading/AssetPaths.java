@@ -24,7 +24,8 @@ public class AssetPaths {
         entry(AssetId.EXIT, "sprites/exit.png"),
         entry(AssetId.CHECK_IN, "items/check-in.png"),
         entry(AssetId.FALSE_WALL, "sprites/false-wall.png"),
-        entry(AssetId.PRESSURE_PLATE, "sprites/pressure-plate.png")
+        entry(AssetId.PRESSURE_PLATE, "sprites/pressure-plate.png"),
+        entry(AssetId.PI, "sprites/Pi.png")
     );
 
     static Map<AssetId, String> soundPaths = Map.ofEntries(
