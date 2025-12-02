@@ -940,8 +940,8 @@
   <object id="432" name="Goose 3" type="goose" x="1815.1" y="1147.3" width="32" height="32"/>
   <object id="434" name="Goose 4" type="goose" x="1781.97" y="1225.35" width="32" height="32"/>
   <object id="435" name="Goose 5" type="goose" x="1709.08" y="1152.46" width="32" height="32"/>
-  <object id="472" name="Pellet 1" type="pellet" x="1116" y="1086" width="32" height="32"/>
-  <object id="476" name="pellet 2" type="pellet" x="1441.34" y="1183.33" width="32" height="32"/>
+  <object id="472" name="ankh 2" type="pellet" x="1116" y="1086" width="32" height="32"/>
+  <object id="476" name="ankh 1" type="ankh" x="1441.34" y="1183.33" width="32" height="32"/>
   <object id="477" name="Puddle 1" type="puddle" x="1546.67" y="1183.33" width="32" height="32"/>
  </objectgroup>
 </map>

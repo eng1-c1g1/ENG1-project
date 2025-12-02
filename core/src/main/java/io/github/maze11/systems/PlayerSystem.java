@@ -23,7 +23,7 @@ import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.PuddleInteractMessage;
-import io.github.maze11.messages.PelletInteractMessage;
+import io.github.maze11.messages.AnkhInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 
 /**
@@ -87,7 +87,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
             switch (message.type) {
                 case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
                 case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
-                case PELLET_INTERACT -> processPelletInteract((PelletInteractMessage) message);
+                case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 default -> {
                 }
@@ -108,21 +108,26 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     }
 
-    private void processPelletInteract(PelletInteractMessage message) {
+    private void processAnkhInteract(AnkhInteractMessage message) {
          PlayerComponent player = playerMapper.get(message.getPlayer());
-         /* actual pellet effect: */
+         /* actual ankh effect: */
          player.isInvulnerable = true;
-         
+         // add timer effect here, switch back after: //
 
     }
 
     private void processGooseBite(GooseBiteMessage message) {
-        System.out.println("PlayerSystem.processGooseBite");
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        System.out.println("PlayerSystem.processGooseBite triggered");
         Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
         Vector2 goosePos = transformMapper.get(message.getInteractable()).position;
 
-        Vector2 knockDir = new Vector2(playerPos).sub(goosePos).nor();
-        addKnockback(playerMapper.get(message.getPlayer()), knockDir.scl(message.knockbackSpeed));
+        // only trigger if player isn't invulnerable:
+        if (player.isInvulnerable == false) {
+            Vector2 knockDir = new Vector2(playerPos).sub(goosePos).nor();
+            addKnockback(playerMapper.get(message.getPlayer()), knockDir.scl(message.knockbackSpeed));
+        }
+
     }
 
     @Override

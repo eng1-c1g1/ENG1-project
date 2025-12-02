@@ -11,7 +11,7 @@ public enum AssetId {
     EXIT,
     CHECK_IN,
     PUDDLE,
-    PELLET,
+    ANKH,
     FALSE_WALL,
     PRESSURE_PLATE,
 
