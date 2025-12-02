@@ -30,6 +30,7 @@ import io.github.maze11.messages.PuddleInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.messages.PiCollectMessage;
+import io.github.maze11.messages.TimeLossMessage;
 
 /**
  * Used to create entities. Has methods for all the entity instances that need to be created.
