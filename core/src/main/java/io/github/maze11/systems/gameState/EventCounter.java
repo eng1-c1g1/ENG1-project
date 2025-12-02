@@ -17,9 +17,10 @@ public class EventCounter {
         entry(MessageType.COLLECT_COFFEE, new MessageData("Coffees Collected", 10)),
         entry(MessageType.PUDDLE_INTERACT, new MessageData("Slipped in puddle", -10)),
         entry(MessageType.CHECK_IN_CODE_COLLECT, new MessageData("Check-in codes collected", 20)),
-        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -1))
+        entry(MessageType.GOOSE_BITE, new MessageData("Goose Bites", -10)),
+        entry(MessageType.PI_ACTIVATED, new MessageData("All Pi's Activated", 75))
     );
-
+    
     private final Map<MessageType, Integer> recordedCounts = new HashMap<>();
     private final int scorePerLeftoverSecond = 1;
     private final int completionBonus = 100;

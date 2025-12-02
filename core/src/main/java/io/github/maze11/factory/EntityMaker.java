@@ -29,6 +29,7 @@ import io.github.maze11.messages.PressurePlateTriggerMessage;
 import io.github.maze11.messages.PuddleInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
+import io.github.maze11.messages.PiCollectMessage;
 
 /**
  * Used to create entities. Has methods for all the entity instances that need to be created.
@@ -309,5 +310,13 @@ public class EntityMaker {
         return entity;
     }
 
+    public Entity makePi(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new ToastMessage("Activated a mysterious Pi", 2f));
 
+        Entity entity = makeInteractable(x, y, new PiCollectMessage(), false, AssetId.PI, additionalMessages);
+        
+        cMaker.addBoxCollider(entity, x, y, 1.25f, 0.75f, 0, 0, BodyDef.BodyType.StaticBody, true);
+        return entity;
+    }
 }
