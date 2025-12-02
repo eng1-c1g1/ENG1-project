@@ -23,6 +23,7 @@ import io.github.maze11.messages.PiActivatedMessage;
 import io.github.maze11.messages.PiCollectMessage;
 import io.github.maze11.messages.PuddleInteractMessage;
 import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.ToastMessage;
 
 /**
  * Handles input, player movement and other player logic.
@@ -109,9 +110,22 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private void processPiCollect(PiCollectMessage message) {
         PiCollectMessage.numPis++;
         if (PiCollectMessage.numPis == 3) {
-            //TODO: Add Cowsay
-
+            
+            String cowsay = """
+                     __________________
+                    / One does not simply   \\
+                    \\ walk out of university   /
+                      ----------------------------
+                      \\   ^__^
+                       \\  (oo)\\_____
+                          (__)\\           )\\/\\
+                                 ||----w |
+                                 ||        ||
+                    """;
+            messagePublisher.publish(new ToastMessage(cowsay, 10f));
             messagePublisher.publish(new PiActivatedMessage());
+        } else if (PiCollectMessage.numPis > 3) {
+            PiCollectMessage.numPis = PiCollectMessage.numPis - 3;
         }
     }
 
