@@ -30,6 +30,7 @@ import io.github.maze11.messages.PuddleInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.messages.PiCollectMessage;
+import io.github.maze11.messages.TimeLossMessage;
 
 /**
  * Used to create entities. Has methods for all the entity instances that need to be created.
@@ -237,6 +238,16 @@ public class EntityMaker {
 
         Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.CHECK_IN_CODE_COLLECT), true,
                 AssetId.CHECK_IN, additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makeTimeLoss(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
+        additionalMessages.add(new ToastMessage("Time loss! -20 Points", 2f));
+
+        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.COFFEE, additionalMessages );
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
