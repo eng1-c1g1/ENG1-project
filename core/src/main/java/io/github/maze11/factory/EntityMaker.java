@@ -321,6 +321,8 @@ public class EntityMaker {
         return entity;
     }
 
+
+    // CHANGED: Added method to make a Pi object
     public Entity makePi(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new ToastMessage("Activated a mysterious Pi.\nI wonder if there are any more...", 2f));

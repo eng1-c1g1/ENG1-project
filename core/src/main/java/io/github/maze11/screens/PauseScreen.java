@@ -15,6 +15,7 @@ import io.github.maze11.MazeGame;
 import io.github.maze11.systems.PauseSystem;
 import io.github.maze11.ui.FontGenerator;
 
+// CHANGED: Created the PauseScreen class
 public class PauseScreen extends BaseMenuScreen {
     
     Screen prevScreen;

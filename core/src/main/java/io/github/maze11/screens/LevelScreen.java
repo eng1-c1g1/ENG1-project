@@ -240,6 +240,8 @@ public class LevelScreen implements Screen {
 
         viewport.apply();
 
+        // CHANGED: Added code to prevent updates if the game is paused, and
+        // switch screen once pause button is pressed.
         // Checking if pause button has been pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (!PauseSystem.gamePaused) {
@@ -247,8 +249,6 @@ public class LevelScreen implements Screen {
                 game.switchScreen(new PauseScreen(game, this));
                 System.out.println("Paused");
             }
-
-
         }
         if (!PauseSystem.gamePaused) {
             fixedStepper.advanceSimulation(deltaTime);

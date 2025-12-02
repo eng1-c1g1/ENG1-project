@@ -63,6 +63,7 @@ public class MazeGame extends Game {
      * Switches the screen to the new one and enqueues the old one for disposal
      * @param newScreen
      */
+    // CHANGED: Don't dispose the old screen if the game is paused
     public void switchScreen(Screen newScreen){
         if (!PauseSystem.gamePaused) {
             discontinuedScreens.add(screen);

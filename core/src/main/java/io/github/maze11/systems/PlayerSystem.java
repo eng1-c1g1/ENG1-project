@@ -107,8 +107,11 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     }
 
+    // CHANGED: Added method to allow the player to collect the Pi objects
     private void processPiCollect(PiCollectMessage message) {
         PiCollectMessage.numPis++;
+
+        // Once all Pi's active, send Cowsay
         if (PiCollectMessage.numPis == 3) {
             
             String cowsay = """
