@@ -940,8 +940,13 @@
   <object id="432" name="Goose 3" type="goose" x="1815.1" y="1147.3" width="32" height="32"/>
   <object id="434" name="Goose 4" type="goose" x="1781.97" y="1225.35" width="32" height="32"/>
   <object id="435" name="Goose 5" type="goose" x="1709.08" y="1152.46" width="32" height="32"/>
+<<<<<<< HEAD
   <object id="472" name="Ankh 1" type="ankh" x="990.667" y="1563.33" width="32" height="32"/>
   <object id="480" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
+=======
+  <object id="472" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
+  <object id="473" name="Time 1" type="time-lost" x="1212" y="1250" width="32" height="32"/>
+>>>>>>> d396aacd9405c880b2514a55121c87cd0d9646d9
   <object id="480" name="Pi 1" type="pi" x="702" y="1472" width="75" height="75"/>
  </objectgroup>
 </map>

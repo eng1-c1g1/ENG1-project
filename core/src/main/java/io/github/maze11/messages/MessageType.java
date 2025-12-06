@@ -16,6 +16,7 @@ public enum MessageType {
     SOUND_EFFECT,
     TOAST_SHOW,
     PRESSURE_PLATE_TRIGGER,
+    TIME_LOST,
     PI_COLLECT,
     PI_ACTIVATED
 }
