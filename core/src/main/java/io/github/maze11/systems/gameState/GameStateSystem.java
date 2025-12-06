@@ -34,7 +34,8 @@ public class GameStateSystem extends EntitySystem {
 
       @Override
       public void update(float deltaTime) {
-        // Check if game is paused
+        // CHANGED: Don't update game state whilst paused 
+        //Check if game is paused
         if (!PauseSystem.gamePaused) {
             // process all messages received since last update
             while (messageListener.hasNext()) {

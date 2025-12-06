@@ -331,13 +331,15 @@ public class EntityMaker {
         return entity;
     }
 
+
+    // CHANGED: Added method to make a Pi object
     public Entity makePi(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
-        additionalMessages.add(new ToastMessage("Activated a mysterious Pi", 2f));
+        additionalMessages.add(new ToastMessage("Activated a mysterious Pi.\nI wonder if there are any more...", 2f));
 
         Entity entity = makeInteractable(x, y, new PiCollectMessage(), false, AssetId.PI, additionalMessages);
         
-        cMaker.addBoxCollider(entity, x, y, 1.25f, 0.75f, 0, 0, BodyDef.BodyType.StaticBody, true);
+        cMaker.addBoxCollider(entity, x, y, 0.7f, 0.5f, 0, 0.5f, BodyDef.BodyType.StaticBody, true);
         return entity;
     }
 }

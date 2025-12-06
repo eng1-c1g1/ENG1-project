@@ -39,6 +39,7 @@ public class AudioSystem extends EntitySystem {
         if (listeners.size() != 1) {
             throw new RuntimeException("There must be exactly one AudioListenerComponent");
         }
+        // CHANGED: Don't update sounds while paused
         if (!PauseSystem.gamePaused) {
             Entity listener = listeners.get(0);
             Vector2 listenPosition = new Vector2(transformMapper.get(listener).position);
