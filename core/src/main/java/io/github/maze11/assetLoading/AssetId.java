@@ -15,6 +15,7 @@ public enum AssetId {
     FALSE_WALL,
     PRESSURE_PLATE,
     PI,
+    LONGBOI,
 
     // Sounds
     TEST_SOUND,
