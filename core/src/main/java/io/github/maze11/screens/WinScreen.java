@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
+import io.github.maze11.systems.gameState.LeaderBoardSystem;
 import io.github.maze11.systems.gameState.ScoreCard;
 import io.github.maze11.ui.FontGenerator;
 
@@ -32,6 +33,7 @@ public class WinScreen extends BaseMenuScreen {
         buildUI();
 
         game.getAssetLoader().get(AssetId.WIN_SOUND,  Sound.class).play(0.6f);
+        
     }
 
     @Override
@@ -97,6 +99,11 @@ public class WinScreen extends BaseMenuScreen {
         table.add(menuButton).width(200).height(60);
 
         stage.addActor(table);
+
+        // Checking whether score is a high score
+        LeaderBoardSystem leaderboard = new LeaderBoardSystem(MenuScreen.playerName);
+        leaderboard.submitScore(scoreCard.totalScore());
+        
     }
 
     @Override

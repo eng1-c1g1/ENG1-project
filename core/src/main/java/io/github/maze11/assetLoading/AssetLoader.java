@@ -39,7 +39,6 @@ public class AssetLoader {
      */
     public void load(){
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-
         for (var asset : assetMap.entrySet()){
                 assetManager.load(asset.getValue(), (Class<?>) asset.getKey().assetType());
         }

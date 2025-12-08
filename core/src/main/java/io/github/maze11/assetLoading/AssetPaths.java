@@ -6,6 +6,7 @@ import static java.util.Map.entry;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
+
 /**
  * Static storage for all the file paths of the assets loaded in the project.
  * These paths are used by the AssetLoader as the resources it loads.
@@ -43,7 +44,7 @@ public class AssetPaths {
     );
 
     // This map can be used to declare paths to loaded files of any type
-    static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
+    public static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
         entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx"),
         entry(new AssetKey<>(AssetId.GAME_MUSIC, Music.class), "audio/GameMusic.mp3")
 
