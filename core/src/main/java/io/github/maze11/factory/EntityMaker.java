@@ -27,6 +27,8 @@ import io.github.maze11.messages.Message;
 import io.github.maze11.messages.MessageType;
 import io.github.maze11.messages.PressurePlateTriggerMessage;
 import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.AnkhInteractMessage;
+import io.github.maze11.messages.LongBoiInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.messages.PiCollectMessage;
@@ -227,6 +229,24 @@ public class EntityMaker {
         additionalMessages.add(new ToastMessage("Slipped in puddle! -Speed", 2f));
 
         Entity entity = makeInteractable(x, y, new PuddleInteractMessage(), true, AssetId.PUDDLE, additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makeAnkh(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new ToastMessage("The Ankh protects you! Invulnerable for 15 seconds", 2f));
+        
+        Entity entity = makeInteractable(x, y, new AnkhInteractMessage(), true, AssetId.ANKH, additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        return entity;
+    }
+
+    public Entity makeLongBoi(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages.add(new ToastMessage("A statue of a goose with a long neck, cast in brass. This item radiates agression.", 2f));
+        
+        Entity entity = makeInteractable(x, y, new LongBoiInteractMessage(), false, AssetId.LONGBOI, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }

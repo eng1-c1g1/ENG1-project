@@ -4,15 +4,18 @@ package io.github.maze11.assetLoading;
  * This is the set of unique symbolic identifiers for the assets loaded in the project
  */
 public enum AssetId {
+    // individual sprites, mostly
     ORIGIN_INDICATOR,
     TILEMAP,
     COFFEE,
     EXIT,
     CHECK_IN,
     PUDDLE,
+    ANKH,
     FALSE_WALL,
     PRESSURE_PLATE,
     PI,
+    LONGBOI,
 
     // Sounds
     TEST_SOUND,

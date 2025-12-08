@@ -22,11 +22,13 @@ public class AssetPaths {
         entry(AssetId.ORIGIN_INDICATOR, "origin_indicator.png"),
         entry(AssetId.COFFEE, "items/coffee.png"),
         entry(AssetId.PUDDLE, "sprites/puddle.png"),
+        entry(AssetId.ANKH, "sprites/ankh.png"),
         entry(AssetId.EXIT, "sprites/exit.png"),
         entry(AssetId.CHECK_IN, "items/check-in.png"),
         entry(AssetId.FALSE_WALL, "sprites/false-wall.png"),
         entry(AssetId.PRESSURE_PLATE, "sprites/pressure-plate.png"),
-        entry(AssetId.PI, "sprites/Pi.png")
+        entry(AssetId.PI, "sprites/Pi.png"),
+        entry(AssetId.LONGBOI, "sprites/longboi.png")
     );
 
     static Map<AssetId, String> soundPaths = Map.ofEntries(

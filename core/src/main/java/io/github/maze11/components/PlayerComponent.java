@@ -48,6 +48,24 @@ public class PlayerComponent implements Component {
         }
     }
 
+    /** Accumulator for any bonuses to speed collected */
+    public List<InvulnBonus> InvulnBonuses = new ArrayList<>();
+    
+    /**
+     * Represents a bonus to speed the player received such as the coffee power-up
+     */
+    public static class InvulnBonus{
+        public float timeRemaining;
+
+        public InvulnBonus(float timeRemaining) {
+            this.timeRemaining = timeRemaining;
+        }
+    }
+
+    /** whether or not player is invulnerable **/
+
+    public boolean isInvulnerable = false;
+
     public final float acceleration = 80f;
     public final float deceleration = 50f;
     public final float knockbackRecovery = 25f;
