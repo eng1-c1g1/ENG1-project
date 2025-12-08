@@ -28,7 +28,6 @@ public class LeaderBoardSystem {
     public void submitScore(int score) {
         
         Preferences hiScores = Gdx.app.getPreferences(hiScoreFile);
-
         // If a score has already been submitted for this player, check whether the
         // new score is larger or not, then replace if necessary.
         if (hiScores.contains(name)) {

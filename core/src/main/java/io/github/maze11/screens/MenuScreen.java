@@ -105,9 +105,12 @@ public class MenuScreen extends BaseMenuScreen {
         // Fetching data from file
         String lbData = "Top Scores:\n";
 
-        for (String entry : LeaderBoardSystem.readLeaderboard()) {
-            lbData += entry +"\n";
+        if (LeaderBoardSystem.readLeaderboard() != null) {
+            for (String entry : LeaderBoardSystem.readLeaderboard()) {
+                lbData += entry +"\n";
+            }
         }
+        
         Label leaderboard = new Label(lbData, bodyStyle);
 
         outerTable.add(leaderboard).expandX();
