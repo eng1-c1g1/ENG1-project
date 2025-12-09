@@ -98,6 +98,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         super.fixedUpdate(deltaTime);
     }
 
+
     private void processCoffeeCollect(CoffeeCollectMessage message) {
         PlayerComponent player = playerMapper.get(message.getPlayer());
         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
@@ -123,7 +124,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         // Once all Pi's active, send Cowsay
         if (PiCollectMessage.numPis == 3) {
-            
+
             String cowsay = """
                      __________________
                     / One does not simply   \\

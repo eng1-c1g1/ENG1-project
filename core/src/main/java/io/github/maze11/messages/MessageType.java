@@ -19,5 +19,6 @@ public enum MessageType {
     PRESSURE_PLATE_TRIGGER,
     TIME_LOST,
     PI_COLLECT,
-    PI_ACTIVATED
+    PI_ACTIVATED,
+    TELEPORTATION
 }
