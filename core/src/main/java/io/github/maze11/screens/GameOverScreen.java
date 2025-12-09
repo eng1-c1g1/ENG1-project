@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.maze11.MazeGame;
+import io.github.maze11.systems.gameState.LeaderBoardSystem;
 import io.github.maze11.ui.FontGenerator;
 
 /**
@@ -26,6 +27,7 @@ public class GameOverScreen extends BaseMenuScreen {
         this.score = score;
         System.out.println("Game Over screen launched - Score: " + score);
         buildUI();
+        
     }
 
     @Override
@@ -74,6 +76,10 @@ public class GameOverScreen extends BaseMenuScreen {
         table.add(menuButton).width(200).height(60);
 
         stage.addActor(table);
+
+        // Checking whether score is a high score
+        LeaderBoardSystem leaderboard = new LeaderBoardSystem(MenuScreen.playerName);
+        leaderboard.submitScore(score);
     }
 
     @Override

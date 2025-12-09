@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="483">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="484">
+
  <tileset firstgid="1" source="limezu-interior.tsx"/>
  <tileset firstgid="1425" source="limezu-room.tsx"/>
  <tileset firstgid="1816" source="limezu-office-walls.tsx"/>
@@ -937,9 +938,10 @@
   <object id="265" name="CI Bonus 4" type="check-in" x="792.327" y="572.658" width="32" height="32"/>
   <object id="266" name="CI Bonus 2" type="check-in" x="397.496" y="845.45" width="32" height="32"/>
   <object id="267" name="CI Bonus 7" type="check-in" x="625.78" y="986.154" width="32" height="32"/>
-  <object id="432" name="Goose 3" type="goose" x="1815.1" y="1147.3" width="32" height="32"/>
-  <object id="434" name="Goose 4" type="goose" x="1781.97" y="1225.35" width="32" height="32"/>
-  <object id="435" name="Goose 5" type="goose" x="1709.08" y="1152.46" width="32" height="32"/>
+  <object id="432" name="Goose 3" type="goose" x="1601.77" y="1251.3" width="32" height="32"/>
+  <object id="434" name="Goose 4" type="goose" x="1601.97" y="1192.02" width="32" height="32"/>
+  <object id="481" name="Long Boi Statue" type="longboi" x="1823.3" y="1180.02" width="32" height="32"/>
+  <object id="435" name="Goose 5" type="goose" x="1603.75" y="1128.46" width="32" height="32"/>
   <object id="472" name="Ankh 1" type="ankh" x="990.667" y="1563.33" width="32" height="32"/>
   <object id="480" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
   <object id="472" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
@@ -948,7 +950,7 @@
   <object id="474" name="Pi 1" type="pi" x="1840" y="1450" width="75" height="75"/>
   <object id="475" name="Pi 2" type="pi" x="930" y="785" width="75" height="75"/>
   <object id="476" name="Pi 3" type="pi" x="350" y="2200" width="75" height="75"/>
-  <object id="481" name="Bully 1" type="bully" x="432.5" y="2009" width="32" height="32"/>
-  <object id="482" name="Bribe 1" type="bribe" x="447.667" y="1385" width="20" height="22"/>
+  <object id="482" name="Bully 1" type="bully" x="432.5" y="2009" width="32" height="32"/>
+  <object id="483" name="Bribe 1" type="bribe" x="447.667" y="1385" width="20" height="22"/>
  </objectgroup>
 </map>

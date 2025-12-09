@@ -29,6 +29,7 @@ public class AssetPaths {
                         entry(AssetId.FALSE_WALL, "sprites/false-wall.png"),
                         entry(AssetId.PRESSURE_PLATE, "sprites/pressure-plate.png"),
                         entry(AssetId.PI, "sprites/Pi.png"),
+                        entry(AssetId.LONGBOI, "sprites/longboi.png"),
                         entry(AssetId.BRIBE, "sprites/bribe.png"));
 
         static Map<AssetId, String> soundPaths = Map.ofEntries(
@@ -47,7 +48,6 @@ public class AssetPaths {
         // This map can be used to declare paths to loaded files of any type
         static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
                         entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx"),
-                        entry(new AssetKey<>(AssetId.GAME_MUSIC, Music.class), "audio/GameMusic.mp3")
+                        entry(new AssetKey<>(AssetId.GAME_MUSIC, Music.class), "audio/GameMusic.mp3"));
 
-        );
 }
