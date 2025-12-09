@@ -17,6 +17,7 @@ public enum AssetId {
     PI,
     LONGBOI,
     TELEPORTER,
+    YAPPER,
 
     // Sounds
     TEST_SOUND,
