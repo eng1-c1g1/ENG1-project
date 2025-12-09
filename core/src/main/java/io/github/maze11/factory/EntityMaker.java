@@ -16,10 +16,12 @@ import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AnimationComponent;
+import io.github.maze11.components.BullyComponent;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
+import io.github.maze11.components.BullyComponent.BullyAnimState;
 import io.github.maze11.messages.CoffeeCollectMessage;
 import io.github.maze11.messages.GooseBiteMessage;
 import io.github.maze11.messages.InteractableMessage;
@@ -28,13 +30,16 @@ import io.github.maze11.messages.MessageType;
 import io.github.maze11.messages.PressurePlateTriggerMessage;
 import io.github.maze11.messages.PuddleInteractMessage;
 import io.github.maze11.messages.AnkhInteractMessage;
+import io.github.maze11.messages.BullyBribeMessage;
+import io.github.maze11.messages.BullyInteractMessage;
 import io.github.maze11.messages.SoundMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.messages.PiCollectMessage;
 import io.github.maze11.messages.TimeLossMessage;
 
 /**
- * Used to create entities. Has methods for all the entity instances that need to be created.
+ * Used to create entities. Has methods for all the entity instances that need
+ * to be created.
  * Constructs an entity by adding components in sequence.
  * Delegates much of component creation to ComponentMaker.
  */
@@ -60,8 +65,9 @@ public class EntityMaker {
 
         cMaker.addTransform(entity, x + width / 2, y + height / 2, width, height);
         cMaker.addSprite(entity, AssetId.FALSE_WALL);
-        cMaker.addBoxCollider(entity, x + width / 2, y + height / 2, width, height, 0f, 0f, BodyDef.BodyType.StaticBody, false);
-        cMaker.addHiddenWall(entity,  triggeredBy);
+        cMaker.addBoxCollider(entity, x + width / 2, y + height / 2, width, height, 0f, 0f, BodyDef.BodyType.StaticBody,
+                false);
+        cMaker.addHiddenWall(entity, triggeredBy);
 
         SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
         sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
@@ -74,7 +80,8 @@ public class EntityMaker {
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.PRESSURE_PLATE_SOUND, Sound.class), 1f));
         additionalMessages.add(new ToastMessage("You hear a click... A secret door has opened!", 2.5f));
 
-        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE, additionalMessages);
+        Entity entity = makeInteractable(x, y, new PressurePlateTriggerMessage(triggers), true, AssetId.PRESSURE_PLATE,
+                additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
@@ -147,7 +154,6 @@ public class EntityMaker {
         anim.currentState = PlayerComponent.PlayerState.IDLE_DOWN;
 
         entity.add(anim);
-
 
         return entity;
     }
@@ -235,7 +241,7 @@ public class EntityMaker {
     public Entity makeAnkh(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new ToastMessage("The Ankh protects you! Invulnerable for 15 seconds", 2f));
-        
+
         Entity entity = makeInteractable(x, y, new AnkhInteractMessage(), true, AssetId.ANKH, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
@@ -257,13 +263,14 @@ public class EntityMaker {
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
         additionalMessages.add(new ToastMessage("Time loss! -20 Points", 2f));
 
-        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.COFFEE, additionalMessages );
+        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.COFFEE, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
     public Entity makeExit(float x, float y) {
-        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT, null);
+        Entity entity = makeInteractable(x, y, new InteractableMessage(MessageType.EXIT_MAZE), false, AssetId.EXIT,
+                null);
         cMaker.addBoxCollider(entity, x, y, 1.6f, 2.2f, 0f, 0.5f,
                 BodyDef.BodyType.StaticBody, true);
 
@@ -276,12 +283,80 @@ public class EntityMaker {
         return entity;
     }
 
+    public Entity makeBribe(float x, float y) {
+        List<Message> additionalMessages = new ArrayList<>();
+        additionalMessages
+                .add(new ToastMessage("You picked up an Energy Drink. Maybe it could be used as a bribe...", 3f));
+        Entity entity = makeInteractable(x, y, new BullyBribeMessage(), true, AssetId.BRIBE, additionalMessages);
+        cMaker.addBoxCollider(entity, x, y, 0.2f, 0.5f, 0f, 0f, BodyDef.BodyType.StaticBody, true);
+        return entity;
+
+    }
+
+    public Entity makeBully(float x, float y) {
+        Entity entity = makeEmptyEntity();
+
+        cMaker.addTransform(entity, x, y);
+        cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.05f);
+
+        List<Message> additionalMessages = new ArrayList<>();
+
+        cMaker.addInteractable(entity, new BullyInteractMessage(), false, additionalMessages);
+
+        cMaker.addBoxCollider(entity, x, y,
+                1.3f, 0.8f,
+                0f, 0.5f,
+                BodyDef.BodyType.KinematicBody,
+                true);
+
+        BullyComponent bully = engine.createComponent(BullyComponent.class);
+        entity.add(bully);
+
+        // Animation
+
+        AnimationComponent<BullyComponent.BullyAnimState> anim = engine.createComponent(AnimationComponent.class);
+
+        Texture sheet = assetLoader.get(AssetId.BULLY_SHEET, Texture.class);
+
+        float idleTime = 0.12f;
+        float walkTime = 0.12f;
+
+        record BAnim(BullyAnimState state, int row, int start, int end, float time) {
+        }
+
+        BAnim[] table = {
+
+                new BAnim(BullyAnimState.IDLE_RIGHT, 1, 0, 5, idleTime),
+                new BAnim(BullyAnimState.IDLE_UP, 1, 6, 11, idleTime),
+                new BAnim(BullyAnimState.IDLE_LEFT, 1, 12, 17, idleTime),
+                new BAnim(BullyAnimState.IDLE_DOWN, 1, 18, 23, idleTime),
+
+                new BAnim(BullyAnimState.WALK_RIGHT, 2, 0, 5, walkTime),
+                new BAnim(BullyAnimState.WALK_UP, 2, 6, 11, walkTime),
+                new BAnim(BullyAnimState.WALK_LEFT, 2, 12, 17, walkTime),
+                new BAnim(BullyAnimState.WALK_DOWN, 2, 18, 23, walkTime),
+
+        };
+
+        for (BAnim b : table) {
+            anim.animations.put(b.state, loadFrames(sheet, 32, 64, b.row(), b.start(), b.end(), b.time()));
+        }
+
+        anim.currentState = BullyAnimState.IDLE_DOWN;
+        anim.elapsed = 0f;
+        anim.currentFrame = anim.animations.get(anim.currentState).getKeyFrame(0f);
+
+        entity.add(anim);
+        return entity;
+
+    }
+
     public Entity makeGoose(float x, float y) {
         Entity entity = makeEmptyEntity();
 
         List<Message> messages = new ArrayList<>();
         messages.add(new SoundMessage(assetLoader.get(AssetId.GOOSE_HONK, Sound.class),
-            1f));
+                1f));
 
         cMaker.addTransform(entity, x, y);
         cMaker.addSprite(entity, null, 2f, 2f, 0f, -0.3f);
@@ -331,14 +406,13 @@ public class EntityMaker {
         return entity;
     }
 
-
     // CHANGED: Added method to make a Pi object
     public Entity makePi(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new ToastMessage("Activated a mysterious Pi.\nI wonder if there are any more...", 2f));
 
         Entity entity = makeInteractable(x, y, new PiCollectMessage(), false, AssetId.PI, additionalMessages);
-        
+
         cMaker.addBoxCollider(entity, x, y, 0.7f, 0.5f, 0, 0.5f, BodyDef.BodyType.StaticBody, true);
         return entity;
     }

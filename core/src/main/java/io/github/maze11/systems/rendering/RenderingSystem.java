@@ -100,8 +100,11 @@ public class RenderingSystem extends SortedIteratingSystem {
         this.messageListener = new MessageListener(publisher);
     }
 
-    /** When this is enabled, displays additional visuals to help with debugging.
-     * This shows where the origins of each visible objects are and shows colliders for physics entities
+    /**
+     * When this is enabled, displays additional visuals to help with debugging.
+     * This shows where the origins of each visible objects are and shows colliders
+     * for physics entities
+     * 
      * @param debugWorld The physics world to display colliders for
      */
     public void enableDebugging(World debugWorld) {
@@ -192,11 +195,13 @@ public class RenderingSystem extends SortedIteratingSystem {
                 width,
                 height);
 
-        if (isDebugging) worldBatch.draw(originTexture, transform.position.x - 0.5f, transform.position.y - 0.5f, 1f, 1f);
+        if (isDebugging)
+            worldBatch.draw(originTexture, transform.position.x - 0.5f, transform.position.y - 0.5f, 1f, 1f);
     }
 
     /**
-     * UI refers to the overlay of anything that does not exist in the game world but should be rendered.
+     * UI refers to the overlay of anything that does not exist in the game world
+     * but should be rendered.
      * Renders the timer and toasts.
      */
     private void renderUI() {
@@ -301,8 +306,7 @@ public class RenderingSystem extends SortedIteratingSystem {
                 bgX + radius,
                 bgY,
                 bgWidth - 2 * radius,
-                bgHeight
-        );
+                bgHeight);
 
         // Left cap
         shapeRenderer.arc(
@@ -310,8 +314,7 @@ public class RenderingSystem extends SortedIteratingSystem {
                 bgY + radius,
                 radius,
                 90,
-                180
-        );
+                180);
 
         // Right cap
         shapeRenderer.arc(
@@ -325,7 +328,8 @@ public class RenderingSystem extends SortedIteratingSystem {
     }
 
     /**
-     * Displays the text of the "toast", displaying information about the state of the game to the player
+     * Displays the text of the "toast", displaying information about the state of
+     * the game to the player
      */
     private void drawToastText() {
         if (toastTimeRemaining <= 0f || toastText == null)

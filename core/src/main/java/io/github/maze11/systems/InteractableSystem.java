@@ -10,8 +10,10 @@ import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.*;
 
 /**
- * Manages interactable objects, making them publish messages on collision with a player.
- * Interactable objects are objects that cause an effect when they come into contact with the player.
+ * Manages interactable objects, making them publish messages on collision with
+ * a player.
+ * Interactable objects are objects that cause an effect when they come into
+ * contact with the player.
  * For example, collectables and geese.
  */
 public class InteractableSystem extends EntitySystem {
@@ -31,7 +33,7 @@ public class InteractableSystem extends EntitySystem {
     public void update(float deltaTime) {
 
         // Dequeue all events and process them
-        while (messageListener.hasNext()){
+        while (messageListener.hasNext()) {
             var message = messageListener.next();
 
             // Not interested in messages that do not represent collisions
@@ -43,18 +45,17 @@ public class InteractableSystem extends EntitySystem {
             // Determine if the collision is between an interactable and a player
             if (interactableMapper.has(collisionMessage.entityA) && playerMapper.has(collisionMessage.entityB)) {
                 handleInteraction(collisionMessage.entityB, collisionMessage.entityA);
-            }
-            else if (playerMapper.has(collisionMessage.entityA) && interactableMapper.has(collisionMessage.entityB)){
+            } else if (playerMapper.has(collisionMessage.entityA) && interactableMapper.has(collisionMessage.entityB)) {
                 handleInteraction(collisionMessage.entityA, collisionMessage.entityB);
             }
             // If not between an interactable and a player, ignore this collision
         }
     }
 
-    private void handleInteraction(Entity player, Entity interactable){
+    private void handleInteraction(Entity player, Entity interactable) {
         var interactableComponent = interactableMapper.get(interactable);
 
-        if (!interactableComponent.interactionEnabled){
+        if (!interactableComponent.interactionEnabled) {
             return;
         }
 
@@ -64,11 +65,12 @@ public class InteractableSystem extends EntitySystem {
         messageListener.publisher.publish(specialisedMessage);
 
         // Sends any additional messages that are attached, for example, sound effects
-        for (Message message : interactableComponent.additionalMessages){
+        for (Message message : interactableComponent.additionalMessages) {
             messageListener.publisher.publish(message);
         }
 
-        // Interactions are disabled once it has occurred once, to prevent the interaction firing multiple times in
+        // Interactions are disabled once it has occurred once, to prevent the
+        // interaction firing multiple times in
         // quick succession. Can be re-enabled by other systems if necessary
         interactableComponent.interactionEnabled = false;
 
