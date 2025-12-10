@@ -33,6 +33,7 @@ import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessagePublisher;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.systems.AudioSystem;
+import io.github.maze11.systems.BullySystem;
 import io.github.maze11.systems.GooseSystem;
 import io.github.maze11.systems.HiddenWallSystem;
 import io.github.maze11.systems.InteractableSystem;
@@ -49,7 +50,8 @@ import io.github.maze11.systems.rendering.WorldCameraSystem;
 
 /**
  * The screen displayed when the game is running.
- * This is where the world and player can be seen, and most the time is spent by the player.
+ * This is where the world and player can be seen, and most the time is spent by
+ * the player.
  */
 public class LevelScreen implements Screen {
     private final PooledEngine engine;
@@ -63,7 +65,6 @@ public class LevelScreen implements Screen {
 
     private final boolean isDebugging = false;
     private MazeGame game;
-
 
     public LevelScreen(MazeGame game) {
         this.game = game;
@@ -82,11 +83,13 @@ public class LevelScreen implements Screen {
         GooseSystem gooseSystem = new GooseSystem(fixedStepper, messagePublisher);
         RenderingSystem renderingSystem = new RenderingSystem(game, camera, map, messagePublisher);
 
-        // Game conditions (win/lose) -> Input -> Sync & Physics -> render (for no input delay)
+        // Game conditions (win/lose) -> Input -> Sync & Physics -> render (for no input
+        // delay)
         List<EntitySystem> systems = List.of(
                 new GameStateSystem(messagePublisher, game, engine),
                 new InteractableSystem(messagePublisher, engine, entityMaker),
                 gooseSystem,
+                new BullySystem(fixedStepper, messagePublisher, engine),
                 new PlayerSystem(fixedStepper, messagePublisher, game),
                 new HiddenWallSystem(fixedStepper, messagePublisher),
                 new PhysicsSyncSystem(fixedStepper),
@@ -216,6 +219,8 @@ public class LevelScreen implements Screen {
                         yield entityMaker.makeTeleportation(x, y, targetPosition);
                     }
                     case "exit" -> entityMaker.makeExit(x, y);
+                    case "bully" -> entityMaker.makeBully(x, y);
+                    case "bribe" -> entityMaker.makeBribe(x, y);
                     case "pressure-plate" -> {
                         String triggers = obj.getProperties().get("triggers", String.class);
                         yield entityMaker.makePressurePlate(x, y, triggers);
@@ -276,7 +281,6 @@ public class LevelScreen implements Screen {
         }
 
         engine.update(deltaTime);
-
 
     }
 

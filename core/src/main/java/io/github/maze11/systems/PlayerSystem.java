@@ -82,6 +82,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
                 case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
+                case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
                 default -> {
                 }
             }
@@ -97,8 +98,8 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     }
 
     private void processPuddleInteract(PuddleInteractMessage message) {
-         PlayerComponent player = playerMapper.get(message.getPlayer());
-         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
 
     }
 
@@ -112,10 +113,16 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     }
 
     private void processAnkhInteract(AnkhInteractMessage message) {
-         PlayerComponent player = playerMapper.get(message.getPlayer());
-         /* actual ankh effect: */
-         player.isInvulnerable = true;
-         // add timer effect here, switch back after: //
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        /* actual ankh effect: */
+        player.isInvulnerable = true;
+        // add timer effect here, switch back after: //
+
+    }
+
+    private void processBullyBribe(BullyBribeMessage message) {
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        player.hasBribe = true;
 
     }
 
@@ -263,7 +270,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     }
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime){
+    protected void processEntity(Entity entity, float deltaTime) {
         PlayerComponent player = playerMapper.get(entity);
 
         // Only play footsteps while the player is moving
@@ -275,7 +282,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     /**
      * Advances the footstep time and play a footstep if it is due
      */
-    private void accumulateFootstep(PlayerComponent player, float deltaTime){
+    private void accumulateFootstep(PlayerComponent player, float deltaTime) {
 
         // Footsteps happen faster while boosted
         float timeMultiplier = 1f;
@@ -284,12 +291,13 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         }
 
         // Accumulate the time
-        player.timeSinceLastFootstep += deltaTime *  timeMultiplier;
+        player.timeSinceLastFootstep += deltaTime * timeMultiplier;
 
         // If it is time for another footstep, take it
-        if (player.timeSinceLastFootstep > player.timeBetweenFootsteps){
+        if (player.timeSinceLastFootstep > player.timeBetweenFootsteps) {
             player.timeSinceLastFootstep = 0f;
-            messageListener.publisher.publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 0.5f, 0.6f));
+            messageListener.publisher
+                    .publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 0.5f, 0.6f));
         }
     }
 }
