@@ -916,6 +916,11 @@
     <property name="triggers" value="hidden-1"/>
    </properties>
   </object>
+  <object id="473" name="Teleporter 1" type="teleporter" x="1220" y="1250" width="32" height="32">
+  <properties>
+      <property name="position" value="40,50"/>
+   </properties>
+  </object>
   <object id="235" name="Exit" type="exit" x="1792.79" y="1920.4" width="32" height="32"/>
   <object id="238" name="Goose 1" type="goose" x="543.942" y="1185.26" width="32" height="32"/>
   <object id="239" name="Goose 2" type="goose" x="639.897" y="2144.82" width="32" height="32"/>
@@ -945,7 +950,6 @@
   <object id="480" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
   <object id="472" name="Puddle 1" type="puddle" x="1212" y="1182" width="32" height="32"/>
   <object id="473" name="Time 1" type="time-lost" x="1250" y="1250" width="32" height="32"/>
-  <object id="473" name="Teleporter 1" type="teleporter" x="1220" y="1250" width="32" height="32"/>
   <object id="480" name="Pi 1" type="pi" x="702" y="1472" width="75" height="75"/>
   <object id="474" name="Pi 1" type="pi" x="1840" y="1450" width="75" height="75"/>
   <object id="475" name="Pi 2" type="pi" x="930" y="785" width="75" height="75"/>

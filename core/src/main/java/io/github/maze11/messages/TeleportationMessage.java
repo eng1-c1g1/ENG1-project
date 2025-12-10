@@ -7,7 +7,10 @@ import com.badlogic.gdx.math.Vector2;
  */
 
 public class TeleportationMessage extends InteractableMessage{
-    public Vector2 location = new Vector2(50f, 40f);
-    public TeleportationMessage(){super(MessageType.TELEPORTATION);}
+    public Vector2 location;
+    public TeleportationMessage(Vector2 tpLocation){
+        super(MessageType.TELEPORTATION);
+        this.location = tpLocation;
+    }
 }
 
