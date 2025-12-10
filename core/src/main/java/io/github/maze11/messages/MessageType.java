@@ -22,6 +22,7 @@ public enum MessageType {
     TIME_LOST,
     PI_COLLECT,
     PI_ACTIVATED,
+    TELEPORTATION,
     BULLY_INTERACT,
     BULLY_BRIBED
 }

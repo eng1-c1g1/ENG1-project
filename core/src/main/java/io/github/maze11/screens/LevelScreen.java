@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
@@ -209,9 +210,16 @@ public class LevelScreen implements Screen {
                     case "ankh" -> entityMaker.makeAnkh(x, y);
                     case "longboi" -> entityMaker.makeLongBoi(x, y);
                     case "check-in" -> entityMaker.makeCheckInCode(x, y);
+                    //Time Loss Entity Map implementation
                     case "time-lost" -> entityMaker.makeTimeLoss(x, y);
+                    case "teleporter" -> {
+                        //Teleporter Entity Map implementation
+                        String position = obj.getProperties().get("position", String.class);
+                        Vector2 targetPosition = parseVector2(position);
+                        yield entityMaker.makeTeleportation(x, y, targetPosition);
+                    }
                     case "exit" -> entityMaker.makeExit(x, y);
-                    case "bully" -> entityMaker.makeBully(x, y);
+                    //case "bully" -> entityMaker.makeBully(x, y);
                     case "bribe" -> entityMaker.makeBribe(x, y);
                     case "pressure-plate" -> {
                         String triggers = obj.getProperties().get("triggers", String.class);
@@ -239,6 +247,17 @@ public class LevelScreen implements Screen {
         }
 
         return groups;
+    }
+
+    //Teleporter Coordinates Helper
+    private Vector2 parseVector2(String str) {
+        if (str == null) return new Vector2(0, 0);
+
+        // Expected format: "10,20" or "10, 20"
+        String[] parts = str.replace(" ", "").split(",");
+        float x = Float.parseFloat(parts[0]);
+        float y = Float.parseFloat(parts[1]);
+        return new Vector2(x, y);
     }
 
     @Override

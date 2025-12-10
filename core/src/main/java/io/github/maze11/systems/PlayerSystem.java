@@ -15,17 +15,7 @@ import io.github.maze11.components.*;
 import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.MessageListener;
-import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.PiActivatedMessage;
-import io.github.maze11.messages.PiCollectMessage;
-import io.github.maze11.messages.PuddleInteractMessage;
-import io.github.maze11.messages.AnkhInteractMessage;
-import io.github.maze11.messages.BullyBribeMessage;
-import io.github.maze11.messages.SoundMessage;
-import io.github.maze11.messages.ToastMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Handles input, player movement and other player logic.
@@ -91,6 +81,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
+                case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
                 case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
                 default -> {
                 }
@@ -99,6 +90,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         super.fixedUpdate(deltaTime);
     }
+
 
     private void processCoffeeCollect(CoffeeCollectMessage message) {
         PlayerComponent player = playerMapper.get(message.getPlayer());
@@ -109,6 +101,15 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         PlayerComponent player = playerMapper.get(message.getPlayer());
         player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
 
+    }
+
+    //Teleportation effect
+    private void processTeleportation(TeleportationMessage message) {
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        System.out.println("PlayerSystem.processTeleportation triggered");
+        Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
+        System.out.println(playerPos.x + " " + playerPos.y);
+        transformMapper.get(message.getPlayer()).position.set(message.location);
     }
 
     private void processAnkhInteract(AnkhInteractMessage message) {

@@ -17,6 +17,8 @@ public enum AssetId {
     PRESSURE_PLATE,
     PI,
     LONGBOI,
+    TELEPORTER,
+    YAPPER,
     BRIBE,
 
     // Sounds
