@@ -30,7 +30,7 @@ public class AssetPaths {
         entry(AssetId.PI, "sprites/Pi.png"),
         entry(AssetId.LONGBOI, "sprites/longboi.png"),
         entry(AssetId.TELEPORTER, "sprites/teleporter.png"),
-        entry(AssetId.YAPPER, "sprites/yapper1_32x32.png")
+        entry(AssetId.YAPPER, "sprites/yapper04.png")
     );
 
     static Map<AssetId, String> soundPaths = Map.ofEntries(

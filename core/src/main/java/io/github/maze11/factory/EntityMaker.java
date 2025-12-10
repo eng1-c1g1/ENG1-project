@@ -257,8 +257,14 @@ public class EntityMaker {
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
         additionalMessages.add(new ToastMessage("Time loss! -20 Points", 2f));
 
-        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.COFFEE, additionalMessages );
-        cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
+        Entity entity = makeInteractable(x, y, new TimeLossMessage(), true, AssetId.YAPPER, additionalMessages );
+        cMaker.addBoxCollider(entity, x, y, 1.6f, 2.2f, 0f, 0.5f,
+            BodyDef.BodyType.StaticBody, true);
+
+        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
+        if (sprite != null) {
+            sprite.size.set(1.5f, 1.5f);
+        }
         return entity;
     }
 

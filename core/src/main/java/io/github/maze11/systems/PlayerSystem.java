@@ -15,16 +15,7 @@ import io.github.maze11.components.*;
 import io.github.maze11.components.PlayerComponent.PlayerState;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
-import io.github.maze11.messages.CoffeeCollectMessage;
-import io.github.maze11.messages.GooseBiteMessage;
-import io.github.maze11.messages.MessageListener;
-import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.messages.PiActivatedMessage;
-import io.github.maze11.messages.PiCollectMessage;
-import io.github.maze11.messages.PuddleInteractMessage;
-import io.github.maze11.messages.AnkhInteractMessage;
-import io.github.maze11.messages.SoundMessage;
-import io.github.maze11.messages.ToastMessage;
+import io.github.maze11.messages.*;
 
 /**
  * Handles input, player movement and other player logic.
@@ -107,6 +98,11 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private void processPuddleInteract(PuddleInteractMessage message) {
          PlayerComponent player = playerMapper.get(message.getPlayer());
          player.speedBonuses.add(new PlayerComponent.SpeedBonus(message.speedBonusAmount, message.duration));
+
+    }
+
+    //Teleportation effect
+    private void processTeleportation(TeleportationMessage message) {
 
     }
 
