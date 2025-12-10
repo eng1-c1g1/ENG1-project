@@ -268,13 +268,14 @@ public class EntityMaker {
         return entity;
     }
 
+    /*Addition: Teleportation feature*/
     public Entity makeTeleportation(float x, float y, Vector2 location) {
         List<Message> additionalMessages = new ArrayList<>();
         additionalMessages.add(new SoundMessage(assetLoader.get(AssetId.COLLECTABLE_SOUND, Sound.class), 1f));
         additionalMessages.add(new ToastMessage("Teleportation!", 2f));
 
-        Entity entity = makeInteractable(x, y, new TeleportationMessage(location), false, AssetId.TELEPORTER , additionalMessages);
-        cMaker.addCircleCollider(entity, x, y, 0.5f, 0f, 0.5f, BodyDef.BodyType.DynamicBody);
+        Entity entity = makeInteractable(x, y, new TeleportationMessage(location), true, AssetId.TELEPORTER , additionalMessages);
+        cMaker.addCircleCollider(entity, x, y, 0.5f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
         return entity;
     }
 
