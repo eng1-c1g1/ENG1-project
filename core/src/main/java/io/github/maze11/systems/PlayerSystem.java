@@ -81,6 +81,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
+                case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
                 default -> {
                 }
             }
@@ -103,7 +104,11 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     //Teleportation effect
     private void processTeleportation(TeleportationMessage message) {
-
+        PlayerComponent player = playerMapper.get(message.getPlayer());
+        System.out.println("PlayerSystem.processTeleportation triggered");
+        Vector2 playerPos = transformMapper.get(message.getPlayer()).position;
+        System.out.println(playerPos.x + " " + playerPos.y);
+        transformMapper.get(message.getPlayer()).position.set(message.location);
     }
 
     private void processAnkhInteract(AnkhInteractMessage message) {
