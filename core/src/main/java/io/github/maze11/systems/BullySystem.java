@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.maze11.components.AnimationComponent;
 import io.github.maze11.components.BullyComponent;
+import io.github.maze11.components.BullyComponent.BullyAnimState;
+import io.github.maze11.components.BullyComponent.BullyState;
 import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.TransformComponent;
-import io.github.maze11.components.BullyComponent.BullyAnimState;
-import io.github.maze11.components.BullyComponent.BullyState;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.fixedStep.IteratingFixedStepSystem;
 import io.github.maze11.messages.InteractableMessage;
@@ -134,7 +134,7 @@ public class BullySystem extends IteratingFixedStepSystem {
             listener.publisher.publish(new ToastMessage("Thanks for the drink", 3f));
 
             bully.state = BullyState.MOVE;
-            bully.targetPosition.set(bullyPos.position.x + 2.2f, bullyPos.position.y + -1f);
+            bully.targetPosition.set(bullyPos.position.x + 2.5f, bullyPos.position.y + -0.8f);
 
             interactable.interactionEnabled = false;
 

@@ -3,7 +3,6 @@ package io.github.maze11.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.audio.Sound;
@@ -18,11 +17,27 @@ import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.AnimationComponent;
 import io.github.maze11.components.BullyComponent;
+import io.github.maze11.components.BullyComponent.BullyAnimState;
 import io.github.maze11.components.CameraFollowComponent;
 import io.github.maze11.components.GooseComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.components.SpriteComponent;
-import io.github.maze11.messages.*;
+import io.github.maze11.messages.AnkhInteractMessage;
+import io.github.maze11.messages.BullyBribeMessage;
+import io.github.maze11.messages.BullyInteractMessage;
+import io.github.maze11.messages.CoffeeCollectMessage;
+import io.github.maze11.messages.GooseBiteMessage;
+import io.github.maze11.messages.InteractableMessage;
+import io.github.maze11.messages.LongBoiInteractMessage;
+import io.github.maze11.messages.Message;
+import io.github.maze11.messages.MessageType;
+import io.github.maze11.messages.PiCollectMessage;
+import io.github.maze11.messages.PressurePlateTriggerMessage;
+import io.github.maze11.messages.PuddleInteractMessage;
+import io.github.maze11.messages.SoundMessage;
+import io.github.maze11.messages.TeleportationMessage;
+import io.github.maze11.messages.TimeLossMessage;
+import io.github.maze11.messages.ToastMessage;
 
 /**
  * Used to create entities. Has methods for all the entity instances that need
@@ -306,64 +321,64 @@ public class EntityMaker {
         return entity;
 
     }
-//
-//    public Entity makeBully(float x, float y) {
-//        Entity entity = makeEmptyEntity();
-//
-//        cMaker.addTransform(entity, x, y);
-//        cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.05f);
-//
-//        List<Message> additionalMessages = new ArrayList<>();
-//
-//        cMaker.addInteractable(entity, new BullyInteractMessage(), false, additionalMessages);
-//
-//        cMaker.addBoxCollider(entity, x, y,
-//                1.3f, 0.8f,
-//                0f, 0.5f,
-//                BodyDef.BodyType.KinematicBody,
-//                true);
-//
-//        BullyComponent bully = engine.createComponent(BullyComponent.class);
-//        entity.add(bully);
-//
-//        // Animation
-//
-//        AnimationComponent<BullyComponent.BullyAnimState> anim = engine.createComponent(AnimationComponent.class);
-//
-//        Texture sheet = assetLoader.get(AssetId.BULLY_SHEET, Texture.class);
-//
-//        float idleTime = 0.12f;
-//        float walkTime = 0.12f;
-//
-//        record BAnim(BullyAnimState state, int row, int start, int end, float time) {
-//        }
-//
-//        BAnim[] table = {
-//
-//                new BAnim(BullyAnimState.IDLE_RIGHT, 1, 0, 5, idleTime),
-//                new BAnim(BullyAnimState.IDLE_UP, 1, 6, 11, idleTime),
-//                new BAnim(BullyAnimState.IDLE_LEFT, 1, 12, 17, idleTime),
-//                new BAnim(BullyAnimState.IDLE_DOWN, 1, 18, 23, idleTime),
-//
-//                new BAnim(BullyAnimState.WALK_RIGHT, 2, 0, 5, walkTime),
-//                new BAnim(BullyAnimState.WALK_UP, 2, 6, 11, walkTime),
-//                new BAnim(BullyAnimState.WALK_LEFT, 2, 12, 17, walkTime),
-//                new BAnim(BullyAnimState.WALK_DOWN, 2, 18, 23, walkTime),
-//
-//        };
-//
-//        for (BAnim b : table) {
-//            anim.animations.put(b.state, loadFrames(sheet, 32, 64, b.row(), b.start(), b.end(), b.time()));
-//        }
-//
-//        anim.currentState = BullyAnimState.IDLE_DOWN;
-//        anim.elapsed = 0f;
-//        anim.currentFrame = anim.animations.get(anim.currentState).getKeyFrame(0f);
-//
-//        entity.add(anim);
-//        return entity;
-//
-//    }
+
+   public Entity makeBully(float x, float y) {
+       Entity entity = makeEmptyEntity();
+
+       cMaker.addTransform(entity, x, y);
+       cMaker.addSprite(entity, null, 1f, 2f, 0f, 0.05f);
+
+       List<Message> additionalMessages = new ArrayList<>();
+
+       cMaker.addInteractable(entity, new BullyInteractMessage(), false, additionalMessages);
+
+       cMaker.addBoxCollider(entity, x, y,
+               1.3f, 0.8f,
+               0f, 0.5f,
+               BodyDef.BodyType.KinematicBody,
+               true);
+
+       BullyComponent bully = engine.createComponent(BullyComponent.class);
+       entity.add(bully);
+
+       // Animation
+
+       AnimationComponent<BullyComponent.BullyAnimState> anim = engine.createComponent(AnimationComponent.class);
+
+       Texture sheet = assetLoader.get(AssetId.BULLY_SHEET, Texture.class);
+
+       float idleTime = 0.12f;
+       float walkTime = 0.12f;
+
+       record BAnim(BullyAnimState state, int row, int start, int end, float time) {
+       }
+
+       BAnim[] table = {
+
+               new BAnim(BullyAnimState.IDLE_RIGHT, 1, 0, 5, idleTime),
+               new BAnim(BullyAnimState.IDLE_UP, 1, 6, 11, idleTime),
+               new BAnim(BullyAnimState.IDLE_LEFT, 1, 12, 17, idleTime),
+               new BAnim(BullyAnimState.IDLE_DOWN, 1, 18, 23, idleTime),
+
+               new BAnim(BullyAnimState.WALK_RIGHT, 2, 0, 5, walkTime),
+               new BAnim(BullyAnimState.WALK_UP, 2, 6, 11, walkTime),
+               new BAnim(BullyAnimState.WALK_LEFT, 2, 12, 17, walkTime),
+               new BAnim(BullyAnimState.WALK_DOWN, 2, 18, 23, walkTime),
+
+       };
+
+       for (BAnim b : table) {
+           anim.animations.put(b.state, loadFrames(sheet, 32, 64, b.row(), b.start(), b.end(), b.time()));
+       }
+
+       anim.currentState = BullyAnimState.IDLE_DOWN;
+       anim.elapsed = 0f;
+       anim.currentFrame = anim.animations.get(anim.currentState).getKeyFrame(0f);
+
+       entity.add(anim);
+       return entity;
+
+   }
 
     public Entity makeGoose(float x, float y) {
         Entity entity = makeEmptyEntity();

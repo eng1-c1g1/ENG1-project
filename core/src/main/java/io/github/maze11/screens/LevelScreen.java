@@ -219,7 +219,7 @@ public class LevelScreen implements Screen {
                         yield entityMaker.makeTeleportation(x, y, targetPosition);
                     }
                     case "exit" -> entityMaker.makeExit(x, y);
-                    //case "bully" -> entityMaker.makeBully(x, y);
+                    case "bully" -> entityMaker.makeBully(x, y);
                     case "bribe" -> entityMaker.makeBribe(x, y);
                     case "pressure-plate" -> {
                         String triggers = obj.getProperties().get("triggers", String.class);
