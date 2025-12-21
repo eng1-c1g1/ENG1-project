@@ -968,7 +968,7 @@
   <object id="473" name="Time 2" type="time-lost" x="800" y="900" width="32" height="32"/>
   <object id="473" name="Time 3" type="time-lost" x="510" y="460" width="32" height="32"/>
   <object id="473" name="Time 4" type="time-lost" x="650" y="950" width="32" height="32"/>
-  <object id="480" name="Pi 1" type="pi" x="702" y="1472" width="75" height="75"/>
+
   <object id="474" name="Pi 1" type="pi" x="1840" y="1450" width="75" height="75"/>
   <object id="475" name="Pi 2" type="pi" x="930" y="785" width="75" height="75"/>
   <object id="476" name="Pi 3" type="pi" x="350" y="2200" width="75" height="75"/>
