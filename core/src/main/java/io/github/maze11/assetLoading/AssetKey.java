@@ -6,7 +6,7 @@ package io.github.maze11.assetLoading;
  * @param assetType
  * @param <A>
  */
-public record AssetKey<A>(AssetId id, Class<A> assetType) {
+record AssetKey<A>(AssetId id, Class<A> assetType) {
 
     public Class<A> assetType() {return assetType;}
     }

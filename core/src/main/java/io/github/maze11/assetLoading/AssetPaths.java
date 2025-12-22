@@ -15,7 +15,7 @@ public class AssetPaths {
         // Texture paths is a special case of the more general paths, created for
         // convenience of assignment
         // This prevents needing to constantly repeat that all the entries are textures
-        public static Map<AssetId, String> texturePaths = Map.ofEntries(
+        static Map<AssetId, String> texturePaths = Map.ofEntries(
                         entry(AssetId.PLAYER_SHEET, "sprites/Premade_Character_32x32_17.png"),
                         entry(AssetId.GOOSE_SHEET, "sprites/Duck_White_32x32.png"),
                         entry(AssetId.BULLY_SHEET, "sprites/Premade_Character_32x32_17.png"),
@@ -34,7 +34,7 @@ public class AssetPaths {
                         entry(AssetId.TELEPORTER, "sprites/teleporter.png"),
                         entry(AssetId.YAPPER, "sprites/yapper04.png"));
 
-        public static Map<AssetId, String> soundPaths = Map.ofEntries(
+        static Map<AssetId, String> soundPaths = Map.ofEntries(
                         entry(AssetId.TEST_SOUND, "audio/test_sound.mp3"),
                         entry(AssetId.COFFEE_SLURP, "audio/CoffeeSlurlp.mp3"),
                         entry(AssetId.COLLECTABLE_SOUND, "audio/CollectableSound.mp3"),
@@ -48,7 +48,7 @@ public class AssetPaths {
                         entry(AssetId.WIN_SOUND, "audio/WinSound.mp3"));
 
         // This map can be used to declare paths to loaded files of any type
-        public static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
+        static Map<AssetKey<?>, String> pathsWithTypes = Map.ofEntries(
                         entry(new AssetKey<>(AssetId.TILEMAP, TiledMap.class), "map/default.tmx"),
                         entry(new AssetKey<>(AssetId.GAME_MUSIC, Music.class), "audio/GameMusic.mp3"));
 
