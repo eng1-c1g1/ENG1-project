@@ -117,45 +117,47 @@ public class EntityMaker {
         AnimationComponent<PlayerComponent.PlayerState> anim = (AnimationComponent<PlayerComponent.PlayerState>) engine
                 .createComponent(AnimationComponent.class);
 
-        // Load player spritesheet
-        Texture sheet = assetLoader.get(AssetId.PLAYER_SHEET, Texture.class);
+        // Load player spritesheet only if spritebatch fetched
+        if (MazeGame.batch != null) {
+            Texture sheet = assetLoader.get(AssetId.PLAYER_SHEET, Texture.class);
 
-        PlayerComponent.PlayerState[] idleStates = {
-                PlayerComponent.PlayerState.IDLE_RIGHT,
-                PlayerComponent.PlayerState.IDLE_UP,
-                PlayerComponent.PlayerState.IDLE_LEFT,
-                PlayerComponent.PlayerState.IDLE_DOWN
-        };
+            PlayerComponent.PlayerState[] idleStates = {
+                    PlayerComponent.PlayerState.IDLE_RIGHT,
+                    PlayerComponent.PlayerState.IDLE_UP,
+                    PlayerComponent.PlayerState.IDLE_LEFT,
+                    PlayerComponent.PlayerState.IDLE_DOWN
+            };
 
-        PlayerComponent.PlayerState[] walkStates = {
-                PlayerComponent.PlayerState.WALK_RIGHT,
-                PlayerComponent.PlayerState.WALK_UP,
-                PlayerComponent.PlayerState.WALK_LEFT,
-                PlayerComponent.PlayerState.WALK_DOWN
-        };
+            PlayerComponent.PlayerState[] walkStates = {
+                    PlayerComponent.PlayerState.WALK_RIGHT,
+                    PlayerComponent.PlayerState.WALK_UP,
+                    PlayerComponent.PlayerState.WALK_LEFT,
+                    PlayerComponent.PlayerState.WALK_DOWN
+            };
 
-        // Starting frame index for each direction: 0, 6, 12, 18
-        int[] frameStarts = { 0, 6, 12, 18 };
+            // Starting frame index for each direction: 0, 6, 12, 18
+            int[] frameStarts = { 0, 6, 12, 18 };
 
-        for (int i = 0; i < 4; i++) {
-            // IDLE animations (row 1)
-            anim.animations.put(
-                    idleStates[i],
-                    loadFrames(sheet, 32, 64,
-                            1, frameStarts[i], frameStarts[i] + 5,
-                            0.12f));
+            for (int i = 0; i < 4; i++) {
+                // IDLE animations (row 1)
+                anim.animations.put(
+                        idleStates[i],
+                        loadFrames(sheet, 32, 64,
+                                1, frameStarts[i], frameStarts[i] + 5,
+                                0.12f));
 
-            // WALK animations (row 2)
-            anim.animations.put(
-                    walkStates[i],
-                    loadFrames(sheet, 32, 64,
-                            2, frameStarts[i], frameStarts[i] + 5,
-                            0.12f));
+                // WALK animations (row 2)
+                anim.animations.put(
+                        walkStates[i],
+                        loadFrames(sheet, 32, 64,
+                                2, frameStarts[i], frameStarts[i] + 5,
+                                0.12f));
+            }
+
+            anim.currentState = PlayerComponent.PlayerState.IDLE_DOWN;
+
+            entity.add(anim);
         }
-
-        anim.currentState = PlayerComponent.PlayerState.IDLE_DOWN;
-
-        entity.add(anim);
 
         return entity;
     }

@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+
+import io.github.maze11.MazeGame;
 import io.github.maze11.assetLoading.AssetId;
 import io.github.maze11.assetLoading.AssetLoader;
 import io.github.maze11.components.*;
@@ -42,6 +44,12 @@ class ComponentMaker {
     }
 
     void addSprite(Entity entity, AssetId textureId, float sizeX, float sizeY, float textureOffsetX, float textureOffsetY) {
+        
+        // If no sprite batch fetched (e.g. if a headless test is being ran), don't add a sprite
+        if (MazeGame.batch == null) {
+            return;
+        }
+
         SpriteComponent sprite = engine.createComponent(SpriteComponent.class);
 
         //If texture not provided, it should be null
