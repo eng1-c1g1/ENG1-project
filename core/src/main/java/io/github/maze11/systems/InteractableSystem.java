@@ -37,18 +37,18 @@ public class InteractableSystem extends EntitySystem {
             var message = messageListener.next();
 
             // Not interested in messages that do not represent collisions
-            if (message.type != MessageType.COLLISION) {
-                return;
-            }
-            var collisionMessage = (CollisionMessage) message;
+            if (message.type == MessageType.COLLISION) {
+                var collisionMessage = (CollisionMessage) message;
 
-            // Determine if the collision is between an interactable and a player
-            if (interactableMapper.has(collisionMessage.entityA) && playerMapper.has(collisionMessage.entityB)) {
-                handleInteraction(collisionMessage.entityB, collisionMessage.entityA);
-            } else if (playerMapper.has(collisionMessage.entityA) && interactableMapper.has(collisionMessage.entityB)) {
-                handleInteraction(collisionMessage.entityA, collisionMessage.entityB);
+                // Determine if the collision is between an interactable and a player
+                if (interactableMapper.has(collisionMessage.entityA) && playerMapper.has(collisionMessage.entityB)) {
+                    handleInteraction(collisionMessage.entityB, collisionMessage.entityA);
+                } else if (playerMapper.has(collisionMessage.entityA) && interactableMapper.has(collisionMessage.entityB)) {
+                    handleInteraction(collisionMessage.entityA, collisionMessage.entityB);
+                }
+                // If not between an interactable and a player, ignore this collision
             }
-            // If not between an interactable and a player, ignore this collision
+            
         }
     }
 

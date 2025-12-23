@@ -17,6 +17,7 @@ import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.Mockito.mock;
@@ -27,22 +28,22 @@ public abstract class AbstractHeadlessGdxTest {
     public MazeGame testMazeGame = new MazeGame();
     public PooledEngine testEngine;
     public EntityMaker testEntMaker;
-    public MessagePublisher testPublisher;
-    public MessageListener testListener;
+    public final MessagePublisher testPublisher = new MessagePublisher();
+    public static MessageListener testListener;
     public FixedStepper testStepper;
 
+    // Runs before every single function starting with @Test
     @BeforeEach
     public void setup() {
         Gdx.gl = Gdx.gl20 = mock(GL20.class);
         HeadlessLauncher.main(new String[0]);
-
+        
         // Setting up systems and components to allow the game to function
         testEngine = new PooledEngine();
-        testEntMaker = new EntityMaker(testEngine, testMazeGame);
-        testPublisher = new MessagePublisher();
-        testListener = new MessageListener(testPublisher);
         testStepper = new FixedStepper();
-
+        testEntMaker = new EntityMaker(testEngine, testMazeGame);
+        testListener = new MessageListener(testPublisher);
+        
         // Basic systems that the vast majority of tests will need. To add missing systems, 
         // create a new instance of that system, then add the line:
         // "testEngine.addSystem(yourSystemName.class);"
