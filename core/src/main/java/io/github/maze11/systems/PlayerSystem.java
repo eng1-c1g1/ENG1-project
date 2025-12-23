@@ -81,6 +81,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                 case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
                 case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
                 case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
+                case PI_ACTIVATED -> processCowsayActivate((PiActivatedMessage) message);
                 case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
                 case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
                 default -> {
@@ -129,11 +130,15 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     // CHANGED: Added method to allow the player to collect the Pi objects
     private void processPiCollect(PiCollectMessage message) {
         PiCollectMessage.numPis++;
-
+        PiActivatedMessage.cowsayActivated = false;
         // Once all Pi's active, send Cowsay
         if (PiCollectMessage.numPis == 3) {
+            messagePublisher.publish(new PiActivatedMessage());
+        }
+    }
 
-            String cowsay = """
+    private void processCowsayActivate(PiActivatedMessage message) {
+        String cowsay = """
                      __________________
                     / One does not simply   \\
                     \\ walk out of university   /
@@ -144,11 +149,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                                  ||----w |
                                  ||        ||
                     """;
-            messagePublisher.publish(new ToastMessage(cowsay, 10f));
-            messagePublisher.publish(new PiActivatedMessage());
-        } else if (PiCollectMessage.numPis > 3) {
-            PiCollectMessage.numPis = PiCollectMessage.numPis - 3;
-        }
+        messagePublisher.publish(new ToastMessage(cowsay, 5f));
     }
 
     private void processGooseBite(GooseBiteMessage message) {

@@ -31,6 +31,7 @@ import io.github.maze11.components.PhysicsComponent;
 import io.github.maze11.factory.EntityMaker;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.messages.PiCollectMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.systems.AudioSystem;
 import io.github.maze11.systems.BullySystem;
@@ -121,6 +122,8 @@ public class LevelScreen implements Screen {
 
         // Create timer (5 minutes = 300 seconds)
         entityMaker.makeTimer(300f);
+
+        PiCollectMessage.numPis = 0;    // Reset Pi counter
 
         this.welcomeToasts(messagePublisher);
 
