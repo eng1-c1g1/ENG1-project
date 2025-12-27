@@ -72,23 +72,27 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     @Override
     public void fixedUpdate(float deltaTime) {
-        while (messageListener.hasNext()) {
-            var message = messageListener.next();
+        
+        // CHANGED: Prevent updates if game paused
+        if (!PauseSystem.gamePaused) {
+            while (messageListener.hasNext()) {
+                var message = messageListener.next();
 
-            switch (message.type) {
-                case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
-                case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
-                case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
-                case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
-                case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
-                case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
-                case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
-                default -> {
+                switch (message.type) {
+                    case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
+                    case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
+                    case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
+                    case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
+                    case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
+                    case PI_ACTIVATED -> processCowsayActivated((PiActivatedMessage) message);
+                    case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
+                    case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
+                    default -> {
+                    }
                 }
             }
+            super.fixedUpdate(deltaTime);
         }
-
-        super.fixedUpdate(deltaTime);
     }
 
 
@@ -129,11 +133,16 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     // CHANGED: Added method to allow the player to collect the Pi objects
     private void processPiCollect(PiCollectMessage message) {
         PiCollectMessage.numPis++;
+        PiActivatedMessage.cowsayActivated = false;
 
         // Once all Pi's active, send Cowsay
         if (PiCollectMessage.numPis == 3) {
+            messagePublisher.publish(new PiActivatedMessage());
+        }
+    }
 
-            String cowsay = """
+    private void processCowsayActivated(PiActivatedMessage message) {
+        String cowsay = """
                      __________________
                     / One does not simply   \\
                     \\ walk out of university   /
@@ -144,11 +153,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
                                  ||----w |
                                  ||        ||
                     """;
-            messagePublisher.publish(new ToastMessage(cowsay, 10f));
-            messagePublisher.publish(new PiActivatedMessage());
-        } else if (PiCollectMessage.numPis > 3) {
-            PiCollectMessage.numPis = PiCollectMessage.numPis - 3;
-        }
+        messagePublisher.publish(new ToastMessage(cowsay, 10f));
     }
 
     private void processGooseBite(GooseBiteMessage message) {

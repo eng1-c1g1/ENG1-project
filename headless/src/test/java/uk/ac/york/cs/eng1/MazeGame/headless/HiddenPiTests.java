@@ -65,7 +65,7 @@ public class HiddenPiTests extends AbstractHeadlessGdxTest{
         testInteractSystem.update(0f);
         testPS.fixedUpdate(0f);
 
-        assertEquals(4, PiCollectMessage.numPis);
-        assertFalse(PiActivatedMessage.cowsayActivated, "Cowsay shouldn't have triggered again");
+        assertEquals(4, PiCollectMessage.numPis);   // Checking the new Pi has actually been triggered
+        assertFalse(PiActivatedMessage.cowsayActivated, "Cowsay shouldn't have triggered again");   // Checking cowsay hasn't been triggered
     }
 }

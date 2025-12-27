@@ -7,7 +7,7 @@ import io.github.maze11.MazeGame;
 import io.github.maze11.screens.PauseScreen;
 
 // CHANGED: Created PauseSystem class
-public class PauseSystem extends EntitySystem{
+public class PauseSystem extends EntitySystem {
 
     public static Boolean gamePaused = false;
     static Screen pauseScreen;
