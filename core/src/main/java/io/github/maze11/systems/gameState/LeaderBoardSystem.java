@@ -12,7 +12,7 @@ import com.badlogic.gdx.Gdx;
 public class LeaderBoardSystem {
 
     final int leaderboardLen = 5;   // Max number of entries to store/display in the leaderboard
-    static String hiScoreFile = "hiScores";
+    public static String hiScoreFile = "hiScores";
     String name;
     int score;
 

@@ -7,8 +7,11 @@ import io.github.maze11.MazeGame;
 
 /** Launches the headless application. Can be converted into a utilities project or a server application. */
 public class HeadlessLauncher {
+
+    
     public static void main(String[] args) {
         createApplication();
+        System.out.println("Created Headless configuration");
     }
 
     private static Application createApplication() {
