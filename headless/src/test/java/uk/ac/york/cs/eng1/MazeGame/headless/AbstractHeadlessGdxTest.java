@@ -17,7 +17,6 @@ import io.github.maze11.systems.physics.PhysicsSyncSystem;
 import io.github.maze11.systems.physics.PhysicsSystem;
 import io.github.maze11.systems.physics.PhysicsToTransformSystem;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.Mockito.mock;

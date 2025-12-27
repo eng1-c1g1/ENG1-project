@@ -35,7 +35,7 @@ public class PauseScreen extends BaseMenuScreen {
 
         // Subtitle with Roboto
         Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
-        Label subtitle = new Label("Quick! Escape the University.\nCollect coffee to go faster.", subtitleStyle);
+        Label subtitle = new Label("Quick! Escape the University.\nPress ESC to unpause.", subtitleStyle);
 
         BitmapFont buttonFont = FontGenerator.generateRobotoFont(24, Color.WHITE, skin);
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));

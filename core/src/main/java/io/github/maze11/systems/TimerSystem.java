@@ -22,7 +22,7 @@ public class TimerSystem extends IteratingSystem {
     }
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
+    public void processEntity(Entity entity, float deltaTime) {
         TimerComponent timer = timerM.get(entity); // get the timer component for the entity
 
         // CHANGED: Made it so no entity updates occur when paused.
