@@ -71,8 +71,12 @@ public class EntityMaker {
                 false);
         cMaker.addHiddenWall(entity, triggeredBy);
 
-        SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
-        sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
+        // Texture manipulation - Only run when a test isn't happening
+        if (MazeGame.batch != null) {
+            SpriteComponent sprite = entity.getComponent(SpriteComponent.class);
+            sprite.textureOffset.set(sprite.textureOffset.x, sprite.textureOffset.y - 1f);
+        }
+        
 
         return entity;
     }
