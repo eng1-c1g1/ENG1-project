@@ -10,6 +10,7 @@ import io.github.maze11.factory.EntityMaker;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
+import io.github.maze11.systems.BullySystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.gameState.GameStateSystem;
@@ -51,6 +52,7 @@ public abstract class AbstractHeadlessGdxTest {
                 new GameStateSystem(testPublisher, testMazeGame, testEngine),
                 new InteractableSystem(testPublisher, testEngine, testEntMaker),
                 new PlayerSystem(testStepper, testPublisher, testMazeGame),
+                new BullySystem(testStepper, testPublisher, testEngine),
                 new PhysicsSyncSystem(testStepper),
                 new PhysicsSystem(testStepper, testPublisher),
                 new PhysicsToTransformSystem(testStepper)
