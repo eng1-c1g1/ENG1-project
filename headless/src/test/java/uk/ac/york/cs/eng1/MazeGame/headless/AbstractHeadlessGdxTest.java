@@ -32,6 +32,19 @@ public abstract class AbstractHeadlessGdxTest {
     public static MessageListener testListener;
     public FixedStepper testStepper;
 
+
+    /**
+     * Simulates testScreen at 60 fps for @param seconds
+     */
+    public void simulate(Float seconds) {
+        final float timeDelta = 1f / 60;
+
+        for (int i = 0; i < (60 * seconds); i++) {
+            testStepper.advanceSimulation(timeDelta);
+            testEngine.update(timeDelta);
+        }
+    }
+
     // Runs before every single function starting with @Test
     @BeforeEach
     public void setup() {
@@ -61,7 +74,6 @@ public abstract class AbstractHeadlessGdxTest {
         for (EntitySystem system : systems) {
             testEngine.addSystem(system);
         }
-
         System.out.println("Headless backend successfully launched");
     }
 }
