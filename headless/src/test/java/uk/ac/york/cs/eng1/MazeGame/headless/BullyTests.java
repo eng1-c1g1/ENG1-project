@@ -20,6 +20,8 @@ public class BullyTests extends AbstractHeadlessGdxTest {
 
     @Test
     public void bullyBlocksWithoutBribeTest() {
+        BullySystem testBullySystem = new BullySystem(testStepper, testPublisher, testEngine);
+        testEngine.addSystem(testBullySystem);
 
         Entity testBully = testEntMaker.makeBully(0f, 0f);
         Entity testPlayer = testEntMaker.makePlayer(0f, 0f);
@@ -47,6 +49,9 @@ public class BullyTests extends AbstractHeadlessGdxTest {
     @Test
     public void bullyMovesAfterBribeTest() {
 
+        BullySystem testBullySystem = new BullySystem(testStepper, testPublisher, testEngine);
+        testEngine.addSystem(testBullySystem);
+        
         Entity testBully = testEntMaker.makeBully(0f, 0f);
         Entity testPlayer = testEntMaker.makePlayer(0f, 0f);
         Entity testBribe = testEntMaker.makeBribe(0f, 0f);

@@ -57,15 +57,24 @@ public abstract class AbstractHeadlessGdxTest {
         testEntMaker = new EntityMaker(testEngine, testMazeGame);
         testListener = new MessageListener(testPublisher);
         
-        // Basic systems that the vast majority of tests will need. To add missing systems, 
-        // create a new instance of that system, then add the line:
-        // "testEngine.addSystem(yourSystemName.class);"
-        // See HiddenPiTests for (hopefully) working examples.
+        // 
+
+        /*
+            Basic systems that the vast majority of tests will need. 
+            These systems are commonly used ones that are used in the majority of tests,
+            so are created for every test. 
+            Please DON'T add other systems to this list unless you
+            think they are necessary for a decent number of other tests - add them to the end of the list.
+            
+            To add systems not in this list to your test, 
+            create a new instance of that system, then add the line:
+            "testEngine.addSystem(yourSystemName.class);" IN YOUR TEST
+            See HiddenPiTests for (hopefully) working examples.
+        */
         List<EntitySystem> systems = List.of(
                 new GameStateSystem(testPublisher, testMazeGame, testEngine),
                 new InteractableSystem(testPublisher, testEngine, testEntMaker),
                 new PlayerSystem(testStepper, testPublisher, testMazeGame),
-                new BullySystem(testStepper, testPublisher, testEngine),
                 new PhysicsSyncSystem(testStepper),
                 new PhysicsSystem(testStepper, testPublisher),
                 new PhysicsToTransformSystem(testStepper)
