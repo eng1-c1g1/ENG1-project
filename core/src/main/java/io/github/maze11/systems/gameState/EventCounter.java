@@ -70,9 +70,28 @@ public class EventCounter {
             breakdown.add("Time remaining bonus: " + formatBonus(scoreContribution));
             totalScore += completionBonus;
             breakdown.add("Escape bonus: " + formatBonus(completionBonus));
+
+	    // end of the game - now have how many events happened total -- update achievements using it:
+	    updateAchievements();
         }
 
         return new ScoreCard(totalScore, breakdown);
+    }
+
+    private void updateAchievements() {
+	// Hardcoded mapping of achievements to their requirements (represented by a mapping of each message type to the number we need):
+	Map<String, Map<MessageType, Integer>> AchievementReqs = Map.ofEntries(
+		entry("Networks Lab Script", Map.ofEntries(
+			entry(MessageType.PI_ACTIVATED, 3)
+		))
+	);
+
+	// iterate through each achievement:
+	for (var achievement : AchievementReqs.entrySet()) {
+		// print name of the achievement:
+		System.out.println("checking ", achievement);
+	}
+	
     }
 
     private String formatBonus(int bonus) {
@@ -81,4 +100,5 @@ public class EventCounter {
     }
 
     private record MessageData(String name, int scoreBonus){ }
+
 }
