@@ -47,7 +47,7 @@ public class GameStateSystem extends EntitySystem {
                     // handle timer expiration
                     case TIMER_EXPIRED -> {
                         System.out.println("Timer Expired! Switching to Game Over Screen...");
-                        var scoreCard = eventCounter.makeScoreCard(true, 0);
+                        var scoreCard = eventCounter.makeScoreCard(false, 0);
                         game.switchScreen(new GameOverScreen(game, scoreCard));
                     }
                     case EXIT_MAZE -> {

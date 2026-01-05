@@ -87,6 +87,7 @@ public class GameOverScreen extends BaseMenuScreen {
         // vertical stack layout again between elements
         table.add(title).padBottom(20).row();
         table.add(subtitle).padBottom(20).row();
+        table.add(scoreLabel).padBottom(20).row();
         // Display all the breakdown labels
         for (var label : breakdownLabels){
             table.add(label).padBottom(5).row();
