@@ -66,6 +66,12 @@ public class GameOverScreen extends BaseMenuScreen {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
         buttonStyle.font = buttonFont;
 
+        // Display all the breakdown labels
+        for (var label : breakdownLabels){
+            table.add(label).padBottom(5).row();
+        }
+        table.padBottom(25).row();
+        
         TextButton restartButton = new TextButton("Try Again", buttonStyle);
         restartButton.addListener(new ClickListener() {
             @Override
