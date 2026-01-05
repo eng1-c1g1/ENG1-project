@@ -41,13 +41,8 @@ public class WinScreen extends BaseMenuScreen {
         Table table = new Table();
         table.setFillParent(true);
 
-        // Title with Roboto
-        Label.LabelStyle titleStyle = new Label.LabelStyle(titleFont, Color.WHITE);
-        Label title = new Label("You Have Escaped University!", titleStyle);
-
         // Subtitle with Roboto
         Label.LabelStyle subtitleStyle = new Label.LabelStyle(bodyFont, Color.LIGHT_GRAY);
-        Label subtitle = new Label("The Dean Has Returned To Lurking The Halls.", subtitleStyle);
 
         // Score labels with Roboto
         Label.LabelStyle bodyStyle = new Label.LabelStyle(bodyFont, Color.WHITE);
@@ -100,7 +95,7 @@ public class WinScreen extends BaseMenuScreen {
 
         stage.addActor(table);
 
-        // Checking whether score is a high score
+        // CHANGED: Added check to see if the score is a new high score
         LeaderBoardSystem leaderboard = new LeaderBoardSystem(MenuScreen.playerName);
         leaderboard.submitScore(scoreCard.totalScore());
         

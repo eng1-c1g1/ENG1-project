@@ -1,5 +1,7 @@
 package io.github.maze11.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.maze11.MazeGame;
 import io.github.maze11.systems.gameState.LeaderBoardSystem;
+import io.github.maze11.systems.gameState.ScoreCard;
 import io.github.maze11.ui.FontGenerator;
 
 /**
@@ -21,10 +24,12 @@ import io.github.maze11.ui.FontGenerator;
  */
 public class GameOverScreen extends BaseMenuScreen {
     private final int score;
+    private ScoreCard scoreCard;
 
-    public GameOverScreen(MazeGame game, int score) {
+    public GameOverScreen(MazeGame game, ScoreCard scoreCard) {
         super(game);
-        this.score = score;
+        this.score = scoreCard.totalScore();
+        this.scoreCard = scoreCard;
         System.out.println("Game Over screen launched - Score: " + score);
         buildUI();
         
@@ -47,9 +52,20 @@ public class GameOverScreen extends BaseMenuScreen {
         Label.LabelStyle scoreStyle = new Label.LabelStyle(bodyFont, Color.YELLOW);
         Label scoreLabel = new Label("Score: " + score, scoreStyle);
 
+        // CHANGED: Score breakdown now appears after a loss
+        // Create the breakdown labels from the scorecard
+
+        Label.LabelStyle detailStyle = new Label.LabelStyle(bodyFont, Color.CYAN);
+
+        ArrayList<Label> breakdownLabels = new ArrayList<>();
+        for (String str : scoreCard.breakdown()){
+            breakdownLabels.add(new Label(str, detailStyle));
+        }
+   
         BitmapFont buttonFont = FontGenerator.generateRobotoFont(24, Color.WHITE, skin);
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
         buttonStyle.font = buttonFont;
+
 
         TextButton restartButton = new TextButton("Try Again", buttonStyle);
         restartButton.addListener(new ClickListener() {
@@ -71,7 +87,12 @@ public class GameOverScreen extends BaseMenuScreen {
         // vertical stack layout again between elements
         table.add(title).padBottom(20).row();
         table.add(subtitle).padBottom(20).row();
-        table.add(scoreLabel).padBottom(40).row();
+        table.add(scoreLabel).padBottom(20).row();
+        // Display all the breakdown labels
+        for (var label : breakdownLabels){
+            table.add(label).padBottom(5).row();
+        }
+        table.padBottom(40).row();
         table.add(restartButton).width(200).height(60).padBottom(10).row();
         table.add(menuButton).width(200).height(60);
 
