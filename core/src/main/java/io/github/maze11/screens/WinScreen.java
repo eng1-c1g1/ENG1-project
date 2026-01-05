@@ -100,7 +100,7 @@ public class WinScreen extends BaseMenuScreen {
 
         stage.addActor(table);
 
-        // Checking whether score is a high score
+        // CHANGED: Added check to see if the score is a new high score
         LeaderBoardSystem leaderboard = new LeaderBoardSystem(MenuScreen.playerName);
         leaderboard.submitScore(scoreCard.totalScore());
         
