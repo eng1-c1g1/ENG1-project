@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Run JUnit Tests
 
 on:
   push:
@@ -27,14 +27,12 @@ jobs:
     - name: Build and Test with Gradle Wrapper
       run: ./gradlew build jacocoTestReport
     
-    - name: Publish Test Results
-      uses: dorny/test-reporter@v1
+    - name: Upload Problems Report
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: JUnit Test Results
-        path: 'headless/build/test-results/test/*.xml'
-        reporter: java-junit
-        fail-on-error: true
+        name: problems-report
+        path: build/reports/problems/problems-report.html
     
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
