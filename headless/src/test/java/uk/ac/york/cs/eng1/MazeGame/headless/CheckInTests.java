@@ -26,10 +26,8 @@ public class CheckInTests extends AbstractHeadlessGdxTest {
         testPublisher.publish(new CollisionMessage(testPlayer, testCheckIn));    // Tells the game the player has collided with an entity
         testInteractSystem.update(0f); 
         testGameStateSystem.update(0f); 
-
-        var eventcount = GameStateSystem.class.getDeclaredField("eventcounter");
-        eventcount.setAccessible(true);
-        EventCounter eventCounter = (EventCounter) eventcount.get(testGameStateSystem);
+        
+        EventCounter eventCounter = testGameStateSystem.eventCounter;
 
         assertEquals(20, eventCounter.makeScoreCard(false, 0).totalScore());
     }
