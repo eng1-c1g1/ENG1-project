@@ -1,49 +1,51 @@
-name: Run JUnit Tests
+name: Java CI with Gradle
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main, develop ]
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'gradle'
     
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-      
-    - name: Run tests
-      run: |
-        cd headless
-        ./gradlew test --info
     
-    - name: Publish test results
+    - name: Build and Test with Gradle Wrapper
+      run: ./gradlew build jacocoTestReport
+    
+    - name: Publish Test Results
       uses: dorny/test-reporter@v1
       if: always()
       with:
         name: JUnit Test Results
-        path: headless/build/test-results/test/*.xml
+        path: 'headless/build/test-results/test/*.xml'
         reporter: java-junit
         fail-on-error: true
     
-    - name: Upload test report
+    - name: Upload Test Report
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-report
         path: headless/build/reports/tests/test/
+    
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: headless/build/reports/jacoco/test/
