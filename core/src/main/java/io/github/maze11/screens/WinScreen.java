@@ -57,7 +57,6 @@ public class WinScreen extends BaseMenuScreen {
 
         Label.LabelStyle detailStyle = new Label.LabelStyle(bodyFont, Color.CYAN);
 
-        // TODO: Change to simpler +ve, -ve and hidden counters
         // Create the breakdown labels from the scorecard
         ArrayList<Label> breakdownLabels = new ArrayList<>();
         for (String str : scoreCard.breakdown()){
