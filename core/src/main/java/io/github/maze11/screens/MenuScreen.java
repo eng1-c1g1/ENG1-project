@@ -30,7 +30,7 @@ public class MenuScreen extends BaseMenuScreen {
     protected void buildUI() {
         Table outerTable = new Table();
         Table innerTable = new Table();
-        outerTable.add().expandX();
+        //outerTable.add().expandX();
         outerTable.setFillParent(true);
         
         // Building Main Menu
@@ -88,6 +88,18 @@ public class MenuScreen extends BaseMenuScreen {
             }
         });
 
+	// CHANGED - build achievements:
+	// temporary fix to orient menu properly:
+	String achvData = "Achievements:                            \n";
+
+	if (LeaderBoardSystem.readAchievements() != null) {
+		for (String entry : LeaderBoardSystem.readAchievements()) {
+			achvData += entry + "\n";
+		}
+	}
+
+	Label achievements = new Label(achvData, bodyStyle);
+	outerTable.add(achievements).padRight(325).padLeft(200);
         
         // vertical stack layout for elements in menu screen
         innerTable.add(title).padBottom(20).row(); // e.g. title with 20px space below
@@ -111,10 +123,12 @@ public class MenuScreen extends BaseMenuScreen {
         }
         
         Label leaderboard = new Label(lbData, bodyStyle);
-
         outerTable.add(leaderboard).expandX();
-        stage.addActor(outerTable);
-        stage.setDebugAll(false);
+
+
+	// do @ end, regardless of other features
+	stage.addActor(outerTable);
+	stage.setDebugAll(false);
     }
 
     @Override

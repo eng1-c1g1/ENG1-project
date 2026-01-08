@@ -97,6 +97,27 @@ public class LeaderBoardSystem {
         formattedLb.sort(new leaderBoardSort());
         return formattedLb;
     }
+
+    // CHANGED - added achievement formatting:
+   public static List<String> readAchievements() {
+	// format achievements list:
+	List<String> userAchievements = new ArrayList<>();
+	
+	Preferences achievements = Gdx.app.getPreferences("Achievements");
+
+	if (achievements.get().size() == 0) {
+		return null;
+	}
+
+	// get all achievements, add to formatted list:
+	for (String achvName : achievements.get().keySet()) {
+		// achievements meant to be hidden, only add if achieved:
+		if (achievements.getBoolean(achvName) == true) {
+			userAchievements.add(achvName);
+		}
+	}
+	return userAchievements;
+   }
 }
 
 // Compares leaderboard entry strings based on their score component.

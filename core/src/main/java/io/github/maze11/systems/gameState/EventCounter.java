@@ -1,12 +1,18 @@
 package io.github.maze11.systems.gameState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static java.util.Map.entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+
 import io.github.maze11.messages.MessageType;
+
+
 
 /**
  * Keeps count of the number of events and can output a score summary
@@ -98,28 +104,91 @@ public class EventCounter {
             totalScore += completionBonus;
             breakdown.add("Escape bonus: " + formatBonus(completionBonus));
 
-	    // end of the game - now have how many events happened total -- update achievements using it:
+	    // end of the game - now have how many events happened total - update achievements using it:
 	    updateAchievements();
         }
 
         return new ScoreCard(totalScore, breakdown);
     }
 
-    private void updateAchievements() {
-	// Hardcoded mapping of achievements to their requirements (represented by a mapping of each message type to the number we need):
-	Map<String, Map<MessageType, Integer>> AchievementReqs = Map.ofEntries(
-		entry("Networks Lab Script", Map.ofEntries(
-			entry(MessageType.PI_ACTIVATED, 3)
-		))
-	);
+    // CHANGED - added Achievement class to encapsulate achievement functionality
+    public class Achievement {
+	// maps events : number of times they need to occur to get the achievement
+	private Map<MessageType, Integer> eventRequirements;
+	private String name;
 
-	// iterate through each achievement:
-	for (var achievement : AchievementReqs.entrySet()) {
-		// print name of the achievement:
-		System.out.println("checking ", achievement);
+	public Achievement(String givenName, Map<MessageType, Integer> givenMapping) {
+		// set Map based on mapping passed:
+		name = givenName;
+		eventRequirements = givenMapping;
 	}
 	
+	public boolean checkEventsAchieve(Map<MessageType, Integer> EventCounts) {
+		// check if given EventCounts qualifies for this achievement:
+		for (var event : eventRequirements.keySet()) {
+			// debug:
+			System.out.println(EventCounts.get(event));
+			// check if invalid
+			if (EventCounts.get(event) == null) {
+				return false;
+
+			} else if (EventCounts.get(event) < eventRequirements.get(event)) {
+				return false;
+			}
+		}
+		// no issues found, true by default:
+		return true;
+	}
+
+	public String getName() {
+		return name;
+	}
     }
+
+
+    // CHANGED - added method to update achievements, called at end of game
+    private void updateAchievements() {
+	// -- ACHIEVEMENTS INITIALISED HERE --:
+	List<Achievement> allAchievements = new ArrayList<Achievement>();
+	// define achievements here
+	// All hidden Pis
+	allAchievements.add(new Achievement("Got All 3 Hidden Pis in 1 run", Map.ofEntries(entry(MessageType.PI_ACTIVATED, 1))));
+	// All hidden events:
+	allAchievements.add(new Achievement("Got all Hidden Events in 1 run", Map.ofEntries(
+		entry(MessageType.PI_ACTIVATED, 1),
+		entry(MessageType.LONGBOI_INTERACT, 1),
+		entry(MessageType.PRESSURE_PLATE_TRIGGER, 1))));
+
+	// All Events:
+	Map<MessageType, Integer> reqMapping = new HashMap();
+	// add each event to our requiremens mapping:
+	
+	for (MessageType msgType : messageMappings.keySet()) {
+		reqMapping.put(msgType, 1);
+	}
+	
+	allAchievements.add(new Achievement("Got all Events in 1 run", reqMapping));
+
+	// load preferences:
+	Preferences prefs = Gdx.app.getPreferences("Achievements");
+
+	// iterate through each achievement, check which we achieved this run:
+	for (var achieve : allAchievements){
+		// check if achieved them in this run:
+		if (achieve.checkEventsAchieve(recordedCounts)) {
+			// if achieved, just print to console that we did for now:
+			System.out.println("achieved " + achieve.getName());
+			
+			// save to preferences:
+			prefs.putBoolean(achieve.getName(), true);
+		} else {
+			System.out.println("did not achieve " + achieve.getName());
+		}
+	}
+	// save preferences so they persist:
+	prefs.flush();
+    }
+
 
     private String formatBonus(int bonus) {
         // Add a + to the displayed contribution if it is positive or 0
