@@ -13,7 +13,7 @@ import io.github.maze11.assetLoading.AssetPaths;
 import io.github.maze11.assetLoading.AssetKey;
 
 public class AssetTests extends AbstractHeadlessGdxTest{
-    
+
     // Testing that all the asset paths are valid
     @Test
     public void testPiAssetExists() {
@@ -41,6 +41,20 @@ public class AssetTests extends AbstractHeadlessGdxTest{
         String filepath = AssetPaths.texturePaths.get(AssetId.BULLY_SHEET);
         assertTrue(Gdx.files.internal(filepath).exists(),
         "The sprite sheet for the Bully should be accessible");
+    }
+
+    @Test
+    public void testTeleportAssetExists() {
+        String filepath = AssetPaths.texturePaths.get(AssetId.TELEPORTER);
+        assertTrue(Gdx.files.internal(filepath).exists(),
+            "The sprite for the teleporter should be accessible");
+    }
+
+    @Test
+    public void testYapperAssetExists() {
+        String filepath = AssetPaths.texturePaths.get(AssetId.YAPPER);
+        assertTrue(Gdx.files.internal(filepath).exists(),
+            "The sprite for the yapper should be accessible");
     }
 
     @Test
@@ -117,7 +131,7 @@ public class AssetTests extends AbstractHeadlessGdxTest{
 
     @Test
     public void testGameMusicExists() {
-        
+
         @SuppressWarnings({ "unchecked", "rawtypes" })
         String filepath = AssetPaths.pathsWithTypes.get(new AssetKey(AssetId.GAME_MUSIC, Music.class));
         assertTrue(Gdx.files.internal(filepath).exists(),
