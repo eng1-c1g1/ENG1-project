@@ -25,9 +25,7 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
     
     - name: Run Tests in Headless Module
-      run: |
-        cd headless
-        ./gradlew test
+      run: ./gradlew :headless:test
     
     - name: Upload Problems Report
       uses: actions/upload-artifact@v4
