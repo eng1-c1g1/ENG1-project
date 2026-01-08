@@ -10,7 +10,6 @@ import io.github.maze11.factory.EntityMaker;
 import io.github.maze11.fixedStep.FixedStepper;
 import io.github.maze11.messages.MessageListener;
 import io.github.maze11.messages.MessagePublisher;
-import io.github.maze11.systems.BullySystem;
 import io.github.maze11.systems.InteractableSystem;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.gameState.GameStateSystem;

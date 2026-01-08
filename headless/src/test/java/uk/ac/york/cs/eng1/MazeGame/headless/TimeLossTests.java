@@ -1,21 +1,16 @@
 package uk.ac.york.cs.eng1.MazeGame.headless;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.ashley.core.EntitySystem;
-import io.github.maze11.messages.TimeLossMessage;
 import io.github.maze11.messages.ToastMessage;
 import io.github.maze11.systems.PlayerSystem;
 import io.github.maze11.systems.TimerSystem;
-import io.github.maze11.systems.gameState.GameStateSystem;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.ashley.core.Entity;
 
 import io.github.maze11.components.TimerComponent;
-import io.github.maze11.components.InteractableComponent;
 import io.github.maze11.components.PlayerComponent;
 import io.github.maze11.messages.CollisionMessage;
 import io.github.maze11.systems.InteractableSystem;

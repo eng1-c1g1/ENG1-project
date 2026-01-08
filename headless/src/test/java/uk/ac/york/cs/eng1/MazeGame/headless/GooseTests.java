@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController.Transform;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.maze11.components.GooseComponent;
