@@ -17,7 +17,7 @@ import java.util.List;
  * Each Screen is independent and owns its own resources (fonts, UI, ECS)
  */
 public class MazeGame extends Game {
-    private SpriteBatch batch;
+    public static SpriteBatch batch;
     private AssetLoader assetLoader;
     public static final int PIXELS_TO_UNIT = 32;
 
@@ -36,16 +36,16 @@ public class MazeGame extends Game {
     public void create() {
         System.out.println("Maze game launched");
         batch = new SpriteBatch();
-
+        
         assetLoader = new AssetLoader();
         assetLoader.load();
-
         this.setScreen(new MenuScreen(this));
     }
 
 
     @Override
     public void render() {
+
         super.render();
         for (Screen screen : discontinuedScreens) {
             screen.dispose();

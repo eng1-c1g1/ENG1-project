@@ -22,7 +22,7 @@ import io.github.maze11.systems.PauseSystem;
 public class GameStateSystem extends EntitySystem {
     private final MessageListener messageListener;
     private final MazeGame game;
-    private final EventCounter eventCounter;
+    public final EventCounter eventCounter;
     private final Engine engine;
 
     public GameStateSystem(MessagePublisher messagePublisher, MazeGame game, Engine engine) {

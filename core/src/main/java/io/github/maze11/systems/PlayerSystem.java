@@ -72,24 +72,27 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
     @Override
     public void fixedUpdate(float deltaTime) {
-        while (messageListener.hasNext()) {
-            var message = messageListener.next();
+        
+        // CHANGED: Prevent updates if game paused
+        if (!PauseSystem.gamePaused) {
+            while (messageListener.hasNext()) {
+                var message = messageListener.next();
 
-            switch (message.type) {
-                case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
-                case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
-                case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
-                case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
-                case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
-                case PI_ACTIVATED -> processCowsayActivate((PiActivatedMessage) message);
-                case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
-                case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
-                default -> {
+                switch (message.type) {
+                    case COLLECT_COFFEE -> processCoffeeCollect((CoffeeCollectMessage) message);
+                    case PUDDLE_INTERACT -> processPuddleInteract((PuddleInteractMessage) message);
+                    case ANKH_INTERACT -> processAnkhInteract((AnkhInteractMessage) message);
+                    case GOOSE_BITE -> processGooseBite((GooseBiteMessage) message);
+                    case PI_COLLECT -> processPiCollect((PiCollectMessage) message);
+                    case PI_ACTIVATED -> processCowsayActivated((PiActivatedMessage) message);
+                    case TELEPORTATION -> processTeleportation((TeleportationMessage) message);
+                    case BULLY_BRIBED -> processBullyBribe((BullyBribeMessage) message);
+                    default -> {
+                    }
                 }
             }
+            super.fixedUpdate(deltaTime);
         }
-
-        super.fixedUpdate(deltaTime);
     }
 
 
@@ -137,7 +140,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         }
     }
 
-    private void processCowsayActivate(PiActivatedMessage message) {
+    private void processCowsayActivated(PiActivatedMessage message) {
         String cowsay = """
                      __________________
                     / One does not simply   \\
@@ -226,38 +229,42 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         // Animation
         PlayerState newState;
+        
+        // CHANGED: Update animation only if spriteBatch fetched
+        if (MazeGame.batch != null) {
+            if (direction.len2() == 0) {
+                PlayerState last = anim.currentState;
 
-        if (direction.len2() == 0) {
-            PlayerState last = anim.currentState;
+                switch (last) {
+                    case WALK_UP, IDLE_UP -> newState = PlayerState.IDLE_UP;
+                    case WALK_DOWN, IDLE_DOWN -> newState = PlayerState.IDLE_DOWN;
+                    case WALK_LEFT, IDLE_LEFT -> newState = PlayerState.IDLE_LEFT;
+                    case WALK_RIGHT, IDLE_RIGHT -> newState = PlayerState.IDLE_RIGHT;
 
-            switch (last) {
-                case WALK_UP, IDLE_UP -> newState = PlayerState.IDLE_UP;
-                case WALK_DOWN, IDLE_DOWN -> newState = PlayerState.IDLE_DOWN;
-                case WALK_LEFT, IDLE_LEFT -> newState = PlayerState.IDLE_LEFT;
-                case WALK_RIGHT, IDLE_RIGHT -> newState = PlayerState.IDLE_RIGHT;
+                    default -> newState = PlayerState.IDLE_DOWN;
+                }
 
-                default -> newState = PlayerState.IDLE_DOWN;
-            }
-
-        } else {
-            if (Math.abs(direction.x) > Math.abs(direction.y)) {
-                newState = direction.x > 0 ? PlayerState.WALK_RIGHT : PlayerState.WALK_LEFT;
             } else {
-                newState = direction.y > 0 ? PlayerState.WALK_UP : PlayerState.WALK_DOWN;
+                if (Math.abs(direction.x) > Math.abs(direction.y)) {
+                    newState = direction.x > 0 ? PlayerState.WALK_RIGHT : PlayerState.WALK_LEFT;
+                } else {
+                    newState = direction.y > 0 ? PlayerState.WALK_UP : PlayerState.WALK_DOWN;
+                }
+            }
+
+            if (anim.currentState != newState) {
+                anim.currentState = newState;
+                anim.elapsed = 0f;
+            } else {
+                anim.elapsed += deltaTime;
+            }
+
+            var animation = anim.animations.get(anim.currentState);
+            if (animation != null) {
+                anim.currentFrame = animation.getKeyFrame(anim.elapsed, true);
             }
         }
-
-        if (anim.currentState != newState) {
-            anim.currentState = newState;
-            anim.elapsed = 0f;
-        } else {
-            anim.elapsed += deltaTime;
-        }
-
-        var animation = anim.animations.get(anim.currentState);
-        if (animation != null) {
-            anim.currentFrame = animation.getKeyFrame(anim.elapsed, true);
-        }
+        
     }
 
     private void addKnockback(PlayerComponent pc, Vector2 extra) {

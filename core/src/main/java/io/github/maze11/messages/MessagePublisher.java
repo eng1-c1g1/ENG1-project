@@ -7,7 +7,7 @@ import java.util.List;
  * Used to send messages to all subscribed listeners
  */
 public class MessagePublisher {
-    List<MessageListener> listeners = new ArrayList<MessageListener>();
+    public List<MessageListener> listeners = new ArrayList<MessageListener>();
 
     /** Adds a listener to be able to recieve messages from this publisher */
     public void addListener(MessageListener messageListener){
