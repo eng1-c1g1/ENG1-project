@@ -32,6 +32,7 @@ public class PlayerSystem extends IteratingFixedStepSystem {
     private final MessageListener messageListener;
     private final MessagePublisher messagePublisher;
     private final AssetLoader assetLoader;
+    public Vector2 constantDirection;
 
     public PlayerSystem(FixedStepper fixedStepper, MessagePublisher messagePublisher, MazeGame game) {
         super(fixedStepper,
@@ -46,6 +47,14 @@ public class PlayerSystem extends IteratingFixedStepSystem {
 
         this.messageListener = new MessageListener(messagePublisher);
         this.assetLoader = game.getAssetLoader();
+    }
+    
+    /**
+     * Used during testing when the player needs to continuosly move in a direction
+     * e.g. testing hitboxes/item pickups
+     */
+    public void setConstDirection(Vector2 newDirection) {
+        this.constantDirection = newDirection;
     }
 
     /**
@@ -178,6 +187,11 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         AnimationComponent<PlayerState> anim = animMapper.get(entity);
 
         Vector2 direction = getDirectionalInput();
+        
+        // Applying test direction if it has been set
+        if (constantDirection != null) {
+            direction = constantDirection;
+        }
 
         // Movement
         float maxSpeed = player.maxSpeed;
@@ -304,8 +318,12 @@ public class PlayerSystem extends IteratingFixedStepSystem {
         // If it is time for another footstep, take it
         if (player.timeSinceLastFootstep > player.timeBetweenFootsteps) {
             player.timeSinceLastFootstep = 0f;
-            messageListener.publisher
+            // Only play sound if a test isn't being run
+            if (MazeGame.batch != null) {
+                messageListener.publisher
                     .publish(new SoundMessage(assetLoader.get(AssetId.FOOTSTEP, Sound.class), 0.5f, 0.6f));
+            }
+            
         }
     }
 }
