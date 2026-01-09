@@ -113,83 +113,97 @@ public class EventCounter {
 
     // CHANGED - added Achievement class to encapsulate achievement functionality
     public class Achievement {
-	// maps events : number of times they need to occur to get the achievement
-	private Map<MessageType, Integer> eventRequirements;
-	private String name;
+            // maps events : number of times they need to occur to get the achievement
+            private Map<MessageType, Integer> eventRequirements;
+            private String name;
 
-	public Achievement(String givenName, Map<MessageType, Integer> givenMapping) {
-		// set Map based on mapping passed:
-		name = givenName;
-		eventRequirements = givenMapping;
-	}
-	
-	public boolean checkEventsAchieve(Map<MessageType, Integer> EventCounts) {
-		// check if given EventCounts qualifies for this achievement:
-		for (var event : eventRequirements.keySet()) {
-			// debug:
-            String out = String.format("%s has count: %d", event, EventCounts.get(event));
-			System.out.println(out);
-			// check if invalid
-			if (EventCounts.get(event) == null) {
-				return false;
+            public Achievement(String givenName, Map<MessageType, Integer> givenMapping) {
+                // set Map based on mapping passed:
+                name = givenName;
+                eventRequirements = givenMapping;
+            }
+            
+            public boolean checkEventsAchieve(Map<MessageType, Integer> EventCounts) {
+                // check if given EventCounts qualifies for this achievement:
+                for (var event : eventRequirements.keySet()) {
+                    // debug:
+                    String out = String.format("%s has count: %d", event, EventCounts.get(event));
+                    System.out.println(out);
+                    // check if invalid
+                    if (EventCounts.get(event) == null) {
+                        return false;
 
-			} else if (EventCounts.get(event) < eventRequirements.get(event)) {
-				return false;
-			}
-		}
-		// no issues found, true by default:
-		return true;
-	}
+                    } else if (EventCounts.get(event) < eventRequirements.get(event)) {
+                        return false;
+                    }
+                }
+                // no issues found, true by default:
+                return true;
+            }
 
-	public String getName() {
-		return name;
-	}
+            public String getName() {
+                return name;
+            }
     }
 
 
     // CHANGED - added method to update achievements, called at end of game
-    private void updateAchievements() {
-	// -- ACHIEVEMENTS INITIALISED HERE --:
-	List<Achievement> allAchievements = new ArrayList<Achievement>();
-	// define achievements here
-	// All hidden Pis
-	allAchievements.add(new Achievement("Got All 3 Hidden Pis in 1 run", Map.ofEntries(entry(MessageType.PI_ACTIVATED, 1))));
-	// All hidden events:
-	allAchievements.add(new Achievement("Got all Hidden Events in 1 run", Map.ofEntries(
-		entry(MessageType.PI_ACTIVATED, 1),
-		entry(MessageType.LONGBOI_INTERACT, 1),
-		entry(MessageType.PRESSURE_PLATE_TRIGGER, 1))));
+    public void updateAchievements() {
+            // -- ACHIEVEMENTS INITIALISED HERE --:
+            List<Achievement> allAchievements = new ArrayList<Achievement>();
+            // define achievements here
+            // All hidden Pis
+            allAchievements.add(new Achievement("Got All 3 Hidden Pis in 1 run", Map.ofEntries(entry(MessageType.PI_ACTIVATED, 1))));
+            // All hidden events:
+            allAchievements.add(new Achievement("Got All Hidden Events in 1 run", Map.ofEntries(
+                entry(MessageType.PI_ACTIVATED, 1),
+                entry(MessageType.LONGBOI_INTERACT, 1),
+                entry(MessageType.PRESSURE_PLATE_TRIGGER, 1))));
 
-	// All Events:
-	Map<MessageType, Integer> reqMapping = new HashMap();
-	// add each event to our requiremens mapping:
-	
-	for (MessageType msgType : messageMappings.keySet()) {
-		reqMapping.put(msgType, 1);
-	}
-	
-	allAchievements.add(new Achievement("Got all Events in 1 run", reqMapping));
+            // All Events:
+            Map<MessageType, Integer> reqMapping = new HashMap();
+            // add each event to our requiremens mapping:
+            
+            for (MessageType msgType : messageMappings.keySet()) {
+                reqMapping.put(msgType, 1);
+            }
+            
+            allAchievements.add(new Achievement("Got All Events in 1 run", reqMapping));
 
-	// load preferences:
-	Preferences prefs = Gdx.app.getPreferences("Achievements");
+            // load preferences:
+            Preferences prefs = Gdx.app.getPreferences("Achievements");
 
-	// iterate through each achievement, check which we achieved this run:
-	for (var achieve : allAchievements){
-		// check if achieved them in this run:
-		if (achieve.checkEventsAchieve(recordedCounts)) {
-			// if achieved, just print to console that we did for now:
-			System.out.println("achieved " + achieve.getName());
-			
-			// save to preferences:
-			prefs.putBoolean(achieve.getName(), true);
-		} else {
-			System.out.println("did not achieve " + achieve.getName());
-		}
-	}
-	// save preferences so they persist:
-	prefs.flush();
+            // iterate through each achievement, check which we achieved this run:
+            for (var achieve : allAchievements){
+                // check if achieved them in this run:
+                if (achieve.checkEventsAchieve(recordedCounts)) {
+                    // if achieved, just print to console that we did for now:
+                    System.out.println("achieved " + achieve.getName());
+                    
+                    // save to preferences:
+                    prefs.putBoolean(achieve.getName(), true);
+                } else {
+                    System.out.println("did not achieve " + achieve.getName());
+                }
+            }
+            // save preferences so they persist:
+            prefs.flush();
     }
 
+    public List<String> getAllAchievements() {
+        // get all keys from prefs file w/ value that isn't 0:
+        List<String> achievementsGot = new ArrayList<>();
+        // load preferences:
+        Preferences prefs = Gdx.app.getPreferences("Achievements");
+        // get all achievements w/ value = true
+        for (var achvName: prefs.get().keySet()) {
+            if (prefs.getBoolean(achvName) == true) {
+                achievementsGot.add(achvName);
+            }
+        }
+    
+        return achievementsGot;
+    }
 
     private String formatBonus(int bonus) {
         // Add a + to the displayed contribution if it is positive or 0
