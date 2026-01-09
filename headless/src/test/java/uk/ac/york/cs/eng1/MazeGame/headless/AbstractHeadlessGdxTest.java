@@ -41,6 +41,7 @@ public abstract class AbstractHeadlessGdxTest {
         for (int i = 0; i < (60 * seconds); i++) {
             testStepper.advanceSimulation(timeDelta);
             testEngine.update(timeDelta);
+            
         }
     }
 
