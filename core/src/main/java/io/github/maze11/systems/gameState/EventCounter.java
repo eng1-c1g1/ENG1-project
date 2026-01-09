@@ -127,7 +127,8 @@ public class EventCounter {
 		// check if given EventCounts qualifies for this achievement:
 		for (var event : eventRequirements.keySet()) {
 			// debug:
-			System.out.println(EventCounts.get(event));
+            String out = String.format("%s has count: %d", event, EventCounts.get(event));
+			System.out.println(out);
 			// check if invalid
 			if (EventCounts.get(event) == null) {
 				return false;
