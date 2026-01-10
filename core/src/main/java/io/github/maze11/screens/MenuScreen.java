@@ -44,7 +44,10 @@ public class MenuScreen extends BaseMenuScreen {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
         buttonStyle.font = buttonFont;
 
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle(skin.get(TextField.TextFieldStyle.class));
+        textFieldStyle.font = buttonFont;
         TextField nameEntry = new TextField("Enter your name", skin);
+
         nameEntry.hasKeyboardFocus();
         nameEntry.addListener(new ChangeListener() {
             

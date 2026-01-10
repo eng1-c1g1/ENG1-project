@@ -257,7 +257,7 @@ public class EntityMaker {
 
     public Entity makeAnkh(float x, float y) {
         List<Message> additionalMessages = new ArrayList<>();
-        additionalMessages.add(new ToastMessage("The Ankh protects you! Invulnerable for 15 seconds", 2f));
+        additionalMessages.add(new ToastMessage("You got anti-duck spray! Now the ducks cant't hurt you!", 2f));
 
         Entity entity = makeInteractable(x, y, new AnkhInteractMessage(), true, AssetId.ANKH, additionalMessages);
         cMaker.addCircleCollider(entity, x, y, 0.75f, 0f, 0.5f, BodyDef.BodyType.StaticBody);
